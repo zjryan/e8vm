@@ -31,14 +31,14 @@ func checkWordAlign(offset uint32) {
 	}
 }
 
-// Read reads a byte at the particular offset.
+// ReadByte reads a byte at the particular offset.
 // It panics when the offset is larger than PageSize
 func (p *Page) ReadByte(offset uint32) byte {
 	checkRange(offset)
 	return p.bytes[offset]
 }
 
-// Write writes a byte into the page at a particular offset.
+// WriteByte writes a byte into the page at a particular offset.
 // It panics when the offset is larger than PageSize.
 func (p *Page) WriteByte(offset uint32, b byte) {
 	checkRange(offset)
