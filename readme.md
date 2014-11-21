@@ -6,6 +6,6 @@ assemblers, compilers, and operating systems.
 
 ## Table of Content
 
-1. Architecture
-  1. arch8/arch8.md
-  2. arch8/page.go
+###  Architecture (arch8)
+
+- [page.go](https://github.com/h8liu/e8vm/blob/master/src/arch8/page.go)
