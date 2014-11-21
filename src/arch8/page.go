@@ -4,10 +4,6 @@ import (
 	"encoding/binary"
 )
 
-/*
-
-*/
-
 // PageSize is the number of bytes a page contains.
 const PageSize = 4096
 
