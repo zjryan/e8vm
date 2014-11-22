@@ -23,3 +23,15 @@ assemblers, compilers, and operating systems.
 - `arch8/inst_sys.go`: System instructions
 - `arch8/multi.go`: Shared memory multicore
 - `arch8/boot_rom.go`: Boot ROM loader
+
+### Assembler (asm8)
+
+- `asm8/symbol.go`: Symbol system
+
+### Programming Language (l8)
+
+- `l8/lg.go`: Introduction
+
+### Operating System (os8)
+
+- `os8/os8.go`: Introduction
