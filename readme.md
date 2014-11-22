@@ -28,9 +28,9 @@ assemblers, compilers, and operating systems.
 
 - `asm8/symbol.go`: Symbol system
 
-### Programming Language (l8)
+### Programming Language (lang8)
 
-- `l8/lg.go`: Introduction
+- `lang8/lang8.go`: Introduction
 
 ### Operating System (os8)
 
