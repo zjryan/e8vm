@@ -1,9 +1,6 @@
 - we will have interrupts
 - and we will have page tables
-- should we have a page tables?
-- should we have interrupts?
-- if we want to have a real operating system, we should better have interrupts.
-- otherwise, we would need 3 vms.
-- one vm for interrupt handling
-- one vm for operating system
-- one vm for user program
+
+- page table
+A page number has 20 bits
+2 * 10 = 

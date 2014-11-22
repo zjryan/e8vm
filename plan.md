@@ -5,8 +5,8 @@
     - page.go: Page (done)
     - phy_memory.go: Physical Memory (done)
     - page_table.go: Page Table
-    - virt_memory.go: Vitural Memory // do we really need page table? 
-    - interrupt.go 
+    - virt_memory.go: Vitural Memory 
+    - interrupt.go: // we will only support one interrupt at a time
     - inst_reg.go: Register instructions
     - inst_im.go: Immediate instructions
     - inst_b.go: Branch instructions
