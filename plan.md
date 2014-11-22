@@ -3,10 +3,10 @@
 - arch8: The Architecture
     - regs.go: Registers (done)
     - page.go: Page (done)
-    - phymem.go: Physical Memory (done)
-    - ptable.go: Page Table // do we really need page table? 
-    - memory.go: Memory
-    - event.go: Interrupts
+    - phy_memory.go: Physical Memory (done)
+    - page_table.go: Page Table
+    - virt_memory.go: Vitural Memory // do we really need page table? 
+    - interrupt.go 
     - inst_reg.go: Register instructions
     - inst_im.go: Immediate instructions
     - inst_b.go: Branch instructions
