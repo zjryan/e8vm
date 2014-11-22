@@ -4,6 +4,7 @@ import (
 	"errors"
 )
 
+// PhyMemory is a collection of contiguous pages.
 type PhyMemory struct {
 	npage uint32
 	pages map[uint32]*Page
