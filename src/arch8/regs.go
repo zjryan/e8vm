@@ -1,5 +1,8 @@
 package arch8
 
+// Nreg is the number of registers
+const Nreg = 8
+
 // Register names
 const (
 	R0 = 0
@@ -11,8 +14,6 @@ const (
 	SP  = 5
 	RET = 6
 	PC  = 7
-
-	Nreg = 8 // total number of registers
 )
 
 func makeRegs() []uint32 {

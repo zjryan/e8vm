@@ -1,9 +1,10 @@
 (plan and progress)
 
 - arch8: The Architecture
-    - regs.go: Registers
-    - page.go: Page
-    - ptable.go: Page Table
+    - regs.go: Registers (done)
+    - page.go: Page (done)
+    - phymem.go: Physical Memory (done)
+    - ptable.go: Page Table // do we really need page table? 
     - memory.go: Memory
     - event.go: Interrupts
     - inst_reg.go: Register instructions
