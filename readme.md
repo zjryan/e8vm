@@ -13,8 +13,8 @@ assemblers, compilers, and operating systems.
 - `arch8/phy_memory.go`: Physical Memory (done)
 - `arch8/page_table.go`: Page Table (done)
 - `arch8/virt_memory.go`: Virtual Memory (done)
-- `arch8/interrupt.go`: Interrupt Queue
-- `arch8/io.go`: IO device interface
+- `arch8/interrupt.go`: Interrupt Control (done)
+- `arch8/serial.go`: Serial Console Control
 - `arch8/cpu.go`: Processor Simulator
 - `arch8/inst_reg.go`: Register instructions
 - `arch8/inst_imm.go`: Immediate instructions
