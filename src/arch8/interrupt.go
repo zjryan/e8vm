@@ -5,6 +5,7 @@ type Interrupt struct {
 	p *Page // the dma page for interrupt handler
 }
 
+// Number of interrupts
 const Ninterrupt = 256
 
 const (
