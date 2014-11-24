@@ -1,6 +1,6 @@
 package arch8
 
-// InstSys exectues system instruction
+// InstSys exectues a system instruction
 type InstSys struct{}
 
 // I executes the system instruction.
