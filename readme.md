@@ -36,12 +36,16 @@ Planned Features:
 
 ### Assembler (asm8)
 
-- `asm8/symbol.go`: Symbol system
+`todo`
 
 ### Programming Language (lang8)
 
-- `lang8/lang8.go`: Introduction
+`todo`
 
 ### Operating System (os8)
 
-- `os8/os8.go`: Introduction
+`todo`
+
+### Go Language Compiler (go8)
+
+`todo`
