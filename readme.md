@@ -8,6 +8,7 @@ Planned Features:
 
 - File based modules, no circular dependency. A reader can always read
   the project one module by a module, one file by a file.
+- Small files. Each file is shorter than 200 lines.
 - Each file (will) come with test cases, examples, and markdown description.
 - It (will) work like a real computer.
 
