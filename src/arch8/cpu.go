@@ -2,7 +2,9 @@ package arch8
 
 // CPU defines the structure of a processing unit.
 type CPU struct {
-	regs      []uint32
+	regs []uint32
+
+	ring      byte
 	phyMem    *PhyMemory
 	virtMem   *VirtMemory
 	interrupt *Interrupt
@@ -47,13 +49,93 @@ func (c *CPU) tick() *Excep {
 	return nil
 }
 
+var regsToPush = []int{SP, PC}
+
+const (
+	intFrameSize = 12
+	intFrameSP   = 0
+	intFrameRET  = 4
+	intFrameCode = 8
+	intFrameRing = 9
+)
+
+// Interrupt sets up a interrupt routine.
+func (c *CPU) Interrupt(code byte) *Excep {
+	ksp := c.interrupt.kernelSP() - 12
+
+	if e := c.virtMem.WriteWord(ksp+intFrameSP, c.regs[SP]); e != nil {
+		return e
+	}
+	if e := c.virtMem.WriteWord(ksp+intFrameRET, c.regs[RET]); e != nil {
+		return e
+	}
+	if e := c.virtMem.WriteByte(ksp+intFrameCode, code); e != nil {
+		return e
+	}
+	if e := c.virtMem.WriteByte(ksp+intFrameRing, c.ring); e != nil {
+		return e
+	}
+
+	c.interrupt.Disable()
+	c.regs[SP] = ksp
+	c.regs[RET] = c.regs[PC]
+	c.regs[PC] = c.interrupt.handlerPC()
+	c.ring = 0
+
+	return nil
+}
+
+// Iret restores from an interrupt
+func (c *CPU) Iret() *Excep {
+	ksp := c.interrupt.kernelSP() - 12
+	sp, e := c.virtMem.ReadWord(ksp + intFrameSP)
+	if e != nil {
+		return e
+	}
+	ret, e := c.virtMem.ReadWord(ksp + intFrameRET)
+	if e != nil {
+		return e
+	}
+	code, e := c.virtMem.ReadByte(ksp + intFrameCode)
+	if e != nil {
+		return e
+	}
+	ring, e := c.virtMem.ReadByte(ksp + intFrameRing)
+	if e != nil {
+		return e
+	}
+
+	c.regs[PC] = c.regs[RET]
+	c.regs[RET] = ret
+	c.regs[SP] = sp
+	c.ring = ring
+	c.interrupt.Clear(code)
+	c.interrupt.Enable()
+
+	return nil
+}
+
 // Tick executes one instruction, and increases the program counter
 // by 4 by default. If an exception is met, it will handle it.
 func (c *CPU) Tick() *Excep {
-	e := c.Tick()
-	if e != nil {
-		panic("todo")
+	poll, code := c.interrupt.Poll()
+	if poll {
+		return c.Interrupt(code)
 	}
 
-	return nil
+	// no interrupt to dispatch, let's proceed
+	e := c.Tick()
+	if e != nil {
+		// proceed attempt failed, handle the error
+		c.interrupt.Issue(e.Code)
+		poll, code := c.interrupt.Poll()
+		if poll {
+			if code != e.Code {
+				panic("interrupt code is different")
+			}
+			return c.Interrupt(code)
+		}
+	}
+
+	return e
 }

@@ -25,6 +25,16 @@ func NewInterrupt(p *Page) *Interrupt {
 	return ret
 }
 
+// kernelSP returns the kernel stack pointer
+func (in *Interrupt) kernelSP() uint32 {
+	return in.p.ReadWord(intKernelSP)
+}
+
+// handlerPC returns the handler program counter
+func (in *Interrupt) handlerPC() uint32 {
+	return in.p.ReadWord(intHandlerPC)
+}
+
 // Issue issues an interrupt. If the interrupt is already issued,
 // this has no effect.
 func (in *Interrupt) Issue(i byte) {
