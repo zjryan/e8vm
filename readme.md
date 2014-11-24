@@ -32,10 +32,10 @@ Planned Features:
 - `arch8/inst_jmp.go`: Jump instructions (done) 
 - `arch8/inst_sys.go`: System instructions (done)
 - `arch8/inst_arch8.go`: Put it all together (done)
-- `arch8/multi_core.go`: Shared memory multicore
-- `arch8/device.go`: General IO device
+- `arch8/multi_core.go`: Shared memory multicore (done)
+- `arch8/device.go`: General IO device (done)
 - `arch8/machine.go`: Bind CPU with IO devices
-- `arch8/serial.go`: Serial Console Control (done, need fix)
+- `arch8/serial.go`: Serial Console Control (done)
 - `arch8/boot_rom.go`: Boot ROM loader
 
 ### Assembler (asm8)
