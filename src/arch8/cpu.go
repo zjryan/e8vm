@@ -1,5 +1,6 @@
 package arch8
 
+// Inst is an interface for executing one single instruction
 type Inst interface {
 	I(cpu *CPU, in uint32) *Excep
 }
