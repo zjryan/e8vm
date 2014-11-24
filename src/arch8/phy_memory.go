@@ -6,6 +6,12 @@ type PhyMemory struct {
 	pages map[uint32]*Page
 }
 
+const (
+	pageVoid      = 0
+	pageInterrupt = 1
+	pageBasicIO   = 2
+)
+
 // NewPhyMemory creates a physical memory of size bytes.
 func NewPhyMemory(size uint32) *PhyMemory {
 	if size%PageSize != 0 {

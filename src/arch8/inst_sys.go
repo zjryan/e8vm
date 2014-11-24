@@ -18,7 +18,15 @@ func (i *InstSys) I(cpu *CPU, in uint32) *Excep {
 	case 66: // usermod
 		cpu.ring = 1
 	case 67: // vtable
+		if cpu.ring != 0 {
+			return errInvalidInst
+		}
 		cpu.virtMem.SetTable(s)
+	case 68: // iret
+		if cpu.ring != 0 {
+			return errInvalidInst
+		}
+		return cpu.Iret()
 	default:
 		return errInvalidInst
 	}

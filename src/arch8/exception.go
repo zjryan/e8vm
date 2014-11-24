@@ -8,6 +8,8 @@ import (
 type Excep struct {
 	Code byte
 	Err  error
+
+	Core byte // core id
 }
 
 // NewExcep creates a new Exception with a particular code and message.

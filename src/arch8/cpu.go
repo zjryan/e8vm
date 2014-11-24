@@ -14,23 +14,27 @@ type CPU struct {
 	virtMem   *VirtMemory
 	interrupt *Interrupt
 
-	inst Inst
-
-	clock uint32 // cycle counter
+	inst  Inst
+	index byte
 }
 
 // NewCPU creates a CPU with memroy and instruction binding
-func NewCPU(memSize uint32, i Inst) *CPU {
+func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
+	if index >= 32 {
+		panic("too many cores")
+	}
+
 	ret := new(CPU)
 	ret.regs = makeRegs()
-	ret.phyMem = NewPhyMemory(memSize)
+	ret.phyMem = mem
 	ret.virtMem = NewVirtMemory(ret.phyMem)
+	ret.index = index
 
-	intPage := ret.phyMem.P(1)
+	intPage := ret.phyMem.P(1) // page 1 is the interrupt page
 	if intPage == nil {
 		panic("memory too small")
 	}
-	ret.interrupt = NewInterrupt(intPage)
+	ret.interrupt = NewInterrupt(intPage, index)
 	ret.inst = i
 
 	return ret
@@ -55,8 +59,6 @@ func (c *CPU) tick() *Excep {
 	return nil
 }
 
-var regsToPush = []int{SP, PC}
-
 const (
 	intFrameSize = 12
 
@@ -66,8 +68,13 @@ const (
 	intFrameRing = 9
 )
 
-// Interrupt sets up a interrupt routine.
-func (c *CPU) Interrupt(code byte) *Excep {
+// Interrupt issues an interrupt to the core
+func (c *CPU) Int(code byte) {
+	c.interrupt.Issue(code)
+}
+
+// Ienter sets up a interrupt routine.
+func (c *CPU) Ienter(code byte) *Excep {
 	ksp := c.interrupt.kernelSP()
 	base := ksp - intFrameSize
 
@@ -129,7 +136,7 @@ func (c *CPU) Iret() *Excep {
 func (c *CPU) Tick() *Excep {
 	poll, code := c.interrupt.Poll()
 	if poll {
-		return c.Interrupt(code)
+		return c.Ienter(code)
 	}
 
 	// no interrupt to dispatch, let's proceed
@@ -142,7 +149,7 @@ func (c *CPU) Tick() *Excep {
 			if code != e.Code {
 				panic("interrupt code is different")
 			}
-			return c.Interrupt(code)
+			return c.Ienter(code)
 		}
 	}
 

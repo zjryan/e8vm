@@ -16,7 +16,7 @@ type Serial struct {
 }
 
 const (
-	serialBase     = 128
+	serialBase     = 0
 	serialInHead   = serialBase + 0  // updated by hardware
 	serialInTail   = serialBase + 4  // updated by cpu
 	serialInWait   = serialBase + 8  // cycles to wait to raise an interrupt
