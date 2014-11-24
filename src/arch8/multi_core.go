@@ -37,8 +37,8 @@ func (c *MultiCore) Tick() *Excep {
 }
 
 // Ncore returns the number of cores.
-func (c *MultiCore) Ncore() int {
-	return len(c.cores)
+func (c *MultiCore) Ncore() byte {
+	return byte(len(c.cores))
 }
 
 // Interrupt issues an interrupt to a particular core.
