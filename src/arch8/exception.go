@@ -28,5 +28,5 @@ var (
 	errMisalign     = NewExcep(3, "address misalign")
 	errPageFault    = NewExcep(4, "page fault") // page invalid
 	errPageReadonly = NewExcep(5, "page read-only")
-	errInvalidInst  = NewExcep(6, "invalid exception")
+	errInvalidInst  = NewExcep(6, "invalid instruction")
 )
