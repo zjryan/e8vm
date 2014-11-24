@@ -1,9 +1,5 @@
 package arch8
 
-import (
-	"errors"
-)
-
 // PageTable describes a page table in a physical memory.
 // It can be used to translate a virtual memory address into a physical
 // memory address.
@@ -26,11 +22,6 @@ func NewPageTable(m *PhyMemory, addr uint32) *PageTable {
 
 	return ret
 }
-
-var (
-	errPageFault    = errors.New("page fault")
-	errPageReadonly = errors.New("page read-only")
-)
 
 // bit [31:12] -> a page pointer
 //

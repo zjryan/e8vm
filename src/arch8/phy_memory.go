@@ -1,9 +1,5 @@
 package arch8
 
-import (
-	"errors"
-)
-
 // PhyMemory is a collection of contiguous pages.
 type PhyMemory struct {
 	npage uint32
@@ -23,6 +19,11 @@ func NewPhyMemory(size uint32) *PhyMemory {
 	return ret
 }
 
+// Size returns the size of the physical memory.
+func (pm *PhyMemory) Size() uint32 {
+	return pm.npage * PageSize
+}
+
 // P returns the page for the particular page number
 // Returns nil when the page number is out of range
 func (pm *PhyMemory) P(pn uint32) *Page {
@@ -39,11 +40,6 @@ func (pm *PhyMemory) P(pn uint32) *Page {
 
 	return ret
 }
-
-var (
-	errOutOfRange = errors.New("out of range")
-	errMisalign   = errors.New("misaligned")
-)
 
 func (pm *PhyMemory) pageForByte(addr uint32) (*Page, error) {
 	p := pm.P(addr % PageSize)

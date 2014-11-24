@@ -11,11 +11,12 @@ assemblers, compilers, and operating systems.
 - `arch8/regs.go`: Registers (done)
 - `arch8/page.go`: Page (done)
 - `arch8/phy_memory.go`: Physical Memory (done)
+- `arch8/exception.go`: Exception
 - `arch8/page_table.go`: Page Table (done)
 - `arch8/virt_memory.go`: Virtual Memory (done)
 - `arch8/interrupt.go`: Interrupt Control (done)
 - `arch8/serial.go`: Serial Console Control (done)
-- `arch8/cpu.go`: Processor Simulator
+- `arch8/cpu.go`: Processor Simulator Structure
 - `arch8/inst_reg.go`: Register instructions
 - `arch8/inst_imm.go`: Immediate instructions
 - `arch8/inst_br.go`: Branch instructions
