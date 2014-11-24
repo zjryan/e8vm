@@ -19,8 +19,8 @@ type CPU struct {
 	clock uint32 // cycle counter
 }
 
-// NewCPU creates a CPU that does not have a instruction binding
-func NewCPU(memSize uint32) *CPU {
+// NewCPU creates a CPU with memroy and instruction binding
+func NewCPU(memSize uint32, i Inst) *CPU {
 	ret := new(CPU)
 	ret.regs = makeRegs()
 	ret.phyMem = NewPhyMemory(memSize)
@@ -31,6 +31,7 @@ func NewCPU(memSize uint32) *CPU {
 		panic("memory too small")
 	}
 	ret.interrupt = NewInterrupt(intPage)
+	ret.inst = i
 
 	return ret
 }
