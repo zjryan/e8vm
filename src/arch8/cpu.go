@@ -1,5 +1,9 @@
 package arch8
 
+type Inst interface {
+	I(cpu *CPU, in uint32) *Excep
+}
+
 // CPU defines the structure of a processing unit.
 type CPU struct {
 	regs []uint32
@@ -9,7 +13,7 @@ type CPU struct {
 	virtMem   *VirtMemory
 	interrupt *Interrupt
 
-	inst func(cpu *CPU, in uint32) *Excep // instruction executor
+	inst Inst
 
 	clock uint32 // cycle counter
 }
@@ -39,7 +43,7 @@ func (c *CPU) tick() *Excep {
 
 	c.regs[PC] = pc + 4
 	if c.inst != nil {
-		e = c.inst(c, inst)
+		e = c.inst.I(c, inst)
 		if e != nil {
 			c.regs[PC] = pc // restore saved PC
 			return e
