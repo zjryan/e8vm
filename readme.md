@@ -9,7 +9,7 @@ Planned Features:
 - **Modularized.** File based modules. No circular dependency (not only on packages,
   but also on files). A reader can always read the project a file by
   a file, either from bottom to top, or from top to bottom.
-- **Small files.** Each file is shorter than 200 lines.
+- **Small files.** Each file is shorter than 200 lines of code.
 - **Tested and Documented.**
   Each file (will) come with test cases, examples, and markdown description.
 - **Real.** It (will) work like a real computer.
