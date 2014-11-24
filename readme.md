@@ -7,8 +7,8 @@ assemblers, compilers, and operating systems.
 Planned Features:
 
 - File based modules, no circular dependency (not only on packages,
-  but also on files). A reader can always read the project one module
-  by a module, one file by a file.
+  but also on files). A reader can always read the project a file by
+  a file, either from bottom to top, or from top to bottom.
 - Small files. Each file is shorter than 200 lines.
 - Each file (will) come with test cases, examples, and markdown description.
 - It (will) work like a real computer.
