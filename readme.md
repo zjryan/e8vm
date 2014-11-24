@@ -17,7 +17,7 @@ assemblers, compilers, and operating systems.
 - `arch8/interrupt.go`: Interrupt Control (done)
 - `arch8/serial.go`: Serial Console Control (done)
 - `arch8/cpu.go`: Processor Simulator Structure (done)
-- `arch8/inst_reg.go`: Register instructions
+- `arch8/inst_reg.go`: Register instructions (done)
 - `arch8/inst_imm.go`: Immediate instructions
 - `arch8/inst_br.go`: Branch instructions
 - `arch8/inst_jmp.go`: Jump instructions
