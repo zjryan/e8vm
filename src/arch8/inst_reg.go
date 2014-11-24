@@ -107,11 +107,15 @@ func (i *InstReg) I(cpu *CPU, in uint32) *Excep {
 			fd = f1 * f2
 		case 3: // fdiv
 			fd = f1 / f2
+		case 4: // fint
+			d = uint32(f1)
 		default:
 			return errInvalidInst
 		}
 
-		d = math.Float32bits(fd)
+		if funct != 4 {
+			d = math.Float32bits(fd)
+		}
 	}
 
 	cpu.regs[dest] = d
