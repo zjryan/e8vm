@@ -28,23 +28,26 @@ func NewPageTable(m *PhyMemory, addr uint32) *PageTable {
 }
 
 var (
-	errPageFault = errors.New("page fault")
+	errPageFault    = errors.New("page fault")
+	errPageReadonly = errors.New("page read-only")
 )
 
 // bit [31:12] -> a page pointer
 //
-// bit 2 -> dirty bit
-// bit 1 -> use bit
-// bit 0 -> valid bit
+// bit 3: dirty bit
+// bit 2: use bit
+// bit 1: readonly bit
+// bit 0: valid bit
 type ptEntry uint32
 
-const u32one uint32 = 0x1
-
 const (
-	pteValid = 0
-	pteUse   = 1
-	pteDirty = 2
+	pteValid    = 0
+	pteReadonly = 1
+	pteUse      = 2
+	pteDirty    = 3
 )
+
+const u32one uint32 = 0x1
 
 func (pte ptEntry) testBit(n uint) bool {
 	return (uint32(pte) & (u32one << n)) != 0
@@ -129,6 +132,10 @@ func (pt *PageTable) TranslateWrite(addr uint32) (uint32, error) {
 	ret, e := pt.Translate(addr)
 	if e != nil {
 		return 0, e
+	}
+
+	if pt.pte1.testBit(pteReadonly) || pt.pte2.testBit(pteReadonly) {
+		return 0, errPageReadonly
 	}
 
 	pt.pte1.setBit(pteUse)
