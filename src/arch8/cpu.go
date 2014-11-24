@@ -53,6 +53,7 @@ var regsToPush = []int{SP, PC}
 
 const (
 	intFrameSize = 12
+
 	intFrameSP   = 0
 	intFrameRET  = 4
 	intFrameCode = 8
@@ -61,18 +62,19 @@ const (
 
 // Interrupt sets up a interrupt routine.
 func (c *CPU) Interrupt(code byte) *Excep {
-	ksp := c.interrupt.kernelSP() - 12
+	ksp := c.interrupt.kernelSP()
+	base := ksp - intFrameSize
 
-	if e := c.virtMem.WriteWord(ksp+intFrameSP, c.regs[SP]); e != nil {
+	if e := c.virtMem.WriteWord(base+intFrameSP, c.regs[SP]); e != nil {
 		return e
 	}
-	if e := c.virtMem.WriteWord(ksp+intFrameRET, c.regs[RET]); e != nil {
+	if e := c.virtMem.WriteWord(base+intFrameRET, c.regs[RET]); e != nil {
 		return e
 	}
-	if e := c.virtMem.WriteByte(ksp+intFrameCode, code); e != nil {
+	if e := c.virtMem.WriteByte(base+intFrameCode, code); e != nil {
 		return e
 	}
-	if e := c.virtMem.WriteByte(ksp+intFrameRing, c.ring); e != nil {
+	if e := c.virtMem.WriteByte(base+intFrameRing, c.ring); e != nil {
 		return e
 	}
 
@@ -87,20 +89,21 @@ func (c *CPU) Interrupt(code byte) *Excep {
 
 // Iret restores from an interrupt
 func (c *CPU) Iret() *Excep {
-	ksp := c.interrupt.kernelSP() - 12
-	sp, e := c.virtMem.ReadWord(ksp + intFrameSP)
+	ksp := c.interrupt.kernelSP()
+	base := ksp - intFrameSize
+	sp, e := c.virtMem.ReadWord(base + intFrameSP)
 	if e != nil {
 		return e
 	}
-	ret, e := c.virtMem.ReadWord(ksp + intFrameRET)
+	ret, e := c.virtMem.ReadWord(base + intFrameRET)
 	if e != nil {
 		return e
 	}
-	code, e := c.virtMem.ReadByte(ksp + intFrameCode)
+	code, e := c.virtMem.ReadByte(base + intFrameCode)
 	if e != nil {
 		return e
 	}
-	ring, e := c.virtMem.ReadByte(ksp + intFrameRing)
+	ring, e := c.virtMem.ReadByte(base + intFrameRing)
 	if e != nil {
 		return e
 	}
