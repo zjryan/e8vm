@@ -23,15 +23,12 @@ func NewCPU(memSize uint32) *CPU {
 	if intPage == nil {
 		panic("memory too small")
 	}
-
 	ret.interrupt = NewInterrupt(intPage)
 
 	return ret
 }
 
-// Tick executes one instruction, and increases the program counter
-// by 4 by default.
-func (c *CPU) tick() error {
+func (c *CPU) tick() *Excep {
 	pc := c.regs[PC]
 	inst, e := c.virtMem.ReadWord(pc)
 	if e != nil {
@@ -45,6 +42,17 @@ func (c *CPU) tick() error {
 			c.regs[PC] = pc // restore saved PC
 			return e
 		}
+	}
+
+	return nil
+}
+
+// Tick executes one instruction, and increases the program counter
+// by 4 by default. If an exception is met, it will handle it.
+func (c *CPU) Tick() *Excep {
+	e := c.Tick()
+	if e != nil {
+		panic("todo")
 	}
 
 	return nil

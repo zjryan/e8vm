@@ -23,8 +23,9 @@ func (e *Excep) Error() string {
 }
 
 var (
-	errOutOfRange   = NewExcep(1, "out of range")
-	errMisalign     = NewExcep(2, "address misalign")
-	errPageFault    = NewExcep(3, "page fault") // page invalid
-	errPageReadonly = NewExcep(4, "page read-only")
+	errTimeInt      = NewExcep(1, "time interrupt")
+	errOutOfRange   = NewExcep(2, "out of range")
+	errMisalign     = NewExcep(3, "address misalign")
+	errPageFault    = NewExcep(4, "page fault") // page invalid
+	errPageReadonly = NewExcep(5, "page read-only")
 )

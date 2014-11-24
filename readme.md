@@ -11,7 +11,7 @@ assemblers, compilers, and operating systems.
 - `arch8/regs.go`: Registers (done)
 - `arch8/page.go`: Page (done)
 - `arch8/phy_memory.go`: Physical Memory (done)
-- `arch8/exception.go`: Exception
+- `arch8/exception.go`: Exception (done)
 - `arch8/page_table.go`: Page Table (done)
 - `arch8/virt_memory.go`: Virtual Memory (done)
 - `arch8/interrupt.go`: Interrupt Control (done)
