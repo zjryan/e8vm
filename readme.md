@@ -28,12 +28,13 @@ Planned Features:
 - `arch8/serial.go`: Serial Console Control (done)
 - `arch8/cpu.go`: Processor Simulator Structure (done)
 - `arch8/inst_reg.go`: Register instructions (done)
-- `arch8/inst_imm.go`: Immediate instructions
-- `arch8/inst_br.go`: Branch instructions
-- `arch8/inst_jmp.go`: Jump instructions
-- `arch8/inst_sys.go`: System instructions
-- `arch8/inst_arch8.go`: Put all the instructions altogether
+- `arch8/inst_imm.go`: Immediate instructions (done)
+- `arch8/inst_br.go`: Branch instructions (done)
+- `arch8/inst_jmp.go`: Jump instructions (done) 
+- `arch8/inst_sys.go`: System instructions (done)
+- `arch8/inst_arch8.go`: Put it all together (done)
 - `arch8/multi.go`: Shared memory multicore
+- `arch8/machine.go`: Bind CPU with IO devices
 - `arch8/boot_rom.go`: Boot ROM loader
 
 ### Assembler (asm8)
