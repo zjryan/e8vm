@@ -10,6 +10,8 @@ const (
 	pageVoid      = 0
 	pageInterrupt = 1
 	pageBasicIO   = 2
+
+	pageBootImage = 8
 )
 
 // NewPhyMemory creates a physical memory of size bytes.
