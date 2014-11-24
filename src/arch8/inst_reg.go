@@ -10,16 +10,17 @@ type InstReg struct{}
 // I executes the register instruction.
 // Might return invalid instruction exception.
 func (i *InstReg) I(cpu *CPU, in uint32) *Excep {
+	// bit (32:24] == 0
 	if ((in >> 24) & 0xff) != 0 {
 		panic("not a register inst")
 	}
 
-	dest := (in >> 21) & 0x7
-	src1 := (in >> 18) & 0x7
-	src2 := (in >> 15) & 0x7
-	shift := (in >> 10) & 0x1f
-	isFloat := (in >> 8) & 0x1
-	funct := in & 0xff
+	dest := (in >> 21) & 0x7   // (24:21]
+	src1 := (in >> 18) & 0x7   // (21:18]
+	src2 := (in >> 15) & 0x7   // (18:15]
+	shift := (in >> 10) & 0x1f // (15:10]
+	isFloat := (in >> 8) & 0x1 // (9:8]
+	funct := in & 0xff         // (8:0]
 
 	s1 := cpu.regs[src1]
 	s2 := cpu.regs[src2]
