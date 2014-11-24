@@ -21,6 +21,7 @@ assemblers, compilers, and operating systems.
 - `arch8/inst_br.go`: Branch instructions
 - `arch8/inst_jmp.go`: Jump instructions
 - `arch8/inst_sys.go`: System instructions
+- `arch8/inst.go`: Put all the instructions alltogether
 - `arch8/multi.go`: Shared memory multicore
 - `arch8/boot_rom.go`: Boot ROM loader
 
