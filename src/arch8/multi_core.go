@@ -35,3 +35,17 @@ func (c *MultiCore) Tick() *Excep {
 
 	return nil
 }
+
+// Ncore returns the number of cores.
+func (c *MultiCore) Ncore() int {
+	return len(c.cores)
+}
+
+// Interrupt issues an interrupt to a particular core.
+func (c *MultiCore) Interrupt(code byte, core byte) {
+	if int(core) >= len(c.cores) {
+		panic("out of cores")
+	}
+
+	c.cores[core].Interrupt(code)
+}

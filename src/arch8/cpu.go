@@ -69,7 +69,7 @@ const (
 )
 
 // Interrupt issues an interrupt to the core
-func (c *CPU) Int(code byte) {
+func (c *CPU) Interrupt(code byte) {
 	c.interrupt.Issue(code)
 }
 

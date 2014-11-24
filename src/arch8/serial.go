@@ -8,12 +8,15 @@ import (
 // It is basically two DMA pipes of ring buffered bytes:
 // one pipe for input, one pipe for output.
 type Serial struct {
-	interrupt *Interrupt
-	p         *Page
+	intBus IntBus
+	p      *Page
 
+	Core   byte
 	IntIn  byte
 	IntOut byte
 }
+
+var _ Device = new(Serial) // Serial is a device
 
 const (
 	serialBase     = 0
@@ -34,16 +37,21 @@ const (
 )
 
 // NewSerial creates a new serial controller.
-func NewSerial(p *Page, i *Interrupt) *Serial {
+func NewSerial(p *Page, i IntBus) *Serial {
 	ret := new(Serial)
-	ret.interrupt = i
+	ret.intBus = i
 	ret.p = p
 
 	// default interrupts
+	ret.Core = 0 // to core 0 only
 	ret.IntIn = 8
 	ret.IntOut = 9
 
 	return ret
+}
+
+func (s *Serial) interrupt(code byte) {
+	s.intBus.Interrupt(code, s.Core)
 }
 
 // WriteByte appends a byte into the input ring buffer.
@@ -63,7 +71,7 @@ func (s *Serial) WriteByte(b byte) bool {
 	n++
 	thresh := s.p.ReadWord(serialInThresh)
 	if n >= thresh {
-		s.interrupt.Issue(s.IntIn)
+		s.interrupt(s.IntIn)
 	}
 
 	return true
@@ -113,7 +121,7 @@ func (s *Serial) ReadByte() (byte, bool) {
 	n--
 	thresh := s.p.ReadWord(serialOutThresh)
 	if n <= thresh {
-		s.interrupt.Issue(s.IntOut)
+		s.interrupt(s.IntOut)
 	}
 
 	return b, true
@@ -134,13 +142,13 @@ func (s *Serial) Tick() {
 
 	if inWait == 0 {
 		if s.InLen() > 0 {
-			s.interrupt.Issue(s.IntIn)
+			s.interrupt(s.IntIn)
 		}
 	}
 
 	if outWait == 0 {
 		if s.OutLen() < serialCap {
-			s.interrupt.Issue(s.IntOut)
+			s.interrupt(s.IntOut)
 		}
 	}
 
