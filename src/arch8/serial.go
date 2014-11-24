@@ -1,6 +1,8 @@
 package arch8
 
 import (
+	"bytes"
+	"io"
 	"log"
 )
 
@@ -14,6 +16,8 @@ type Serial struct {
 	Core   byte
 	IntIn  byte
 	IntOut byte
+
+	Output io.Writer
 }
 
 var _ Device = new(Serial) // Serial is a device
@@ -127,9 +131,7 @@ func (s *Serial) ReadByte() (byte, bool) {
 	return b, true
 }
 
-// Tick counts down the waiting counters and triggers
-// interrupt when the count down reaches zero.
-func (s *Serial) Tick() {
+func (s *Serial) countDown() {
 	inWait := s.p.ReadWord(serialInWait)
 	outWait := s.p.ReadWord(serialOutWait)
 
@@ -154,4 +156,30 @@ func (s *Serial) Tick() {
 
 	s.p.WriteWord(serialInWait, inWait)
 	s.p.WriteWord(serialOutWait, outWait)
+}
+
+func (s *Serial) flush() {
+	buf := new(bytes.Buffer)
+	for {
+		b, valid := s.ReadByte()
+		if valid {
+			buf.WriteByte(b)
+		} else {
+			break
+		}
+	}
+
+	if s.Output != nil {
+		_, e := s.Output.Write(buf.Bytes())
+		if e != nil {
+			log.Print(e)
+		}
+	}
+}
+
+// Tick counts down the waiting counters and triggers
+// interrupt when the count down reaches zero.
+func (s *Serial) Tick() {
+	s.flush()
+	s.countDown()
 }
