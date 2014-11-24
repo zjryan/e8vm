@@ -23,12 +23,14 @@ func (e *Excep) Error() string {
 }
 
 var (
-	errHalt         = NewExcep(1, "halt")
-	errTimeInt      = NewExcep(2, "time interrupt")
-	errInvalidInst  = NewExcep(3, "invalid instruction")
+	errHalt        = NewExcep(1, "halt")
+	errTimeInt     = NewExcep(2, "time interrupt")
+	errInvalidInst = NewExcep(3, "invalid instruction")
+
 	errOutOfRange   = NewExcep(4, "out of range")
 	errMisalign     = NewExcep(5, "address misalign")
 	errPageFault    = NewExcep(6, "page fault") // page invalid
 	errPageReadonly = NewExcep(7, "page read-only")
-	errSyscall      = NewExcep(8, "system call")
+
+	errSyscall = NewExcep(8, "system call")
 )
