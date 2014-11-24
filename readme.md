@@ -4,6 +4,13 @@ Goal: A book written in working code and markdown document that
 describes how computer system works, including architecture,
 assemblers, compilers, and operating systems.
 
+Planned Features:
+
+- File based modules, no circular dependency. A reader can always read
+  the project one module by a module, one file by a file.
+- Each file (will) come with test cases, examples, and markdown description.
+- It (will) work like a real computer.
+
 ## Table of Content (Planned)
 
 ###  Architecture (arch8)
