@@ -31,7 +31,7 @@ Planned Features:
 - `arch8/inst_br.go`: Branch instructions (done)
 - `arch8/inst_jmp.go`: Jump instructions (done) 
 - `arch8/inst_sys.go`: System instructions (done)
-- `arch8/inst_arch8.go`: Put it all together (done)
+- `arch8/inst_arch8.go`: Put all instructions together (done)
 - `arch8/int_bus.go`: Interrupt bus (done)
 - `arch8/multi_core.go`: Shared memory multicore (done)
 - `arch8/device.go`: General IO device (done)
