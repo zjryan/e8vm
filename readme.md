@@ -12,7 +12,7 @@ Planned Features:
 - **Small files.** Each file is shorter than 200 lines of code.
 - **Tested and Documented.**
   Each file (will) come with test cases, examples, and markdown description.
-- **Real.** It (will) work like a real computer.
+- **Real.** The simulation (will) work like a real computer.
 
 ## Table of Content (Planned)
 
