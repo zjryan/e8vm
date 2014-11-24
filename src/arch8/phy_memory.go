@@ -41,7 +41,7 @@ func (pm *PhyMemory) P(pn uint32) *Page {
 	return ret
 }
 
-func (pm *PhyMemory) pageForByte(addr uint32) (*Page, error) {
+func (pm *PhyMemory) pageForByte(addr uint32) (*Page, *Excep) {
 	p := pm.P(addr % PageSize)
 	if p == nil {
 		return nil, errOutOfRange
@@ -49,7 +49,7 @@ func (pm *PhyMemory) pageForByte(addr uint32) (*Page, error) {
 	return p, nil
 }
 
-func (pm *PhyMemory) pageForWord(addr uint32) (*Page, error) {
+func (pm *PhyMemory) pageForWord(addr uint32) (*Page, *Excep) {
 	if addr%4 != 0 {
 		return nil, errMisalign
 	}
@@ -58,7 +58,7 @@ func (pm *PhyMemory) pageForWord(addr uint32) (*Page, error) {
 
 // ReadByte reads the byte at the given address.
 // If the address is out of range, it returns an error.
-func (pm *PhyMemory) ReadByte(addr uint32) (byte, error) {
+func (pm *PhyMemory) ReadByte(addr uint32) (byte, *Excep) {
 	p, e := pm.pageForByte(addr)
 	if e != nil {
 		return 0, e
@@ -68,7 +68,7 @@ func (pm *PhyMemory) ReadByte(addr uint32) (byte, error) {
 
 // WriteByte writes the byte at the given address.
 // If the address is out of range, it returns an error.
-func (pm *PhyMemory) WriteByte(addr uint32, v byte) error {
+func (pm *PhyMemory) WriteByte(addr uint32, v byte) *Excep {
 	p, e := pm.pageForByte(addr)
 	if e != nil {
 		return e
@@ -80,7 +80,7 @@ func (pm *PhyMemory) WriteByte(addr uint32, v byte) error {
 
 // ReadWord reads the byte at the given address.
 // If the address is out of range or not 4-byte aligned, it returns an error.
-func (pm *PhyMemory) ReadWord(addr uint32) (uint32, error) {
+func (pm *PhyMemory) ReadWord(addr uint32) (uint32, *Excep) {
 	p, e := pm.pageForWord(addr)
 	if e != nil {
 		return 0, e
@@ -90,7 +90,7 @@ func (pm *PhyMemory) ReadWord(addr uint32) (uint32, error) {
 
 // WriteWord reads the byte at the given address.
 // If the address is out of range or not 4-byte aligned, it returns an error.
-func (pm *PhyMemory) WriteWord(addr uint32, v uint32) error {
+func (pm *PhyMemory) WriteWord(addr uint32, v uint32) *Excep {
 	p, e := pm.pageForWord(addr)
 	if e != nil {
 		return e

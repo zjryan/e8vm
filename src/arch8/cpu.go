@@ -1,17 +1,18 @@
 package arch8
 
+// CPU defines the structure of a processing unit.
 type CPU struct {
 	regs      []uint32
 	phyMem    *PhyMemory
 	virtMem   *VirtMemory
 	interrupt *Interrupt
 
-	inst func(cpu *CPU, in uint32) error // instruction executor
+	inst func(cpu *CPU, in uint32) *Excep // instruction executor
 
 	clock uint32 // cycle counter
 }
 
-// Creates a CPU that does not have a instruction binding
+// NewCPU creates a CPU that does not have a instruction binding
 func NewCPU(memSize uint32) *CPU {
 	ret := new(CPU)
 	ret.regs = makeRegs()

@@ -52,7 +52,7 @@ func (pte ptEntry) pn() uint32 {
 
 // Translate transalate a virutal address into physical address.
 // It returns an error if the translation fails
-func (pt *PageTable) Translate(addr uint32) (uint32, error) {
+func (pt *PageTable) Translate(addr uint32) (uint32, *Excep) {
 	vpn := addr / PageSize
 	off := addr % PageSize
 
@@ -86,7 +86,7 @@ func (pt *PageTable) Translate(addr uint32) (uint32, error) {
 	return ppn*PageSize + off, nil
 }
 
-func (pt *PageTable) updatePte() error {
+func (pt *PageTable) updatePte() *Excep {
 	e := pt.mem.WriteWord(pt.pte1Addr, uint32(pt.pte1))
 	if e != nil {
 		return e
@@ -101,7 +101,7 @@ func (pt *PageTable) updatePte() error {
 }
 
 // TranslateRead translates the address and sets the use bit.
-func (pt *PageTable) TranslateRead(addr uint32) (uint32, error) {
+func (pt *PageTable) TranslateRead(addr uint32) (uint32, *Excep) {
 	ret, e := pt.Translate(addr)
 	if e != nil {
 		return 0, e
@@ -119,7 +119,7 @@ func (pt *PageTable) TranslateRead(addr uint32) (uint32, error) {
 }
 
 // TranslateWrite translates the address and sets the use and dirty bit
-func (pt *PageTable) TranslateWrite(addr uint32) (uint32, error) {
+func (pt *PageTable) TranslateWrite(addr uint32) (uint32, *Excep) {
 	ret, e := pt.Translate(addr)
 	if e != nil {
 		return 0, e

@@ -28,14 +28,14 @@ func (vm *VirtMemory) SetTable(root uint32) {
 	}
 }
 
-func (vm *VirtMemory) translateRead(addr uint32) (uint32, error) {
+func (vm *VirtMemory) translateRead(addr uint32) (uint32, *Excep) {
 	if vm.ptable == nil {
 		return addr, nil
 	}
 	return vm.ptable.TranslateRead(addr)
 }
 
-func (vm *VirtMemory) translateWrite(addr uint32) (uint32, error) {
+func (vm *VirtMemory) translateWrite(addr uint32) (uint32, *Excep) {
 	if vm.ptable == nil {
 		return addr, nil
 	}
@@ -43,7 +43,7 @@ func (vm *VirtMemory) translateWrite(addr uint32) (uint32, error) {
 }
 
 // ReadWord reads the byte at the given virtual address.
-func (vm *VirtMemory) ReadWord(addr uint32) (uint32, error) {
+func (vm *VirtMemory) ReadWord(addr uint32) (uint32, *Excep) {
 	addr, e := vm.translateRead(addr)
 	if e != nil {
 		return 0, e
@@ -52,7 +52,7 @@ func (vm *VirtMemory) ReadWord(addr uint32) (uint32, error) {
 }
 
 // WriteWord writes the byte at the given virtual address.
-func (vm *VirtMemory) WriteWord(addr uint32, v uint32) error {
+func (vm *VirtMemory) WriteWord(addr uint32, v uint32) *Excep {
 	addr, e := vm.translateWrite(addr)
 	if e != nil {
 		return e
@@ -61,7 +61,7 @@ func (vm *VirtMemory) WriteWord(addr uint32, v uint32) error {
 }
 
 // ReadByte reads the byte at the given
-func (vm *VirtMemory) ReadByte(addr uint32) (byte, error) {
+func (vm *VirtMemory) ReadByte(addr uint32) (byte, *Excep) {
 	addr, e := vm.translateRead(addr)
 	if e != nil {
 		return 0, e
@@ -70,7 +70,7 @@ func (vm *VirtMemory) ReadByte(addr uint32) (byte, error) {
 }
 
 // WriteByte writes the byte at the given
-func (vm *VirtMemory) WriteByte(addr uint32, v byte) error {
+func (vm *VirtMemory) WriteByte(addr uint32, v byte) *Excep {
 	addr, e := vm.translateWrite(addr)
 	if e != nil {
 		return e
