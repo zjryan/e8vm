@@ -42,7 +42,25 @@ Planned Features:
 
 ### Assembler (asm8)
 
-`todo`
+- `asm8/scanner.go`: A line scanner
+- `asm8/symbol.go`: Symbol tree
+- `asm8/top_parser.go`: Top level syntax parser.
+- `asm8/inst.go`: Variable length instruction
+- `asm8/func.go`: Function/code section
+- `asm8/inst_parser.go`: Instruction parsing helpers
+- `asm8/inst_reg.go`: Register instructions
+- `asm8/inst_imm.go`: Immediate instructions
+- `asm8/inst_br.go`: Branch instructions
+- `asm8/inst_jmp.go`: Jump instructions
+- `asm8/inst_sys.go`: System instructions
+- `asm8/inst_all.go`: Put all instructions together
+- `asm8/var.go`: Variable/data section
+- `asm8/dat_parse.go`: Data line parser
+- `asm8/dat_ints.go`: Hex
+- `asm8/dat_str.go`: String
+- `asm8/const.go`: Consts
+- `asm8/layout.go`: Layout Symbols
+- `asm8/build.go`: Build an image
 
 ### Programming Language (lang8)
 
