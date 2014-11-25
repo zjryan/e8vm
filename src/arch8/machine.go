@@ -23,15 +23,16 @@ func NewMachine(memSize uint32, ncore int) *Machine {
 
 	ret.ticker = NewTicker(ret.cores)
 
-	ret.addDevice(ret.serial)
-	ret.addDevice(ret.ticker)
+	ret.AddDevice(ret.serial)
+	ret.AddDevice(ret.ticker)
 
 	// TODO: booting
 
 	return ret
 }
 
-func (m *Machine) addDevice(d Device) {
+// AddDevice adds a devices to the machine.
+func (m *Machine) AddDevice(d Device) {
 	m.devices = append(m.devices, d)
 }
 
