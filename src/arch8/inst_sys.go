@@ -27,9 +27,13 @@ func (i *InstSys) I(cpu *CPU, in uint32) *Excep {
 			return errInvalidInst
 		}
 		return cpu.Iret()
+	case 69: // cpuid
+		s = uint32(cpu.index)
 	default:
 		return errInvalidInst
 	}
+
+	cpu.regs[src] = s
 
 	return nil
 }
