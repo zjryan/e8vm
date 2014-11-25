@@ -50,14 +50,16 @@ func (m *Machine) Tick() *Excep {
 // Run simulates nticks. It returns the number of ticks
 // simulated without error, and the first met error if any.
 func (m *Machine) Run(nticks int) (int, *Excep) {
-	for i := 0; i < nticks; i++ {
+	n := 0
+	for i := 0; nticks == 0 || i < nticks; i++ {
 		e := m.Tick()
+		n++
 		if e != nil {
-			return i + 1, e
+			return n, e
 		}
 	}
 
-	return nticks, nil
+	return n, nil
 }
 
 // LoadImage loads an booting image from a reader and put it
