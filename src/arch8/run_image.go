@@ -4,8 +4,9 @@ import (
 	"os"
 )
 
-// RunRaw loads and run a raw image until it runs into an exception.
-func RunRaw(image string) error {
+// RunImage loads and run a raw image on a single core machine
+// with 1GB physical memory until it runs into an exception.
+func RunImage(image string) error {
 	f, e := os.Open(image)
 	if e != nil {
 		return e
