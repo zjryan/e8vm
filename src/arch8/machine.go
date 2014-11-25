@@ -1,5 +1,10 @@
 package arch8
 
+import (
+	"bytes"
+	"io"
+)
+
 // Machine is a multicore shared memory simulated arch8 machine.
 type Machine struct {
 	phyMem *PhyMemory
@@ -53,4 +58,28 @@ func (m *Machine) Run(nticks int) (int, *Excep) {
 	}
 
 	return nticks, nil
+}
+
+// Loads an booting image
+func (m *Machine) LoadImage(r io.Reader, offset uint32) error {
+	if offset%PageSize != 0 {
+		panic("boot image not page aligned")
+	}
+
+	pn := offset / PageSize
+
+	for {
+		p := m.phyMem.P(pn)
+		if p == nil {
+			return errOutOfRange
+		}
+		buf := bytes.NewBuffer(p.Bytes)
+		_, e := io.CopyN(buf, r, PageSize)
+		if e == io.EOF {
+			return nil
+		} else if e != nil {
+			return e
+		}
+		pn++
+	}
 }

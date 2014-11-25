@@ -9,13 +9,13 @@ const PageSize = 4096
 
 // Page is a memory addressable area of PageSize bytes
 type Page struct {
-	bytes []byte
+	Bytes []byte
 }
 
 // NewPage creates a new empty page.
 func NewPage() *Page {
 	return &Page{
-		bytes: make([]byte, PageSize),
+		Bytes: make([]byte, PageSize),
 	}
 }
 
@@ -35,14 +35,14 @@ func checkWordAlign(offset uint32) {
 // It panics when the offset is larger than PageSize
 func (p *Page) ReadByte(offset uint32) byte {
 	checkRange(offset)
-	return p.bytes[offset]
+	return p.Bytes[offset]
 }
 
 // WriteByte writes a byte into the page at a particular offset.
 // It panics when the offset is larger than PageSize.
 func (p *Page) WriteByte(offset uint32, b byte) {
 	checkRange(offset)
-	p.bytes[offset] = b
+	p.Bytes[offset] = b
 }
 
 // The machines endian.
@@ -54,7 +54,7 @@ var Endian = binary.LittleEndian
 func (p *Page) ReadWord(offset uint32) uint32 {
 	checkRange(offset)
 	checkWordAlign(offset)
-	return Endian.Uint32(p.bytes[offset : offset+4])
+	return Endian.Uint32(p.Bytes[offset : offset+4])
 }
 
 // WriteWord writes the word at the particular offset.
@@ -63,5 +63,5 @@ func (p *Page) ReadWord(offset uint32) uint32 {
 func (p *Page) WriteWord(offset uint32, w uint32) {
 	checkRange(offset)
 	checkWordAlign(offset)
-	Endian.PutUint32(p.bytes[offset:offset+4], w)
+	Endian.PutUint32(p.Bytes[offset:offset+4], w)
 }
