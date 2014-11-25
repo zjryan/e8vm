@@ -18,15 +18,12 @@ func NewMachine(memSize uint32, ncore int) *Machine {
 	ret.inst = new(InstArch8)
 	ret.cores = NewMultiCore(ncore, ret.phyMem, ret.inst)
 
+	// hook-up devices
 	p := ret.phyMem.P(pageBasicIO)
 	ret.serial = NewSerial(p, ret.cores)
-
 	ret.ticker = NewTicker(ret.cores)
-
 	ret.AddDevice(ret.serial)
 	ret.AddDevice(ret.ticker)
-
-	// TODO: booting
 
 	return ret
 }

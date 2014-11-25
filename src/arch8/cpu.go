@@ -18,6 +18,9 @@ type CPU struct {
 	index byte
 }
 
+// InitPC points the default starting value of the program counter.
+const InitPC = 0x8000
+
 // NewCPU creates a CPU with memroy and instruction binding
 func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
 	if index >= 32 {
@@ -36,6 +39,8 @@ func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
 	}
 	ret.interrupt = NewInterrupt(intPage, index)
 	ret.inst = i
+
+	ret.regs[PC] = InitPC
 
 	return ret
 }
@@ -100,7 +105,9 @@ func (c *CPU) Ienter(code byte) *Excep {
 	return nil
 }
 
-// Iret restores from an interrupt
+// Iret restores from an interrupt.
+// It restores the SP, RET, PC registers, restores the ring level,
+// clears the served interrupt bit and enables interrupt again.
 func (c *CPU) Iret() *Excep {
 	ksp := c.interrupt.kernelSP()
 	base := ksp - intFrameSize
