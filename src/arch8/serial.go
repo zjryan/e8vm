@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"log"
+	"os"
 )
 
 // Serial is a serial console device
@@ -50,6 +51,8 @@ func NewSerial(p *Page, i IntBus) *Serial {
 	ret.Core = 0 // to core 0 only
 	ret.IntIn = 8
 	ret.IntOut = 9
+
+	ret.Output = os.Stdout
 
 	return ret
 }

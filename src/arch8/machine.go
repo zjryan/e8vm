@@ -60,7 +60,8 @@ func (m *Machine) Run(nticks int) (int, *Excep) {
 	return nticks, nil
 }
 
-// Loads an booting image
+// LoadImage loads an booting image from a reader and put it
+// at a particular offset in the physical memory.
 func (m *Machine) LoadImage(r io.Reader, offset uint32) error {
 	if offset%PageSize != 0 {
 		panic("boot image not page aligned")
