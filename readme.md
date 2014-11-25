@@ -38,6 +38,7 @@ Planned Features:
 - `arch8/serial.go`: Serial Console Control (done)
 - `arch8/ticker.go`: A ticker that generates time interrupts. (done)
 - `arch8/machine.go`: Bind stuff together and image loading. (done)
+- `arch8/run_raw.go`: A shortcut function to run a raw image. (done)
 
 ### Assembler (asm8)
 
