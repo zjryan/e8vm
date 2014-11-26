@@ -19,49 +19,37 @@ func NewPage() *Page {
 	}
 }
 
-func checkRange(offset uint32) {
-	if offset > PageSize {
-		panic("offset out of range")
-	}
-}
-
-func checkWordAlign(offset uint32) {
-	if offset%4 != 0 {
-		panic("offset not 4-byte aligned")
-	}
-}
-
 // ReadByte reads a byte at the particular offset.
-// It panics when the offset is larger than PageSize
+// When offset is larger than offset, it uses the modular.
 func (p *Page) ReadByte(offset uint32) byte {
-	checkRange(offset)
-	return p.Bytes[offset]
+	return p.Bytes[offset%PageSize]
 }
 
 // WriteByte writes a byte into the page at a particular offset.
-// It panics when the offset is larger than PageSize.
+// When offset is larger than offset, it uses the modular.
 func (p *Page) WriteByte(offset uint32, b byte) {
-	checkRange(offset)
-	p.Bytes[offset] = b
+	p.Bytes[offset%PageSize] = b
 }
 
 // The machines endian.
 var Endian = binary.LittleEndian
 
+func wordOff(offset uint32) uint32 {
+	return (offset % PageSize) & ^uint32(0x3)
+}
+
 // ReadWord reads the word at the particular offset.
-// It panics when the offset is larger than PageSize,
-// or when the offset is not 4-byte aligned.
+// When offset is larger than offset, it uses the modular.
+// When offset is not 4-byte aligned, it aligns down.
 func (p *Page) ReadWord(offset uint32) uint32 {
-	checkRange(offset)
-	checkWordAlign(offset)
+	offset = wordOff(offset)
 	return Endian.Uint32(p.Bytes[offset : offset+4])
 }
 
 // WriteWord writes the word at the particular offset.
-// It panics when the offset is larger than PageSize,
-// or when the offset is not 4-byte aligned.
+// When offset is larger than offset, it uses the modular.
+// When offset is not 4-byte aligned, it aligns down.
 func (p *Page) WriteWord(offset uint32, w uint32) {
-	checkRange(offset)
-	checkWordAlign(offset)
+	offset = wordOff(offset)
 	Endian.PutUint32(p.Bytes[offset:offset+4], w)
 }

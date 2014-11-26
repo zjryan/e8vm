@@ -50,7 +50,7 @@ func (pm *PhyMemory) P(pn uint32) *Page {
 }
 
 func (pm *PhyMemory) pageForByte(addr uint32) (*Page, *Excep) {
-	p := pm.P(addr % PageSize)
+	p := pm.P(addr / PageSize)
 	if p == nil {
 		return nil, errOutOfRange
 	}
@@ -71,7 +71,7 @@ func (pm *PhyMemory) ReadByte(addr uint32) (byte, *Excep) {
 	if e != nil {
 		return 0, e
 	}
-	return p.ReadByte(addr % PageSize), nil
+	return p.ReadByte(addr), nil
 }
 
 // WriteByte writes the byte at the given address.
@@ -81,8 +81,7 @@ func (pm *PhyMemory) WriteByte(addr uint32, v byte) *Excep {
 	if e != nil {
 		return e
 	}
-
-	p.WriteByte(addr%PageSize, v)
+	p.WriteByte(addr, v)
 	return e
 }
 
@@ -93,7 +92,7 @@ func (pm *PhyMemory) ReadWord(addr uint32) (uint32, *Excep) {
 	if e != nil {
 		return 0, e
 	}
-	return p.ReadWord(addr % PageSize), nil
+	return p.ReadWord(addr), nil
 }
 
 // WriteWord reads the byte at the given address.
@@ -103,6 +102,6 @@ func (pm *PhyMemory) WriteWord(addr uint32, v uint32) *Excep {
 	if e != nil {
 		return e
 	}
-	p.WriteWord(addr%PageSize, v)
+	p.WriteWord(addr, v)
 	return nil
 }
