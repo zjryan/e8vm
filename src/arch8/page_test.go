@@ -34,9 +34,18 @@ func TestPage(t *testing.T) {
 
 	exp := uint32(0x705a2137)
 	w := p.ReadWord(off)
-	e(w != exp, "expect %08x got %08x", exp, w)
+	e(w != exp, "expect 0x%08x got 0x%08x", exp, w)
 	w = p.ReadWord(off + 3)
-	e(w != exp, "expect %08x got %08x", exp, w)
+	e(w != exp, "expect 0x%08x got 0x%08x", exp, w)
 	w = p.ReadWord(off + 3 + 2*PageSize)
-	e(w != exp, "expect %08x got %08x", exp, w)
+	e(w != exp, "expect 0x%08x got 0x%08x", exp, w)
+
+	b := p.ReadByte(off + 2)
+	e(b != 0x5a, "got incorrect byte 0x%02x", b)
+	b = p.ReadByte(off + 2 + 2*PageSize)
+	e(b != 0x5a, "got incorrect byte 0x%02x", b)
+
+	p.WriteWord(off+3+2*PageSize, exp)
+	b = p.ReadByte(off + 2)
+	e(b != 0x5a, "got incorrect byte 0x%02x", b)
 }

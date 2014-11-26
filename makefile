@@ -14,6 +14,9 @@ vet:
 testv:
 	@ GOPATH=`pwd` go test -v ./src/...
 
+testc:
+	@ GOPATH=`pwd` go test -cover -coverprofile=cover.out ./src/...
+
 test:
 	@ GOPATH=`pwd` go test ./src/...
 
