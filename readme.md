@@ -23,7 +23,7 @@ Planned Features:
 - `arch8/phy_memory.go`: Physical Memory (test done)
 - `arch8/exception.go`: Exception (done, no test)
 - `arch8/page_table.go`: Page Table (test done)
-- `arch8/virt_memory.go`: Virtual Memory (done)
+- `arch8/virt_memory.go`: Virtual Memory (test done)
 - `arch8/interrupt.go`: Interrupt Control (done)
 - `arch8/cpu.go`: Processor Simulator Structure (done)
 - `arch8/inst_reg.go`: Register instructions (done)
