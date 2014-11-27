@@ -19,5 +19,9 @@ func RunImage(image string) error {
 	}
 
 	_, exp := m.Run(0)
-	return exp
+	if exp != nil {
+		return exp
+	}
+
+	return nil
 }
