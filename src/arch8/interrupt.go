@@ -60,7 +60,7 @@ func (in *Interrupt) handlerPC() uint32 {
 // Issue issues an interrupt. If the interrupt is already issued,
 // this has no effect.
 func (in *Interrupt) Issue(i byte) {
-	off := uint32(i/8) + intMask
+	off := uint32(i/8) + intPending
 	b := in.readByte(off)
 	b |= 0x1 << (i % 8)
 	in.writeByte(off, b)
@@ -69,7 +69,7 @@ func (in *Interrupt) Issue(i byte) {
 // Clear clears an interrupt. If the interrupt is already cleared,
 // this has no effect.
 func (in *Interrupt) Clear(i byte) {
-	off := uint32(i/8) + intMask
+	off := uint32(i/8) + intPending
 	b := in.readByte(off)
 	b &= ^(0x1 << (i % 8))
 	in.writeByte(off, b)
@@ -89,15 +89,15 @@ func (in *Interrupt) Disable() {
 	in.writeByte(intFlags, b)
 }
 
-// EnableInt enables a particular interrupt.
+// EnableInt enables a particular interrupt by clearing the mask.
 func (in *Interrupt) EnableInt(i byte) {
-	off := uint32(i/8) + intPending
+	off := uint32(i/8) + intMask
 	b := in.readByte(off)
 	b |= 0x1 << (i % 8)
 	in.writeByte(off, b)
 }
 
-// DisableInt disables a particular interrupt.
+// DisableInt disables a particular interrupt by setting the mask.
 func (in *Interrupt) DisableInt(i byte) {
 	off := uint32(i/8) + intMask
 	b := in.readByte(off)
