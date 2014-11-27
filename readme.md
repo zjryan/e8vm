@@ -18,11 +18,11 @@ Planned Features:
 
 ###  Architecture (arch8)
 
-- `arch8/regs.go`: Registers (done)
-- `arch8/page.go`: Page (done)
-- `arch8/phy_memory.go`: Physical Memory (done)
-- `arch8/exception.go`: Exception (done)
-- `arch8/page_table.go`: Page Table (done)
+- `arch8/regs.go`: Registers (test done)
+- `arch8/page.go`: Page (test done)
+- `arch8/phy_memory.go`: Physical Memory (test done)
+- `arch8/exception.go`: Exception (done, no test)
+- `arch8/page_table.go`: Page Table (test done)
 - `arch8/virt_memory.go`: Virtual Memory (done)
 - `arch8/interrupt.go`: Interrupt Control (done)
 - `arch8/cpu.go`: Processor Simulator Structure (done)

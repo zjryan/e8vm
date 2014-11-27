@@ -46,4 +46,25 @@ func TestPageTable(t *testing.T) {
 		as(ret == 0)
 		as(e == errPageFault)
 	}
+
+	addr := uint32(3*PageSize + 0x23)
+	_, e := pt.TranslateRead(addr)
+	as(e == nil)
+
+	pte2.setBit(pteReadonly)
+	p9.WriteWord(3*4, uint32(pte2))
+	_, e = pt.TranslateRead(addr)
+	as(e == nil)
+	_, e = pt.TranslateWrite(addr)
+	as(e == errPageReadonly)
+
+	w := p9.ReadWord(3 * 4)
+	as((w & (0x1 << pteUse)) != 0)
+	as((w & (0x1 << pteDirty)) == 0)
+
+	addr += PageSize
+	_, e = pt.TranslateWrite(addr)
+	as(e == nil)
+	w = p9.ReadWord(4 * 4)
+	as((w & (0x1 << pteDirty)) != 0)
 }

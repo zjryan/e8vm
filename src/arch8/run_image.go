@@ -18,6 +18,6 @@ func RunImage(image string) error {
 		return e
 	}
 
-	_, e = m.Run(0)
-	return e
+	_, exp := m.Run(0)
+	return exp
 }
