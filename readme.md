@@ -24,7 +24,7 @@ Planned Features:
 - `arch8/exception.go`: Exception (done, no test)
 - `arch8/page_table.go`: Page Table (test done)
 - `arch8/virt_memory.go`: Virtual Memory (test done)
-- `arch8/interrupt.go`: Interrupt Control (done)
+- `arch8/interrupt.go`: Interrupt Control (test done)
 - `arch8/cpu.go`: Processor Simulator Structure (done)
 - `arch8/inst_reg.go`: Register instructions (done)
 - `arch8/inst_imm.go`: Immediate instructions (done)

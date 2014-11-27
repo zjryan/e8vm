@@ -147,7 +147,7 @@ func (c *CPU) Tick() *Excep {
 	}
 
 	// no interrupt to dispatch, let's proceed
-	e := c.Tick()
+	e := c.tick()
 	if e != nil {
 		// proceed attempt failed, handle the error
 		c.interrupt.Issue(e.Code)
