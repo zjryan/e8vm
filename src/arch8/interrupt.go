@@ -82,6 +82,12 @@ func (in *Interrupt) Enable() {
 	in.writeByte(intFlags, b)
 }
 
+// Enabled tests if interrupt is enabled
+func (in *Interrupt) Enabled() bool {
+	b := in.readByte(intFlags)
+	return (b & 0x1) != 0
+}
+
 // Disable clears the interrupt enable bit in the flags.
 func (in *Interrupt) Disable() {
 	b := in.readByte(intFlags)
