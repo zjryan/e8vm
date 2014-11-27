@@ -67,6 +67,7 @@ func (c *CPU) tick() *Excep {
 	c.regs[PC] = pc + 4
 	if c.inst != nil {
 		e = c.inst.I(c, inst)
+
 		if e != nil {
 			c.regs[PC] = pc // restore saved PC
 			return e
