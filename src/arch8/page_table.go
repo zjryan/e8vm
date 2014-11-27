@@ -15,7 +15,10 @@ type PageTable struct {
 }
 
 // NewPageTable creates a new page table pointer.
+// The page table is saved at addr.
+// If addr is not page size aligned, it is aligned down.
 func NewPageTable(m *PhyMemory, addr uint32) *PageTable {
+	addr -= addr % PageSize
 	ret := new(PageTable)
 	ret.mem = m
 	ret.root = addr

@@ -16,15 +16,13 @@ func NewVirtMemory(phy *PhyMemory) *VirtMemory {
 }
 
 // SetTable applies a particular pagetable at a physical memory position.
-// If root is 0, direct mapping is used.
+// If the address is not page size aligned, it will be aligned down.
+// If the address is 0, it will use direct mapping.
 func (vm *VirtMemory) SetTable(root uint32) {
 	if root == 0 {
 		vm.ptable = nil
 	} else {
-		vm.ptable = &PageTable{
-			mem:  vm.phyMem,
-			root: root,
-		}
+		vm.ptable = NewPageTable(vm.phyMem, root)
 	}
 }
 
