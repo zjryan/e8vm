@@ -46,5 +46,4 @@ func TestInterrupt(t *testing.T) {
 	in.Disable()
 	has, b = in.Poll()
 	as(!has && b == 0)
-
 }
