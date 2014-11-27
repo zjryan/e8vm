@@ -45,6 +45,18 @@ func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
 	return ret
 }
 
+// Reset resets the CPU's internal states, i.e., registers,
+// the page table, and disables interrupt
+func (c *CPU) Reset() {
+	for i := 0; i < Nreg; i++ {
+		c.regs[i] = 0
+	}
+	c.regs[PC] = InitPC
+	c.virtMem.SetTable(0)
+	c.interrupt.Disable()
+	c.ring = 0
+}
+
 func (c *CPU) tick() *Excep {
 	pc := c.regs[PC]
 	inst, e := c.virtMem.ReadWord(pc)
