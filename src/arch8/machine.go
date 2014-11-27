@@ -1,7 +1,6 @@
 package arch8
 
 import (
-	"bytes"
 	"io"
 )
 
@@ -76,13 +75,13 @@ func (m *Machine) LoadImage(r io.Reader, offset uint32) error {
 		if p == nil {
 			return errOutOfRange
 		}
-		buf := bytes.NewBuffer(p.Bytes)
-		_, e := io.CopyN(buf, r, PageSize)
+		_, e := r.Read(p.Bytes)
 		if e == io.EOF {
 			return nil
 		} else if e != nil {
 			return e
 		}
+
 		pn++
 	}
 }
