@@ -32,6 +32,27 @@ func TestInstReg(t *testing.T) {
 		}
 	}
 
+	tsts := func(op, s1, sh, v1, d, res uint32) {
+		cpu.Reset()
+
+		in := op & 0xff
+		in |= (sh & 0x1f) << 10
+		in |= (s1 & 0x7) << 18
+		in |= (d & 0x7) << 21
+		m.WriteWord(InitPC, in)
+
+		cpu.regs[s1] = v1
+		e := cpu.Tick()
+		if e != nil {
+			t.Fatal("unexpected exception")
+		}
+
+		got := cpu.regs[d]
+		if got != res {
+			t.Fatalf("got 0x%08x, expect 0x%08x", got, res)
+		}
+	}
+
 	tf := func(op uint32, f func(a, b uint32) uint32) {
 		for i := 0; i < 100; i++ {
 			s1 := uint32(rand.Intn(5))
@@ -50,7 +71,43 @@ func TestInstReg(t *testing.T) {
 		}
 	}
 
-	tst(0, 0, 0, 0, 0, 0, 0)
+	tf0 := func(op uint32, f func(a uint32) uint32) {
+		for i := 0; i < 100; i++ {
+			s1 := uint32(rand.Intn(5))
+			s2 := uint32(rand.Intn(5))
+
+			for s2 == s1 {
+				s2 = uint32(rand.Intn(5))
+			}
+
+			d := uint32(rand.Intn(5))
+			v1 := uint32(rand.Int63())
+			exp := f(v1)
+			tst(op, s1, s2, v1, 0, d, exp)
+		}
+	}
+
+	tfs := func(op uint32, f func(a, b uint32) uint32) {
+		for sh := uint32(0); sh < 32; sh++ {
+			s1 := uint32(rand.Intn(5))
+
+			d := uint32(rand.Intn(5))
+			v1 := uint32(rand.Int63())
+
+			exp := f(v1, sh)
+			tsts(op, s1, sh, v1, d, exp)
+		}
+	}
+
+	tst(0, 0, 0, 0, 0, 0, 0) // noop
+
+	tf(3, func(a, b uint32) uint32 { return a << b })
+	tf(4, func(a, b uint32) uint32 { return a >> b })
+	tf(5, func(a, b uint32) uint32 { return uint32(int32(a) >> b) })
+
+	tfs(0, func(a, sh uint32) uint32 { return a << sh })
+	tfs(1, func(a, sh uint32) uint32 { return a >> sh })
+	tfs(2, func(a, sh uint32) uint32 { return uint32(int32(a) >> sh) })
 
 	tf(6, func(a, b uint32) uint32 { return a + b })
 	tf(7, func(a, b uint32) uint32 { return a - b })
@@ -70,4 +127,37 @@ func TestInstReg(t *testing.T) {
 		}
 		return 0
 	})
+	tf(14, func(a, b uint32) uint32 {
+		return uint32(int32(a) * int32(b))
+	})
+	tf(15, func(a, b uint32) uint32 { return a * b })
+	tf(16, func(a, b uint32) uint32 {
+		if b == 0 {
+			return 0
+		}
+		return uint32(int32(a) / int32(b))
+	})
+	tf(17, func(a, b uint32) uint32 {
+		if b == 0 {
+			return 0
+		}
+		return a / b
+	})
+	tf0(16, func(a uint32) uint32 { return 0 })
+	tf0(17, func(a uint32) uint32 { return 0 })
+	tf(18, func(a, b uint32) uint32 {
+		if b == 0 {
+			return 0
+		}
+		return uint32(int32(a) % int32(b))
+	})
+	tf(19, func(a, b uint32) uint32 {
+		if b == 0 {
+			return 0
+		}
+		return a % b
+	})
+	tf0(18, func(a uint32) uint32 { return 0 })
+	tf0(19, func(a uint32) uint32 { return 0 })
+
 }
