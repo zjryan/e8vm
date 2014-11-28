@@ -3,6 +3,7 @@ package arch8
 import (
 	"testing"
 
+	"math"
 	"math/rand"
 )
 
@@ -53,11 +54,34 @@ func TestInstReg(t *testing.T) {
 		}
 	}
 
+	tstf := func(op, s1, s2, d uint32, f1, f2, res float32) {
+		cpu.Reset()
+
+		in := op & 0xff
+		in |= (s1 & 0x7) << 18
+		in |= (s2 & 0x7) << 15
+		in |= (d & 0x7) << 21
+		in |= 0x1 << 8
+		m.WriteWord(InitPC, in)
+
+		cpu.regs[s1] = math.Float32bits(f1)
+		cpu.regs[s2] = math.Float32bits(f2)
+		e := cpu.Tick()
+		if e != nil {
+			t.Fatal("unexpected exception")
+		}
+
+		got := cpu.regs[d]
+		fres := math.Float32bits(res)
+		if got != fres {
+			t.Fatalf("got 0x%08x, expect 0x%08x", got, fres)
+		}
+	}
+
 	tf := func(op uint32, f func(a, b uint32) uint32) {
 		for i := 0; i < 100; i++ {
 			s1 := uint32(rand.Intn(5))
 			s2 := uint32(rand.Intn(5))
-
 			for s2 == s1 {
 				s2 = uint32(rand.Intn(5))
 			}
@@ -75,7 +99,6 @@ func TestInstReg(t *testing.T) {
 		for i := 0; i < 100; i++ {
 			s1 := uint32(rand.Intn(5))
 			s2 := uint32(rand.Intn(5))
-
 			for s2 == s1 {
 				s2 = uint32(rand.Intn(5))
 			}
@@ -96,6 +119,23 @@ func TestInstReg(t *testing.T) {
 
 			exp := f(v1, sh)
 			tsts(op, s1, sh, v1, d, exp)
+		}
+	}
+
+	tff := func(op uint32, f func(a, b float32) float32) {
+		for sh := uint32(0); sh < 32; sh++ {
+			s1 := uint32(rand.Intn(5))
+			s2 := uint32(rand.Intn(5))
+			for s2 == s1 {
+				s2 = uint32(rand.Intn(5))
+			}
+			d := uint32(rand.Intn(5))
+
+			f1 := math.Float32frombits(uint32(rand.Int63()))
+			f2 := math.Float32frombits(uint32(rand.Int63()))
+
+			exp := f(f1, f2)
+			tstf(op, s1, s2, d, f1, f2, exp)
 		}
 	}
 
@@ -131,6 +171,7 @@ func TestInstReg(t *testing.T) {
 		return uint32(int32(a) * int32(b))
 	})
 	tf(15, func(a, b uint32) uint32 { return a * b })
+
 	tf(16, func(a, b uint32) uint32 {
 		if b == 0 {
 			return 0
@@ -145,6 +186,7 @@ func TestInstReg(t *testing.T) {
 	})
 	tf0(16, func(a uint32) uint32 { return 0 })
 	tf0(17, func(a uint32) uint32 { return 0 })
+
 	tf(18, func(a, b uint32) uint32 {
 		if b == 0 {
 			return 0
@@ -160,4 +202,8 @@ func TestInstReg(t *testing.T) {
 	tf0(18, func(a uint32) uint32 { return 0 })
 	tf0(19, func(a uint32) uint32 { return 0 })
 
+	tff(0, func(a, b float32) float32 { return a + b })
+	tff(1, func(a, b float32) float32 { return a - b })
+	tff(2, func(a, b float32) float32 { return a * b })
+	tff(3, func(a, b float32) float32 { return a / b })
 }
