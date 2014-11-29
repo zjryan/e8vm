@@ -18,9 +18,9 @@ func TestVirtMemory(t *testing.T) {
 	}
 
 	m := NewPhyMemory(8 * PageSize)
-	p1 := m.P(1)
-	p2 := m.P(2)
-	p3 := m.P(3)
+	p1 := m.Page(1)
+	p2 := m.Page(2)
+	p3 := m.Page(3)
 
 	pte1 := ptEntry(2 * PageSize)
 	pte1.setBit(pteValid)

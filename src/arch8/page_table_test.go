@@ -19,8 +19,8 @@ func TestPageTable(t *testing.T) {
 
 	m := NewPhyMemory(4096 * PageSize) // 4 2nd level entries
 
-	p8 := m.P(8) // page eight
-	p9 := m.P(9) // page nine
+	p8 := m.Page(8) // page eight
+	p9 := m.Page(9) // page nine
 
 	pte1 := ptEntry(0x9000)
 	pte1.setBit(pteValid)

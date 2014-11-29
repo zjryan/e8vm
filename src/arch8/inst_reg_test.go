@@ -85,8 +85,8 @@ func TestInstReg(t *testing.T) {
 			for s2 == s1 {
 				s2 = uint32(rand.Intn(5))
 			}
-
 			d := uint32(rand.Intn(5))
+
 			v1 := uint32(rand.Int63())
 			v2 := uint32(rand.Int63())
 

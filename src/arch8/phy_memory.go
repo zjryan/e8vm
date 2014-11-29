@@ -34,7 +34,7 @@ func (pm *PhyMemory) Size() uint32 {
 
 // P returns the page for the particular page number
 // Returns nil when the page number is out of range
-func (pm *PhyMemory) P(pn uint32) *Page {
+func (pm *PhyMemory) Page(pn uint32) *Page {
 	if pn >= pm.npage {
 		return nil // out of range
 	}
@@ -50,7 +50,7 @@ func (pm *PhyMemory) P(pn uint32) *Page {
 }
 
 func (pm *PhyMemory) pageForByte(addr uint32) (*Page, *Excep) {
-	p := pm.P(addr / PageSize)
+	p := pm.Page(addr / PageSize)
 	if p == nil {
 		return nil, errOutOfRange
 	}

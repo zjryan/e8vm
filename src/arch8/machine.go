@@ -23,7 +23,7 @@ func NewMachine(memSize uint32, ncore int) *Machine {
 	ret.cores = NewMultiCore(ncore, ret.phyMem, ret.inst)
 
 	// hook-up devices
-	p := ret.phyMem.P(pageBasicIO)
+	p := ret.phyMem.Page(pageBasicIO)
 	ret.serial = NewSerial(p, ret.cores)
 	ret.ticker = NewTicker(ret.cores)
 	ret.AddDevice(ret.serial)
@@ -71,7 +71,7 @@ func (m *Machine) LoadImage(r io.Reader, offset uint32) error {
 	pn := offset / PageSize
 
 	for {
-		p := m.phyMem.P(pn)
+		p := m.phyMem.Page(pn)
 		if p == nil {
 			return errOutOfRange
 		}

@@ -33,7 +33,7 @@ func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
 	ret.virtMem = NewVirtMemory(ret.phyMem)
 	ret.index = index
 
-	intPage := ret.phyMem.P(pageInterrupt) // page 1 is the interrupt page
+	intPage := ret.phyMem.Page(pageInterrupt) // page 1 is the interrupt page
 	if intPage == nil {
 		panic("memory too small")
 	}
