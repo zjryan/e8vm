@@ -68,6 +68,7 @@ func TestInstImm(t *testing.T) {
 	})
 	tf(3, func(v, im uint32) uint32 { return v & im })
 	tf(4, func(v, im uint32) uint32 { return v | im })
+	tf(5, func(_, im uint32) uint32 { return im << 16 })
 
 	ti(6, 0, 0, 0)
 }
