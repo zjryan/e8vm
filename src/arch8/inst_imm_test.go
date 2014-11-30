@@ -32,6 +32,23 @@ func TestInstImm(t *testing.T) {
 		}
 	}
 
+	twr := func(op, s, v, im, d, w uint32) {
+		cpu.Reset()
+
+		in := (op & 0xff) << 24
+		in |= (s & 0x7) << 18
+		in |= (d & 0x7) << 21
+		in |= im & 0xffff
+
+		m.WriteWord(InitPC, in)
+		cpu.regs[s] = v
+		cpu.regs[d] = w
+		e := cpu.Tick()
+		if e != nil {
+			t.Fatal("unexpected exception")
+		}
+	}
+
 	tf := func(op uint32, f func(v, im uint32) uint32) {
 		for i := 0; i < 100; i++ {
 			s := uint32(rand.Intn(5))
@@ -42,14 +59,6 @@ func TestInstImm(t *testing.T) {
 			exp := f(v, im)
 
 			tst(op, s, v, im, d, exp)
-		}
-	}
-
-	ti := func(op, v, im, exp uint32) {
-		for s := uint32(0); s < 5; s++ {
-			for d := uint32(0); d < 5; d++ {
-				tst(op, s, v, im, d, exp)
-			}
 		}
 	}
 
@@ -70,5 +79,91 @@ func TestInstImm(t *testing.T) {
 	tf(4, func(v, im uint32) uint32 { return v | im })
 	tf(5, func(_, im uint32) uint32 { return im << 16 })
 
-	ti(6, 0, 0, 0)
+	for i := 0; i < 100; i++ {
+		addr := uint32(PageSize * 10)
+		addr += uint32(rand.Int63()) % PageSize * 4
+		offset := uint32(rand.Int63()) % PageSize
+		offset -= offset % 4
+		offset -= PageSize / 2
+		w := uint32(rand.Int63())
+
+		e := m.WriteWord(addr+offset, w)
+		if e != nil {
+			t.Fatal("write fail")
+		}
+		s := uint32(rand.Intn(5))
+		d := uint32(rand.Intn(5))
+
+		tst(6, s, addr, offset, d, w)
+	}
+
+	for i := 0; i < 100; i++ {
+		addr := uint32(PageSize * 10)
+		addr += uint32(rand.Int63()) % PageSize * 4
+		offset := uint32(rand.Int63()) % PageSize
+		offset -= PageSize / 2
+		b := byte(rand.Int63())
+
+		e := m.WriteByte(addr+offset, b)
+		if e != nil {
+			t.Fatal("write fail")
+		}
+		s := uint32(rand.Intn(5))
+		d := uint32(rand.Intn(5))
+
+		w := uint32(int32(uint32(b)<<24) >> 24)
+		tst(7, s, addr, offset, d, w)
+		tst(8, s, addr, offset, d, uint32(b))
+	}
+
+	for i := 0; i < 100; i++ {
+		addr := uint32(PageSize * 10)
+		addr += uint32(rand.Int63()) % PageSize * 4
+		offset := uint32(rand.Int63()) % PageSize
+		offset -= offset % 4
+		offset -= PageSize / 2
+		w := uint32(rand.Int63())
+
+		s := uint32(rand.Intn(5))
+		d := uint32(rand.Intn(5))
+		for d == s {
+			d = uint32(rand.Intn(5))
+		}
+
+		twr(9, s, addr, offset, d, w)
+
+		got, e := m.ReadWord(addr + offset)
+		if e != nil {
+			t.Fatal("read fail")
+		}
+
+		if got != w {
+			t.Fatalf("expect 0x%08x, got 0x%08x", w, got)
+		}
+	}
+
+	for i := 0; i < 100; i++ {
+		addr := uint32(PageSize * 10)
+		addr += uint32(rand.Int63()) % PageSize * 4
+		offset := uint32(rand.Int63()) % PageSize
+		offset -= PageSize / 2
+		b := byte(rand.Int63())
+
+		s := uint32(rand.Intn(5))
+		d := uint32(rand.Intn(5))
+		for d == s {
+			d = uint32(rand.Intn(5))
+		}
+
+		twr(10, s, addr, offset, d, uint32(b))
+
+		got, e := m.ReadByte(addr + offset)
+		if e != nil {
+			t.Fatal("read fail")
+		}
+
+		if got != b {
+			t.Fatalf("expect 0x%08x, got 0x%08x", b, got)
+		}
+	}
 }
