@@ -27,7 +27,7 @@ Planned Features:
 - `arch8/interrupt.go`: Interrupt Control (test done)
 - `arch8/cpu.go`: Processor Simulator Structure (test done)
 - `arch8/inst_reg.go`: Register instructions (test done)
-- `arch8/inst_imm.go`: Immediate instructions (done)
+- `arch8/inst_imm.go`: Immediate instructions (test done)
 - `arch8/inst_br.go`: Branch instructions (done)
 - `arch8/inst_jmp.go`: Jump instructions (done) 
 - `arch8/inst_sys.go`: System instructions (done)
