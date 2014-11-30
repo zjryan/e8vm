@@ -32,7 +32,7 @@ func (pm *PhyMemory) Size() uint32 {
 	return pm.npage * PageSize
 }
 
-// P returns the page for the particular page number
+// Page returns the page for the particular page number
 // Returns nil when the page number is out of range
 func (pm *PhyMemory) Page(pn uint32) *Page {
 	if pn >= pm.npage {

@@ -71,9 +71,8 @@ func TestInstImm(t *testing.T) {
 		se := sext(im)
 		if int32(v) < int32(se) {
 			return 1
-		} else {
-			return 0
 		}
+		return 0
 	})
 	tf(3, func(v, im uint32) uint32 { return v & im })
 	tf(4, func(v, im uint32) uint32 { return v | im })
