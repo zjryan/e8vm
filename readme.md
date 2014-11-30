@@ -28,7 +28,7 @@ Planned Features:
 - `arch8/cpu.go`: Processor Simulator Structure (test done)
 - `arch8/inst_reg.go`: Register instructions (test done)
 - `arch8/inst_imm.go`: Immediate instructions (test done)
-- `arch8/inst_br.go`: Branch instructions (done)
+- `arch8/inst_br.go`: Branch instructions (test done)
 - `arch8/inst_jmp.go`: Jump instructions (done) 
 - `arch8/inst_sys.go`: System instructions (done)
 - `arch8/inst_all.go`: Put all instructions together (done)
@@ -42,9 +42,9 @@ Planned Features:
 
 ### Assembler (asm8)
 
-- `asm8/scanner.go`: A line scanner
+- `asm8/liner.go`: Read the file into lines
+- `asm8/parser.go`: Top level syntax parser.
 - `asm8/symbol.go`: Symbol tree
-- `asm8/top_parser.go`: Top level syntax parser.
 - `asm8/inst.go`: Variable length instruction
 - `asm8/func.go`: Function/code section
 - `asm8/inst_parser.go`: Instruction parsing helpers
