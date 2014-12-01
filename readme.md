@@ -52,11 +52,17 @@ Planned Features:
 - `asm8/lex_comment.go`: Lexing comments (done)
 - `asm8/lex_string.go`: Lexing strings (done)
 - `asm8/lex_operand.go`: Lexing operands (done)
-- `asm8/lex_all.go`: Put the lexing altogether (done)
-- `asm8/parser.go`: Parser Framework
+- `asm8/lex_all.go`: Put the lexing altogether (test done)
+- `asm8/parser.go`: Parser framework (done)
+- `asm8/parse_func.go`: Function block parser (test done)
+- `asm8/parse_var.go`: Variable block parser
+- `asm8/parse_const.go`: Const statement parser
+- `asm8/parse_import.go`: Import statement parser
+- `asm8/parse_all.go`: Put the parsing altogether
+- `asm8/build.go`: Builder framework
+- `asm8/build_func.go`: Function block builder
 - `asm8/symbol.go`: Symbol tree
 - `asm8/inst.go`: Variable length instruction
-- `asm8/func.go`: Function/code section
 - `asm8/inst_parser.go`: Instruction parsing helpers
 - `asm8/inst_reg.go`: Register instructions
 - `asm8/inst_imm.go`: Immediate instructions
@@ -64,13 +70,8 @@ Planned Features:
 - `asm8/inst_jmp.go`: Jump instructions
 - `asm8/inst_sys.go`: System instructions
 - `asm8/inst_all.go`: Put all instructions together
-- `asm8/var.go`: Variable/data section
-- `asm8/dat_parse.go`: Data line parser
-- `asm8/dat_ints.go`: Hex
-- `asm8/dat_str.go`: String
-- `asm8/const.go`: Consts
-- `asm8/layout.go`: Layout Symbols
-- `asm8/build.go`: Build an image
+- `asm8/layout.go`: Layout symbols
+- `asm8/image.go`: Image builder
 
 ### Programming Language (lang8)
 
