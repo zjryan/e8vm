@@ -19,15 +19,17 @@ func (f *Func) parseLines(p *Parser) {
 	for !p.see(Rbrace) {
 		var toks []*Token
 		for !p.see(Endl) {
-			if p.t.Type == EOF {
-				p.err(p.t.Pos, "unexpected EOF in function")
+			t := p.expect(Operand)
+			if t != nil {
+				toks = append(toks, t)
+			} else if p.see(EOF) {
 				return
+			} else {
+				p.next()
 			}
-			toks = append(toks, p.t)
-			p.next()
 		}
-		p.expect(Endl)
 
+		p.expect(Endl)
 		if toks != nil {
 			f.lines = append(f.lines, &Line{toks})
 		}
