@@ -18,6 +18,7 @@ type Lexer struct {
 func NewLexer(file string, r io.ReadCloser) *Lexer {
 	ret := new(Lexer)
 	ret.s = NewLexScanner(file, r)
+	ret.errs = NewErrList()
 
 	ret.next()
 
@@ -55,6 +56,9 @@ func (x *Lexer) scanString() *Token {
 		x.next()
 		if x.eof() {
 			x.err("unexpected eof in string")
+			return x.token(String)
+		} else if x.r == '\n' {
+			x.err("unexpected endl in string")
 			return x.token(String)
 		}
 
@@ -168,9 +172,9 @@ func (x *Lexer) Token() *Token {
 	case '/':
 		x.next()
 		if x.r == '/' {
-			x.scanLineComment()
+			return x.scanLineComment()
 		} else if x.r == '*' {
-			x.scanBlockComment()
+			return x.scanBlockComment()
 		}
 		x.err("illegal char %q", x.r)
 		return x.token(Illegal)
@@ -193,5 +197,30 @@ func (x *Lexer) err(f string, args ...interface{}) {
 
 // Errs returns the lexing errors.
 func (x *Lexer) Errs() []*Error {
+	if x.e != nil && x.e != io.EOF {
+		return []*Error{{Err: x.e}}
+	}
+
 	return x.errs.Errs
+}
+
+// Tokens breaks a file input stream into tokens or errors.
+func Tokens(f string, rc io.ReadCloser) ([]*Token, []*Error) {
+	x := NewLexer(f, rc)
+	var ret []*Token
+
+	for {
+		t := x.Token()
+		ret = append(ret, t)
+		if t.Type == EOF {
+			break
+		}
+	}
+
+	errs := x.Errs()
+	if errs != nil {
+		return nil, errs
+	}
+
+	return ret, nil
 }

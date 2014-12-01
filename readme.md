@@ -42,13 +42,13 @@ Planned Features:
 
 ### Assembler (asm8)
 
-- `asm8/pos.go`: File position
-- `asm8/error.go`: File parsing error
-- `asm8/err_list.go`: File parsing error list
-- `asm8/rune_scanner.go`: Rune scanner
-- `asm8/lex_scanner.go`: Buffered scanner for tokenizing
-- `asm8/token.go`: Asm8 Tokens
-- `asm8/lexer.go`: Asm8 Lexer
+- `asm8/pos.go`: File position (done)
+- `asm8/error.go`: File parsing error (done)
+- `asm8/err_list.go`: File parsing error list (done)
+- `asm8/rune_scanner.go`: Rune scanner (done) 
+- `asm8/lex_scanner.go`: Buffered scanner for tokenizing (done)
+- `asm8/token.go`: Asm8 Tokens (done)
+- `asm8/lexer.go`: Asm8 Lexer (done)
 - `asm8/parser.go`: Asm8 Parser
 - `asm8/symbol.go`: Symbol tree
 - `asm8/inst.go`: Variable length instruction
