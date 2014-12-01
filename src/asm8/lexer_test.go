@@ -67,14 +67,17 @@ func ExampleLexer_2() {
 }
 
 func ExampleLexer_3() {
-	lexString("t.s8", "func a {\n}")
+	lexString("t.s8", "func a { // comment \n\tsyscall\n}")
 	// Output:
 	// t.s8:1: kw - "func"
 	// t.s8:1: op - "a"
 	// t.s8:1: lb
+	// t.s8:1: cm - "// comment "
 	// t.s8:1: endl
-	// t.s8:2: rb
-	// t.s8:2: eof
+	// t.s8:2: op - "syscall"
+	// t.s8:2: endl
+	// t.s8:3: rb
+	// t.s8:3: eof
 }
 
 func ExampleLexer_keywords() {
