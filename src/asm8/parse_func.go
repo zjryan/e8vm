@@ -2,12 +2,12 @@ package asm8
 
 // Line is an assembly line.
 type Line struct {
-	toks []*Token
+	Ops []*Token
 }
 
 // Func is an assembly function.
 type Func struct {
-	lines []*Line
+	Lines []*Line
 
 	kw     *Token
 	name   *Token
@@ -17,11 +17,11 @@ type Func struct {
 
 func (f *Func) parseLines(p *Parser) {
 	for !p.see(Rbrace) {
-		var toks []*Token
+		var ops []*Token
 		for !p.see(Endl) {
 			t := p.expect(Operand)
 			if t != nil {
-				toks = append(toks, t)
+				ops = append(ops, t)
 			} else if p.see(EOF) {
 				return
 			} else {
@@ -30,8 +30,8 @@ func (f *Func) parseLines(p *Parser) {
 		}
 
 		p.expect(Endl)
-		if toks != nil {
-			f.lines = append(f.lines, &Line{toks})
+		if ops != nil {
+			f.Lines = append(f.Lines, &Line{ops})
 		}
 	}
 }
