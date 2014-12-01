@@ -41,7 +41,7 @@ func lexString(f string, s string) {
 		fmt.Printf("%d error(s)\n", len(errs))
 	} else {
 		for _, t := range toks {
-			if t.Type == EOF || t.Type == Endl || 
+			if t.Type == EOF || t.Type == Endl ||
 				t.Type == Lbrace || t.Type == Rbrace {
 				fmt.Printf("%s:%d: %s\n", t.Pos.File, t.Pos.Line,
 					typeStr(t.Type))
@@ -63,7 +63,7 @@ func ExampleLexer_1() {
 func ExampleLexer_2() {
 	lexString("t.s8", "")
 	// Output:
-	// t.s8:1: eof	
+	// t.s8:1: eof
 }
 
 func ExampleLexer_3() {
@@ -78,6 +78,15 @@ func ExampleLexer_3() {
 	// t.s8:2: endl
 	// t.s8:3: rb
 	// t.s8:3: eof
+}
+
+func ExampleLexer_4() {
+	lexString("t.s8", "func a{}")
+	// Output
+	// t.s8:1: kw - "func"
+	// t.s8:1: op - "a"
+	// t.s8:1: lb
+	// t.s8:1: rb
 }
 
 func ExampleLexer_keywords() {
