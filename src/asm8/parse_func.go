@@ -15,6 +15,25 @@ type Func struct {
 	rbrace *Token
 }
 
+func (f *Func) parseLines(p *Parser) {
+	for !p.see(Rbrace) {
+		var toks []*Token
+		for !p.see(Endl) {
+			if p.t.Type == EOF {
+				p.err(p.t.Pos, "unexpected EOF in function")
+				return
+			}
+			toks = append(toks, p.t)
+			p.next()
+		}
+		p.expect(Endl)
+
+		if toks != nil {
+			f.lines = append(f.lines, &Line{toks})
+		}
+	}
+}
+
 func parseFunc(p *Parser) *Func {
 	ret := new(Func)
 
@@ -23,12 +42,11 @@ func parseFunc(p *Parser) *Func {
 	ret.lbrace = p.expect(Lbrace)
 	p.expect(Endl)
 
-	// parse lines here
+	ret.parseLines(p)
 
 	ret.rbrace = p.expect(Rbrace)
 	p.expect(Endl)
-
-	p.inErr = false
+	p.clearErr()
 
 	return ret
 }
