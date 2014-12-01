@@ -30,7 +30,8 @@ func typeStr(t int) string {
 	return fmt.Sprintf("!%d", t)
 }
 
-func lexString(f string, s string) {
+func o(s string) {
+	f := "t.s8"
 	r := strings.NewReader(s)
 	rc := ioutil.NopCloser(r)
 	toks, errs := Tokens(f, rc)
@@ -54,20 +55,20 @@ func lexString(f string, s string) {
 }
 
 func ExampleLexer_1() {
-	lexString("t.s8", "\n")
+	o("\n")
 	// Output:
 	// t.s8:1: endl
 	// t.s8:1: eof
 }
 
 func ExampleLexer_2() {
-	lexString("t.s8", "")
+	o("")
 	// Output:
 	// t.s8:1: eof
 }
 
 func ExampleLexer_3() {
-	lexString("t.s8", "func a { // comment \n\tsyscall\n}")
+	o("func a { // comment \n\tsyscall\n}")
 	// Output:
 	// t.s8:1: kw - "func"
 	// t.s8:1: op - "a"
@@ -81,7 +82,7 @@ func ExampleLexer_3() {
 }
 
 func ExampleLexer_4() {
-	lexString("t.s8", "func a{}")
+	o("func a{}")
 	// Output
 	// t.s8:1: kw - "func"
 	// t.s8:1: op - "a"
@@ -90,7 +91,7 @@ func ExampleLexer_4() {
 }
 
 func ExampleLexer_keywords() {
-	lexString("t.s8", "func var const import")
+	o("func var const import")
 	// Output:
 	// t.s8:1: kw - "func"
 	// t.s8:1: kw - "var"
@@ -100,7 +101,7 @@ func ExampleLexer_keywords() {
 }
 
 func ExampleLexer_comments() {
-	lexString("t.s8", "// line comment \n /* block comment */")
+	o("// line comment \n /* block comment */")
 	// Output:
 	// t.s8:1: cm - "// line comment "
 	// t.s8:1: endl
@@ -109,28 +110,28 @@ func ExampleLexer_comments() {
 }
 
 func ExampleLexer_string() {
-	lexString("t.s8", `"some string \"\\ here"`)
+	o(`"some string \"\\ here"`)
 	// Output
 	// t.s8:1: str - "\"some string \\\"\\\\ here\""
 	// t.s8:1: eof
 }
 
 func ExampleLexer_badstr1() {
-	lexString("t.s8", `"some string`)
+	o(`"some string`)
 	// Output
 	// t.s8:1: unexpected eof in string
 	// 1 error(s)
 }
 
 func ExampleLexer_badstr2() {
-	lexString("t.s8", `"some string\n"`)
+	o(`"some string\n"`)
 	// Output
 	// t.s8:1: unexpected endl in string
 	// 1 error(s)
 }
 
 func ExampleLexer_badcomment() {
-	lexString("t.s8", `/*some comment`)
+	o(`/*some comment`)
 	// Output
 	// t.s8:1: unexpected eof in block comment
 	// 1 error(s)

@@ -30,6 +30,11 @@ func (lst *ErrList) Add(e *Error) {
 	lst.Errs = append(lst.Errs, e)
 }
 
+// Addf appends a new error with particular position and format.
+func (lst *ErrList) Addf(p *Pos, f string, args ...interface{}) {
+	lst.Add(&Error{p, fmt.Errorf(f, args...)})
+}
+
 // Print prints to the writer (maximume lst.MaxPrint errors).
 func (lst *ErrList) Print(w io.Writer) error {
 	for _, e := range lst.Errs {
