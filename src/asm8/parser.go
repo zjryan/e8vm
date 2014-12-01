@@ -11,9 +11,9 @@ type Parser struct {
 
 	t            *Token
 	inErr        bool
-	parseComment bool
+	ParseComment bool
 
-	parseFunc func(p *Parser) interface{}
+	ParseFunc func(p *Parser) interface{}
 }
 
 // NewParser creates a new parser for parsring top-level syntax blocks.
@@ -21,6 +21,7 @@ func NewParser(file string, r io.ReadCloser) *Parser {
 	ret := new(Parser)
 	ret.x = NewLexer(file, r)
 	ret.errs = NewErrList()
+	ret.next()
 
 	return ret
 }
@@ -30,15 +31,16 @@ func (p *Parser) err(pos *Pos, f string, args ...interface{}) {
 	p.errs.Addf(pos, f, args...)
 }
 
-func (p *Parser) skipLine(t *Token) {
-	for t.Type != Endl && t.Type != EOF {
-		t = p.x.Token()
-	}
+func (p *Parser) see(t int) bool { return p.t.Type == t }
+func (p *Parser) seeKeyword(kw string) bool {
+	return p.see(Keyword) && p.t.Lit == kw
 }
-
+func (p *Parser) clearErr()     { p.inErr = false }
+func (p *Parser) hasErr() bool  { return p.inErr }
+func (p *Parser) token() *Token { return p.t }
 func (p *Parser) next() *Token {
 	p.t = p.x.Token()
-	if !p.parseComment {
+	if !p.ParseComment {
 		for p.t.Type == Comment {
 			p.t = p.x.Token()
 		}
@@ -77,7 +79,7 @@ func (p *Parser) expectKeyword(lit string) *Token {
 	}
 
 	if p.t.Type != Keyword || p.t.Lit != lit {
-		p.errs.Addf(p.t.Pos, "expect keyword %s", lit)
+		p.err(p.t.Pos, "expect keyword %s, got %s", lit, typeStr(p.t.Type))
 		return nil
 	}
 
@@ -92,8 +94,7 @@ func (p *Parser) expect(t int) *Token {
 	}
 
 	if p.t.Type != t {
-		p.errs.Addf(p.t.Pos, "expect %s, got %s",
-			typeStr(t), typeStr(p.t.Type))
+		p.err(p.t.Pos, "expect %s, got %s", typeStr(t), typeStr(p.t.Type))
 		return nil
 	}
 
@@ -110,19 +111,45 @@ func (p *Parser) acceptType(t int) bool {
 	return true
 }
 
-func (p *Parser) see(t int) bool {
-	return p.t.Type == t
+func (p *Parser) skipLine() {
+	for p.t.Type != Endl && p.t.Type != EOF {
+		p.next()
+	}
 }
 
-func (p *Parser) clearErr() {
-	p.inErr = false
+func (p *Parser) skipErrLine() bool {
+	if p.inErr {
+		p.skipLine()
+		p.clearErr()
+		return true
+	}
+	return false
 }
 
 // Block returns the block by the parser function
 func (p *Parser) Block() interface{} {
-	if p.parseFunc == nil {
-		return p.next()
+	for p.t.Type == Endl {
+		p.next()
 	}
 
-	return p.parseFunc(p)
+	if p.t.Type == EOF {
+		return nil
+	}
+
+	if p.ParseFunc == nil {
+		ret := p.t
+		p.next()
+		return ret
+	}
+
+	return p.ParseFunc(p)
+}
+
+// Errs returns the parsing errors
+func (p *Parser) Errs() []*Error {
+	ret := p.x.Errs()
+	if ret != nil {
+		return ret
+	}
+	return p.errs.Errs
 }

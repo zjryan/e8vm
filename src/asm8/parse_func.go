@@ -29,26 +29,32 @@ func (f *Func) parseLines(p *Parser) {
 			}
 		}
 
-		p.expect(Endl)
-		if ops != nil {
-			f.Lines = append(f.Lines, &Line{ops})
+		if !p.skipErrLine() {
+			p.expect(Endl)
+			if ops != nil {
+				f.Lines = append(f.Lines, &Line{ops})
+			}
 		}
 	}
 }
 
-func parseFunc(p *Parser) *Func {
+func parseFunc(p *Parser) interface{} {
 	ret := new(Func)
 
 	ret.kw = p.expectKeyword("func")
 	ret.name = p.expect(Operand)
 	ret.lbrace = p.expect(Lbrace)
 	p.expect(Endl)
+	if p.skipErrLine() {
+		return ret
+	}
 
 	ret.parseLines(p)
 
 	ret.rbrace = p.expect(Rbrace)
-	p.expect(Endl)
-	p.clearErr()
+	if p.skipErrLine() {
+		return ret
+	}
 
 	return ret
 }
