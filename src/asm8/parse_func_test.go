@@ -51,13 +51,16 @@ func pf(s string) {
 func ExampleFunc_1() {
 	pf(`
 	func main {
-		lui r4 something
-		lui a5 anything
+		lui r4 /*inline comment*/ something
+
+		// blank lines are ignored
+		lui a5   anything		cool // some comment
+		/* some block comment also */
 	}`)
 	// Output:
 	// func main {
 	//     lui r4 something
-	//     lui a5 anything
+	//     lui a5 anything cool
 	// }
 }
 
