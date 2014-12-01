@@ -19,3 +19,23 @@ func parseAsm8(p *Parser) interface{} {
 	p.err(p.t.Pos, "expect top-declaration")
 	return int(0) // place holder for error
 }
+
+// Blocks returns the AST of a file input stream or parsing errors.
+func Blocks(f string, r io.ReadCloser) ([]interface{}, []*Error) {
+	var ret []interface{}
+	p := NewParser(f, r)
+
+	for {
+		b := p.Block()
+		if b == nil {
+			break
+		}
+		ret = append(ret, b)
+	}
+
+	errs := p.Errs()
+	if errs != nil {
+		return nil, errs
+	}
+	return ret, nil
+}
