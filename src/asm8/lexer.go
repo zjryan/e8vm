@@ -113,13 +113,19 @@ func isOperandChar(r rune) bool {
 	if r >= '0' && r <= '9' {
 		return true
 	}
-	if r == '_' {
-		return true
+
+	for _, x := range []rune{'_', '+', '-', '.', ':'} {
+		if r == x {
+			return true
+		}
 	}
-	if r == '+' || r == '-' {
-		return true
-	}
-	if r == '.' || r == ':' {
+
+	return false
+}
+
+func isKeyword(lit string) bool {
+	switch lit {
+	case "func", "var", "const", "import":
 		return true
 	}
 	return false
@@ -132,7 +138,12 @@ func (x *Lexer) scanOperand() *Token {
 			break
 		}
 	}
-	return x.token(Operand)
+
+	ret := x.token(Operand)
+	if isKeyword(ret.Lit) {
+		ret.Type = Keyword
+	}
+	return ret
 }
 
 // Token returns the next parsed token.
@@ -146,7 +157,14 @@ func (x *Lexer) Token() *Token {
 
 	switch x.r {
 	case '\n':
+		x.next()
 		return x.token(Endl)
+	case '{':
+		x.next()
+		return x.token(Lbrace)
+	case '}':
+		x.next()
+		return x.token(Rbrace)
 	case '/':
 		x.next()
 		if x.r == '/' {
@@ -165,6 +183,7 @@ func (x *Lexer) Token() *Token {
 	}
 
 	x.err("illegal char %q", x.r)
+	x.next()
 	return x.token(Illegal)
 }
 
