@@ -16,7 +16,6 @@ type Parser struct {
 	ParseFunc func(p *Parser) interface{}
 }
 
-// NewParser creates a new parser for parsring top-level syntax blocks.
 func newParser(file string, r io.ReadCloser) *Parser {
 	ret := new(Parser)
 	ret.x = NewLexer(file, r)
