@@ -47,10 +47,12 @@ func (b *Builder) Build() (interface{}, []*Error) {
 		return int(0), nil
 	}
 
+	// declare the blocks, register the symbols
 	for _, block := range blocks {
 		b.Gen.Decl(b, block)
 	}
 
+	// build the blocks, generate the context
 	for _, block := range blocks {
 		b.Gen.Build(b, block)
 	}
