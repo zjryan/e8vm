@@ -1,9 +1,11 @@
 package asm8
 
+// Line is an assembly line.
 type Line struct {
 	toks []*Token
 }
 
+// Func is an assembly function.
 type Func struct {
 	lines []*Line
 
@@ -13,7 +15,7 @@ type Func struct {
 	rbrace *Token
 }
 
-func parseFunc(p *Parser) interface{} {
+func parseFunc(p *Parser) *Func {
 	ret := new(Func)
 
 	ret.kw = p.expectKeyword("func")
