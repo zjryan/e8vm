@@ -9,7 +9,7 @@ import (
 func pf(s string) {
 	r := strings.NewReader(s)
 	rc := ioutil.NopCloser(r)
-	p := NewParser("t.s8", rc)
+	p := newParser("t.s8", rc)
 	p.ParseFunc = parseFunc
 	var fs []*Func
 

@@ -59,7 +59,7 @@ Planned Features:
 - `asm8/parse_const.go`: Const statement parser
 - `asm8/parse_import.go`: Import statement parser
 - `asm8/parse_all.go`: Put the parsing altogether
-- `asm8/build.go`: Builder framework
+- `asm8/builder.go`: Builder framework
 - `asm8/build_func.go`: Function block builder
 - `asm8/symbol.go`: Symbol tree
 - `asm8/inst.go`: Variable length instruction
