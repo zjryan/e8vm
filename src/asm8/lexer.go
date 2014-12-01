@@ -20,7 +20,10 @@ func newLexer(file string, r io.ReadCloser) *Lexer {
 	ret := new(Lexer)
 	ret.s = NewLexScanner(file, r)
 	ret.errs = NewErrList()
-	ret.isWhite = isWhite
+
+	ret.isWhite = func(r rune) bool {
+		return r == ' ' || r == '\t'
+	}
 
 	ret.next()
 
@@ -38,8 +41,6 @@ func (x *Lexer) token(t int) *Token {
 }
 func (x *Lexer) discard()  { x.s.Accept() }
 func (x *Lexer) eof() bool { return x.e != nil }
-
-func isWhite(r rune) bool { return r == ' ' || r == '\t' }
 
 func (x *Lexer) skipWhite() {
 	for {

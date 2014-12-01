@@ -48,8 +48,12 @@ Planned Features:
 - `asm8/rune_scanner.go`: Rune scanner (done) 
 - `asm8/lex_scanner.go`: Buffered scanner for tokenizing (done)
 - `asm8/token.go`: Asm8 Tokens (done)
-- `asm8/lexer.go`: Asm8 Lexer (test done)
-- `asm8/parser.go`: Asm8 Parser
+- `asm8/lexer.go`: Lexer Framework (done)
+- `asm8/lex_comment.go`: Lexing comments (done)
+- `asm8/lex_string.go`: Lexing strings (done)
+- `asm8/lex_operand.go`: Lexing operands (done)
+- `asm8/lex_all.go`: Put the lexing altogether (done)
+- `asm8/parser.go`: Parser Framework
 - `asm8/symbol.go`: Symbol tree
 - `asm8/inst.go`: Variable length instruction
 - `asm8/func.go`: Function/code section

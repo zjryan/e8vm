@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func typeStr(t int) string {
+func tstr(t int) string {
 	switch t {
 	case EOF:
 		return "eof"
@@ -45,10 +45,10 @@ func o(s string) {
 			if t.Type == EOF || t.Type == Endl ||
 				t.Type == Lbrace || t.Type == Rbrace {
 				fmt.Printf("%s:%d: %s\n", t.Pos.File, t.Pos.Line,
-					typeStr(t.Type))
+					tstr(t.Type))
 			} else {
 				fmt.Printf("%s:%d: %s - %q\n", t.Pos.File, t.Pos.Line,
-					typeStr(t.Type), t.Lit)
+					tstr(t.Type), t.Lit)
 			}
 		}
 	}

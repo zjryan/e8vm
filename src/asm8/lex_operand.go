@@ -29,6 +29,10 @@ func isKeyword(lit string) bool {
 }
 
 func lexOperand(x *Lexer) *Token {
+	if !isOperandChar(x.r) {
+		panic("incorrect operand start")
+	}
+
 	for {
 		x.next()
 		if x.eof() || !isOperandChar(x.r) {

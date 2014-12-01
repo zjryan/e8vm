@@ -1,6 +1,10 @@
 package asm8
 
 func lexString(x *Lexer) *Token {
+	if x.r != '"' {
+		panic("incorrect string start")
+	}
+
 	escaped := false
 
 	for {

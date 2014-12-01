@@ -5,6 +5,10 @@ import (
 )
 
 func lexAsm8(x *Lexer) *Token {
+	if x.isWhite(x.r) {
+		panic("incorrect token start")
+	}
+
 	switch x.r {
 	case '\n':
 		x.next()
@@ -16,14 +20,7 @@ func lexAsm8(x *Lexer) *Token {
 		x.next()
 		return x.token(Rbrace)
 	case '/':
-		x.next()
-		if x.r == '/' {
-			return lexLineComment(x)
-		} else if x.r == '*' {
-			return lexBlockComment(x)
-		}
-		x.err("illegal char %q", x.r)
-		return x.token(Illegal)
+		return lexComment(x)
 	case '"':
 		return lexString(x)
 	}

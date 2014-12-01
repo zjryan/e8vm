@@ -1,5 +1,21 @@
 package asm8
 
+func lexComment(x *Lexer) *Token {
+	if x.r != '/' {
+		panic("incorrect comment start")
+	}
+
+	x.next()
+
+	if x.r == '/' {
+		return lexLineComment(x)
+	} else if x.r == '*' {
+		return lexBlockComment(x)
+	}
+	x.err("illegal char %q", x.r)
+	return x.token(Illegal)
+}
+
 func lexLineComment(x *Lexer) *Token {
 	for {
 		x.next()
