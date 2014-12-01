@@ -42,8 +42,14 @@ Planned Features:
 
 ### Assembler (asm8)
 
-- `asm8/liner.go`: Read the file into lines
-- `asm8/parser.go`: Top level syntax parser.
+- `asm8/pos.go`: File position
+- `asm8/error.go`: File parsing error
+- `asm8/err_list.go`: File parsing error list
+- `asm8/rune_scanner.go`: Rune scanner
+- `asm8/lex_scanner.go`: Buffered scanner for tokenizing
+- `asm8/token.go`: Asm8 Tokens
+- `asm8/lexer.go`: Asm8 Lexer
+- `asm8/parser.go`: Asm8 Parser
 - `asm8/symbol.go`: Symbol tree
 - `asm8/inst.go`: Variable length instruction
 - `asm8/func.go`: Function/code section
