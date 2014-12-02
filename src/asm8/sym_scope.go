@@ -1,10 +1,13 @@
 package asm8
 
+// SymScope is a stack of symbol tables.
 type SymScope struct {
 	stack []*SymTable
 	top   *SymTable // the top
 }
 
+// NewSymScope creates a new symbole scope with one symbol table at the
+// bottom.
 func NewSymScope() *SymScope {
 	ret := new(SymScope)
 	ret.Push()
@@ -37,21 +40,21 @@ func (s *SymScope) Depth() int {
 }
 
 // Query searches for the top visible symbol with a particular name.
-func (s *SymScope) Query(n string) (item interface{}, t int) {
+func (s *SymScope) Query(n string) *Symbol {
 	d := len(s.stack)
 
 	for i := d - 1; i >= 0; i-- {
 		tab := s.stack[i]
-		item, t = tab.Query(n)
-		if item != nil {
-			return item, t
+		ret := tab.Query(n)
+		if ret != nil {
+			return ret
 		}
 	}
 
-	return nil, 0
+	return nil
 }
 
 // Declare declares a symbole on the top of the symbol table stack.
-func (s *SymScope) Declare(n string, t int, i interface{}) error {
-	return s.top.Declare(n, t, i)
+func (s *SymScope) Declare(sym *Symbol) *Symbol {
+	return s.top.Declare(sym)
 }

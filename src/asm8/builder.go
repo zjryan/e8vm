@@ -12,8 +12,9 @@ type Gen interface {
 
 // Builder manipulates an AST, checks its syntax, and builds the assembly
 type Builder struct {
-	p    *Parser
-	errs *ErrList
+	p     *Parser
+	errs  *ErrList
+	scope *SymScope
 
 	Gen Gen
 }
@@ -22,6 +23,7 @@ func newBuilder(file string, r io.ReadCloser) *Builder {
 	ret := new(Builder)
 	ret.p = NewParser(file, r)
 	ret.errs = NewErrList()
+	ret.scope = NewSymScope()
 
 	return ret
 }
@@ -61,4 +63,9 @@ func (b *Builder) Build() (interface{}, []*Error) {
 		return nil, b.errs.Errs
 	}
 	return ret, nil
+}
+
+// Err reports a building/semantics error.
+func (b *Builder) err(p *Pos, f string, args ...interface{}) {
+	b.errs.Addf(p, f, args...)
 }

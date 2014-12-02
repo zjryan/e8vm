@@ -1,47 +1,50 @@
 package asm8
 
-import (
-	"errors"
-)
-
-type symbol struct {
+// Symbol is a data structure for saving a symbol.
+type Symbol struct {
 	Name string
 	Type int
 	Item interface{}
+	Pos  *Pos
+}
+
+func (s *Symbol) clone() *Symbol {
+	return &Symbol{s.Name, s.Type, s.Item, s.Pos}
 }
 
 // SymTable save the symbol
 type SymTable struct {
-	m map[string]*symbol
+	m map[string]*Symbol
 }
 
 // NewSymTable creates an empty symbol table
 func NewSymTable() *SymTable {
 	ret := new(SymTable)
-	ret.m = make(map[string]*symbol)
+	ret.m = make(map[string]*Symbol)
 
 	return ret
 }
 
-var errSymExists = errors.New("symbol exists")
-
 // Query searches for a symbol with a particular name.
-func (tab *SymTable) Query(n string) (i interface{}, t int) {
+func (tab *SymTable) Query(n string) *Symbol {
 	s := tab.m[n]
 	if s == nil {
-		return nil, 0
+		return nil
 	}
 
-	return s.Item, s.Type
+	return s.clone()
 }
 
 // Declare adds a symbol into the table.
-func (tab *SymTable) Declare(n string, t int, i interface{}) error {
-	if tab.m[n] != nil {
-		return errSymExists
+// It returns nil on successful, and returns the conflict symbol
+// when it is already declared.
+func (tab *SymTable) Declare(s *Symbol) *Symbol {
+	n := s.Name
+	p := tab.m[n]
+	if p != nil {
+		return p.clone()
 	}
 
-	s := &symbol{n, t, i}
-	tab.m[n] = s
+	tab.m[n] = s.clone()
 	return nil
 }
