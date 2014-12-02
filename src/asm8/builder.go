@@ -4,10 +4,10 @@ import (
 	"io"
 )
 
+// Gen is an interface for generating a compiled object.
 type Gen interface {
-	Decl(b *Builder, block interface{})
-	Build(b *Builder, block interface{})
-	Obj() interface{}
+	Register(b *Builder, block interface{})
+	Gen(b *Builder) interface{}
 }
 
 // Builder manipulates an AST, checks its syntax, and builds the assembly
@@ -38,28 +38,27 @@ func (b *Builder) Build() (interface{}, []*Error) {
 		blocks = append(blocks, block)
 	}
 
+	// check for parsing errors
 	errs := b.p.Errs()
 	if errs != nil {
 		return nil, errs
 	}
-
 	if b.Gen == nil {
 		return int(0), nil
 	}
 
-	// declare the blocks, register the symbols
+	// register the blocks
 	for _, block := range blocks {
-		b.Gen.Decl(b, block)
+		b.Gen.Register(b, block)
 	}
-
-	// build the blocks, generate the context
-	for _, block := range blocks {
-		b.Gen.Build(b, block)
-	}
-
 	if b.errs.Errs != nil {
 		return nil, b.errs.Errs
 	}
 
-	return b.Gen.Obj(), nil
+	ret := b.Gen.Gen(b)
+	// check for generation errors
+	if b.errs.Errs != nil {
+		return nil, b.errs.Errs
+	}
+	return ret, nil
 }
