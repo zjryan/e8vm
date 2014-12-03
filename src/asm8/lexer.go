@@ -10,7 +10,7 @@ type Lexer struct {
 
 	r    rune
 	e    error
-	errs *ErrList
+	errs *ErrorList
 
 	isWhite func(r rune) bool
 	lexFunc func(x *Lexer) *Token

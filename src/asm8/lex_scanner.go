@@ -8,7 +8,7 @@ import (
 // LexScanner parses a file input stream into tokens.
 type LexScanner struct {
 	s     *RuneScanner
-	errs  *ErrList
+	errs  *ErrorList
 	valid bool
 
 	pos *Pos

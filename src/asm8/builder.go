@@ -13,7 +13,7 @@ type Gen interface {
 // Builder manipulates an AST, checks its syntax, and builds the assembly
 type Builder struct {
 	p     *Parser
-	errs  *ErrList
+	errs  *ErrorList
 	scope *SymScope
 
 	Gen Gen

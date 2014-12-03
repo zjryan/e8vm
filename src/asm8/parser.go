@@ -7,7 +7,7 @@ import (
 // Parser parses a file input stream into top-level syntax blocks.
 type Parser struct {
 	x    *Lexer
-	errs *ErrList
+	errs *ErrorList
 
 	t            *Token
 	inErr        bool
