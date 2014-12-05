@@ -13,6 +13,7 @@ const (
 	intFlags     = 0  // flags, bit 0 is master enabling switch
 	intKernelSP  = 4  // position of the handler stack base pointer
 	intHandlerPC = 8  // position of the handler start PC
+	intSyscallPC = 12 // position of the syscall start PC
 	intMask      = 32 // interrupt enable mask bits offset (32 bytes)
 	intPending   = 64 // interrupt pending bits offset (32 bytes)
 
@@ -47,14 +48,16 @@ func (in *Interrupt) writeByte(off uint32, v byte) {
 	in.p.WriteByte(in.base+off, v)
 }
 
-// kernelSP returns the kernel stack pointer
 func (in *Interrupt) kernelSP() uint32 {
 	return in.readWord(intKernelSP)
 }
 
-// handlerPC returns the handler program counter
 func (in *Interrupt) handlerPC() uint32 {
 	return in.readWord(intHandlerPC)
+}
+
+func (in *Interrupt) syscallPC() uint32 {
+	return in.readWord(intSyscallPC)
 }
 
 // Issue issues an interrupt. If the interrupt is already issued,

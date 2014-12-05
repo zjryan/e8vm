@@ -14,7 +14,10 @@ func (i *InstSys) I(cpu *CPU, in uint32) *Excep {
 	case 64: // halt
 		return errHalt
 	case 65: // syscall
-		return errSyscall
+		if cpu.ring == 0 {
+			return errInvalidInst
+		}
+		return cpu.Syscall()
 	case 66: // usermod
 		cpu.ring = 1
 	case 67: // vtable

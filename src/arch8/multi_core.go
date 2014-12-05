@@ -23,13 +23,18 @@ func NewMultiCore(ncore int, mem *PhyMemory, i Inst) *MultiCore {
 	return ret
 }
 
+// CoreExcep is an exception on a particular core.
+type CoreExcep struct {
+	Core int
+	*Excep
+}
+
 // Tick performs one tick on each core.
-func (c *MultiCore) Tick() *Excep {
+func (c *MultiCore) Tick() *CoreExcep {
 	for i, core := range c.cores {
 		e := core.Tick()
 		if e != nil {
-			e.Core = byte(i)
-			return e
+			return &CoreExcep{i, e}
 		}
 	}
 

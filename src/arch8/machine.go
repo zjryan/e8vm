@@ -38,7 +38,7 @@ func (m *Machine) AddDevice(d Device) {
 }
 
 // Tick proceeds the simulation by one tick.
-func (m *Machine) Tick() *Excep {
+func (m *Machine) Tick() *CoreExcep {
 	for _, d := range m.devices {
 		d.Tick()
 	}
@@ -48,7 +48,7 @@ func (m *Machine) Tick() *Excep {
 
 // Run simulates nticks. It returns the number of ticks
 // simulated without error, and the first met error if any.
-func (m *Machine) Run(nticks int) (int, *Excep) {
+func (m *Machine) Run(nticks int) (int, *CoreExcep) {
 	n := 0
 	for i := 0; nticks == 0 || i < nticks; i++ {
 		e := m.Tick()

@@ -44,7 +44,7 @@ func TestPageTable(t *testing.T) {
 	for i := uint32(512); i < 2048; i++ {
 		ret, e := pt.Translate(i * 0x1000)
 		as(ret == 0)
-		as(e == errPageFault)
+		as(e.Code == ErrPageFault)
 	}
 
 	addr := uint32(3*PageSize + 0x23)
@@ -56,7 +56,7 @@ func TestPageTable(t *testing.T) {
 	_, e = pt.TranslateRead(addr)
 	as(e == nil)
 	_, e = pt.TranslateWrite(addr)
-	as(e == errPageReadonly)
+	as(e.Code == ErrPageReadonly)
 
 	w := p9.ReadWord(3 * 4)
 	as((w & (0x1 << pteUse)) != 0)

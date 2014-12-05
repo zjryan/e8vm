@@ -118,6 +118,12 @@ func (c *CPU) Ienter(code byte) *Excep {
 	return nil
 }
 
+func (c *CPU) Syscall() *Excep {
+	c.regs[PC] = c.interrupt.syscallPC()
+	c.ring = 1
+	return nil
+}
+
 // Iret restores from an interrupt.
 // It restores the SP, RET, PC registers, restores the ring level,
 // clears the served interrupt bit and enables interrupt again.

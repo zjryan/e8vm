@@ -70,7 +70,7 @@ func (pt *PageTable) Translate(addr uint32) (uint32, *Excep) {
 	}
 	pt.pte1 = ptEntry(w)
 	if !pt.pte1.testBit(pteValid) {
-		return 0, errPageFault
+		return 0, newPageFault(addr)
 	}
 	pn1 := pt.pte1.pn()
 
@@ -81,7 +81,7 @@ func (pt *PageTable) Translate(addr uint32) (uint32, *Excep) {
 	}
 	pt.pte2 = ptEntry(w)
 	if !pt.pte2.testBit(pteValid) {
-		return 0, errPageFault
+		return 0, newPageFault(addr)
 	}
 
 	ppn := pt.pte2.pn()
@@ -129,7 +129,7 @@ func (pt *PageTable) TranslateWrite(addr uint32) (uint32, *Excep) {
 	}
 
 	if pt.pte1.testBit(pteReadonly) || pt.pte2.testBit(pteReadonly) {
-		return 0, errPageReadonly
+		return 0, newPageReadonly(addr)
 	}
 
 	pt.pte1.setBit(pteUse)

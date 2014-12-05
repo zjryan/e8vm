@@ -7,9 +7,8 @@ import (
 // Excep defines an exception error with a code
 type Excep struct {
 	Code byte
+	Arg  uint32
 	Err  error
-
-	Core byte // core id
 }
 
 // NewExcep creates a new Exception with a particular code and message.
@@ -24,15 +23,33 @@ func (e *Excep) Error() string {
 	return e.Err.Error()
 }
 
-var (
-	errHalt        = NewExcep(1, "halt")
-	errTimeInt     = NewExcep(2, "time interrupt")
-	errInvalidInst = NewExcep(3, "invalid instruction")
-
-	errOutOfRange   = NewExcep(4, "out of range")
-	errMisalign     = NewExcep(5, "address misalign")
-	errPageFault    = NewExcep(6, "page fault") // page invalid
-	errPageReadonly = NewExcep(7, "page read-only")
-
-	errSyscall = NewExcep(8, "system call")
+const (
+	ErrHalt         = 1
+	ErrTimer        = 2
+	ErrInvalidInst  = 3
+	ErrOutOfRange   = 4
+	ErrMisalign     = 5
+	ErrPageFault    = 6
+	ErrPageReadonly = 7
 )
+
+var (
+	errHalt        = NewExcep(ErrHalt, "halt")
+	errTimeInt     = NewExcep(ErrTimer, "time interrupt")
+	errInvalidInst = NewExcep(ErrInvalidInst, "invalid instruction")
+
+	errOutOfRange = NewExcep(ErrOutOfRange, "out of range")
+	errMisalign   = NewExcep(ErrMisalign, "address misalign")
+)
+
+func newPageFault(va uint32) *Excep {
+	ret := NewExcep(ErrPageFault, "page fault")
+	ret.Arg = va
+	return ret
+}
+
+func newPageReadonly(va uint32) *Excep {
+	ret := NewExcep(ErrPageReadonly, "page read-only")
+	ret.Arg = va
+	return ret
+}
