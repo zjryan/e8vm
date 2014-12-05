@@ -75,7 +75,7 @@ Planned Features:
 
 ### Programming Language (lang8)
 
-`todo`
+`todo: a c-like programming language for writing os8`
 
 ### Operating System (os8)
 
