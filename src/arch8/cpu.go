@@ -122,9 +122,10 @@ func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 	return nil
 }
 
+// Syscall jumps to the system call handler and switches to ring 0.
 func (c *CPU) Syscall() *Excep {
 	c.regs[PC] = c.interrupt.syscallPC()
-	c.ring = 1
+	c.ring = 0
 	return nil
 }
 

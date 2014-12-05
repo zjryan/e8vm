@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-// ErrList saves a list of error
+// ErrorList saves a list of error
 type ErrorList struct {
 	Errs []*Error
 

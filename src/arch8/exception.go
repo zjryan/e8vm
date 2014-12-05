@@ -23,6 +23,7 @@ func (e *Excep) Error() string {
 	return e.Err.Error()
 }
 
+// Exception codes
 const (
 	ErrHalt         = 1
 	ErrTimer        = 2
