@@ -78,12 +78,13 @@ func (c *CPU) tick() *Excep {
 }
 
 const (
-	intFrameSize = 12
-
 	intFrameSP   = 0
 	intFrameRET  = 4
-	intFrameCode = 8
-	intFrameRing = 9
+	intFrameArg  = 8
+	intFrameCode = 12
+	intFrameRing = 13
+
+	intFrameSize = 16
 )
 
 // Interrupt issues an interrupt to the core
@@ -92,7 +93,7 @@ func (c *CPU) Interrupt(code byte) {
 }
 
 // Ienter sets up a interrupt routine.
-func (c *CPU) Ienter(code byte) *Excep {
+func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 	ksp := c.interrupt.kernelSP()
 	base := ksp - intFrameSize
 
@@ -100,6 +101,9 @@ func (c *CPU) Ienter(code byte) *Excep {
 		return e
 	}
 	if e := c.virtMem.WriteWord(base+intFrameRET, c.regs[RET]); e != nil {
+		return e
+	}
+	if e := c.virtMem.WriteWord(base+intFrameArg, arg); e != nil {
 		return e
 	}
 	if e := c.virtMem.WriteByte(base+intFrameCode, code); e != nil {
@@ -162,7 +166,7 @@ func (c *CPU) Iret() *Excep {
 func (c *CPU) Tick() *Excep {
 	poll, code := c.interrupt.Poll()
 	if poll {
-		return c.Ienter(code)
+		return c.Ienter(code, 0)
 	}
 
 	// no interrupt to dispatch, let's proceed
@@ -175,7 +179,7 @@ func (c *CPU) Tick() *Excep {
 			if code != e.Code {
 				panic("interrupt code is different")
 			}
-			return c.Ienter(code)
+			return c.Ienter(code, e.Arg)
 		}
 	}
 
