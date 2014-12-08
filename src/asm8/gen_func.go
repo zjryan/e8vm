@@ -3,6 +3,7 @@ package asm8
 // GenFunc is a function semantics checker and code generator
 type GenFunc struct {
 	funcs []*Func
+	objs  []*FuncObj
 }
 
 func isIdent(s string) bool {
@@ -49,4 +50,21 @@ func (g *GenFunc) Register(b *Builder, block interface{}) {
 
 	// now you are registered
 	g.funcs = append(g.funcs, f)
+}
+
+// Gen gererates the functions, and return a list of function objects.
+// It retunrs with type []*FuncObj.
+func (g *GenFunc) Gen(b *Builder) interface{} {
+	for _, f := range g.funcs {
+		obj := g.genFunc(b, f)
+		g.objs = append(g.objs, obj)
+	}
+
+	return g.objs
+}
+
+func (g *GenFunc) genFunc(b *Builder, f *Func) *FuncObj {
+	ret := new(FuncObj)
+
+	return ret
 }

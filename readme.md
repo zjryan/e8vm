@@ -29,7 +29,7 @@ Planned Features:
 - `arch8/inst_reg.go`: Register instructions (test done)
 - `arch8/inst_imm.go`: Immediate instructions (test done)
 - `arch8/inst_br.go`: Branch instructions (test done)
-- `arch8/inst_jmp.go`: Jump instructions (done) 
+- `arch8/inst_jmp.go`: Jump instructions (done)
 - `arch8/inst_sys.go`: System instructions (done)
 - `arch8/inst_all.go`: Put all instructions together (done)
 - `arch8/int_bus.go`: Interrupt bus (done)
@@ -45,7 +45,7 @@ Planned Features:
 - `asm8/pos.go`: File position (done)
 - `asm8/error.go`: File parsing error (done)
 - `asm8/err_list.go`: File parsing error list (done)
-- `asm8/rune_scanner.go`: Rune scanner (done) 
+- `asm8/rune_scanner.go`: Rune scanner (done)
 - `asm8/lex_scanner.go`: Buffered scanner for tokenizing (done)
 - `asm8/token.go`: Asm8 Tokens (done)
 - `asm8/lexer.go`: Lexer Framework (done)
@@ -61,7 +61,8 @@ Planned Features:
 - `asm8/parse_all.go`: Put the parsing altogether
 - `asm8/builder.go`: Builder framework
 - `asm8/build_func.go`: Function block builder
-- `asm8/symbol.go`: Symbol tree
+- `asm8/sym_scope.go`: Symbol scope
+- `asm8/sym_table.go`: Symbol table, stack of symbol scopes
 - `asm8/inst.go`: Variable length instruction
 - `asm8/inst_parser.go`: Instruction parsing helpers
 - `asm8/inst_reg.go`: Register instructions
