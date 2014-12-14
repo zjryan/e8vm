@@ -61,8 +61,8 @@ Planned Features:
 - `asm8/parse_all.go`: Put the parsing altogether
 - `asm8/builder.go`: Builder framework
 - `asm8/build_func.go`: Function block builder
-- `asm8/sym_scope.go`: Symbol scope
-- `asm8/sym_table.go`: Symbol table, stack of symbol scopes
+- `asm8/sym_scope.go`: Symbol scope (done) 
+- `asm8/sym_table.go`: Symbol table, stack of symbol scopes (done)
 - `asm8/inst.go`: Variable length instruction
 - `asm8/inst_parser.go`: Instruction parsing helpers
 - `asm8/inst_reg.go`: Register instructions
