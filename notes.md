@@ -1,13 +1,10 @@
-The EnableInt/DisableInt member functions of the Interrupt struct might be
-redundant.  Programs running on CPU will just directly manipulate the memory.
-And programs outside CPU do not need to modify that.
+# TODO:
 
-But let's just leave it there for a while. If they have no use, we will remove
-them later.
+- add ring protection in page table entries
 
+# Asm grammar
 
 ```
-
 import (
     "pack"
 )
@@ -35,5 +32,8 @@ func Struct:main {
     j main
 
 }
-
 ```
+
+# Thoughts on asm8
+
+

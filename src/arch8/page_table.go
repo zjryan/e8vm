@@ -39,6 +39,7 @@ const (
 	pteReadonly = 1
 	pteUse      = 2
 	pteDirty    = 3
+	pteUser     = 4
 )
 
 const u32one uint32 = 0x1
@@ -53,9 +54,19 @@ func (pte ptEntry) pn() uint32 {
 	return uint32(pte / PageSize)
 }
 
+func (pte ptEntry) test(addr uint32, ring byte) *Excep {
+	if !pte.testBit(pteValid) {
+		return newPageFault(addr)
+	}
+	if ring > 0 && !pte.testBit(pteUser) {
+		return newPageFault(addr)
+	}
+	return nil
+}
+
 // Translate transalate a virutal address into physical address.
 // It returns an error if the translation fails
-func (pt *PageTable) Translate(addr uint32) (uint32, *Excep) {
+func (pt *PageTable) Translate(addr uint32, ring byte) (uint32, *Excep) {
 	vpn := addr / PageSize
 	off := addr % PageSize
 
@@ -69,9 +80,11 @@ func (pt *PageTable) Translate(addr uint32) (uint32, *Excep) {
 		return 0, e
 	}
 	pt.pte1 = ptEntry(w)
-	if !pt.pte1.testBit(pteValid) {
-		return 0, newPageFault(addr)
+	e = pt.pte1.test(addr, ring)
+	if e != nil {
+		return 0, e
 	}
+
 	pn1 := pt.pte1.pn()
 
 	pt.pte2Addr = pn1*PageSize + index2*4
@@ -80,8 +93,9 @@ func (pt *PageTable) Translate(addr uint32) (uint32, *Excep) {
 		return 0, e
 	}
 	pt.pte2 = ptEntry(w)
-	if !pt.pte2.testBit(pteValid) {
-		return 0, newPageFault(addr)
+	e = pt.pte2.test(addr, ring)
+	if e != nil {
+		return 0, e
 	}
 
 	ppn := pt.pte2.pn()
@@ -104,8 +118,8 @@ func (pt *PageTable) updatePte() *Excep {
 }
 
 // TranslateRead translates the address and sets the use bit.
-func (pt *PageTable) TranslateRead(addr uint32) (uint32, *Excep) {
-	ret, e := pt.Translate(addr)
+func (pt *PageTable) TranslateRead(addr uint32, ring byte) (uint32, *Excep) {
+	ret, e := pt.Translate(addr, ring)
 	if e != nil {
 		return 0, e
 	}
@@ -122,8 +136,8 @@ func (pt *PageTable) TranslateRead(addr uint32) (uint32, *Excep) {
 }
 
 // TranslateWrite translates the address and sets the use and dirty bit
-func (pt *PageTable) TranslateWrite(addr uint32) (uint32, *Excep) {
-	ret, e := pt.Translate(addr)
+func (pt *PageTable) TranslateWrite(addr uint32, ring byte) (uint32, *Excep) {
+	ret, e := pt.Translate(addr, ring)
 	if e != nil {
 		return 0, e
 	}
