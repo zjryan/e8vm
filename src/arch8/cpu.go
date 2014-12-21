@@ -9,7 +9,6 @@ type Inst interface {
 type CPU struct {
 	regs []uint32
 
-	ring      byte
 	phyMem    *PhyMemory
 	virtMem   *VirtMemory
 	interrupt *Interrupt
@@ -45,6 +44,10 @@ func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
 	return ret
 }
 
+func (c *CPU) UserMode() bool {
+	return c.virtMem.Ring > 0
+}
+
 // Reset resets the CPU's internal states, i.e., registers,
 // the page table, and disables interrupt
 func (c *CPU) Reset() {
@@ -53,8 +56,8 @@ func (c *CPU) Reset() {
 	}
 	c.regs[PC] = InitPC
 	c.virtMem.SetTable(0)
+	c.virtMem.Ring = 0
 	c.interrupt.Disable()
-	c.ring = 0
 }
 
 func (c *CPU) tick() *Excep {
@@ -92,7 +95,7 @@ func (c *CPU) Interrupt(code byte) {
 	c.interrupt.Issue(code)
 }
 
-// Ienter sets up a interrupt routine.
+// Ienter enters a interrupt routine.
 func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 	ksp := c.interrupt.kernelSP()
 	base := ksp - intFrameSize
@@ -109,7 +112,7 @@ func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 	if e := c.virtMem.WriteByte(base+intFrameCode, code); e != nil {
 		return e
 	}
-	if e := c.virtMem.WriteByte(base+intFrameRing, c.ring); e != nil {
+	if e := c.virtMem.WriteByte(base+intFrameRing, c.virtMem.Ring); e != nil {
 		return e
 	}
 
@@ -117,7 +120,7 @@ func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 	c.regs[SP] = ksp
 	c.regs[RET] = c.regs[PC]
 	c.regs[PC] = c.interrupt.handlerPC()
-	c.ring = 0
+	c.virtMem.Ring = 0
 
 	return nil
 }
@@ -125,7 +128,7 @@ func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 // Syscall jumps to the system call handler and switches to ring 0.
 func (c *CPU) Syscall() *Excep {
 	c.regs[PC] = c.interrupt.syscallPC()
-	c.ring = 0
+	c.virtMem.Ring = 0
 	return nil
 }
 
@@ -155,7 +158,7 @@ func (c *CPU) Iret() *Excep {
 	c.regs[PC] = c.regs[RET]
 	c.regs[RET] = ret
 	c.regs[SP] = sp
-	c.ring = ring
+	c.virtMem.Ring = ring
 	c.interrupt.Clear(code)
 	c.interrupt.Enable()
 

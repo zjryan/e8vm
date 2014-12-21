@@ -14,19 +14,19 @@ func (i *InstSys) I(cpu *CPU, in uint32) *Excep {
 	case 64: // halt
 		return errHalt
 	case 65: // syscall
-		if cpu.ring == 0 {
+		if !cpu.UserMode() {
 			return errInvalidInst
 		}
 		return cpu.Syscall()
 	case 66: // usermod
-		cpu.ring = 1
+		cpu.virtMem.Ring = 1
 	case 67: // vtable
-		if cpu.ring != 0 {
+		if cpu.UserMode() {
 			return errInvalidInst
 		}
 		cpu.virtMem.SetTable(s)
 	case 68: // iret
-		if cpu.ring != 0 {
+		if cpu.UserMode() {
 			return errInvalidInst
 		}
 		return cpu.Iret()

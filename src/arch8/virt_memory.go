@@ -6,6 +6,8 @@ package arch8
 type VirtMemory struct {
 	phyMem *PhyMemory
 	ptable *PageTable
+
+	Ring byte
 }
 
 // NewVirtMemory creates a new virtual address space with no page table.
@@ -26,42 +28,41 @@ func (vm *VirtMemory) SetTable(root uint32) {
 	}
 }
 
-func (vm *VirtMemory) translateRead(addr uint32, ring byte) (uint32, *Excep) {
+func (vm *VirtMemory) translateRead(addr uint32) (uint32, *Excep) {
 	if vm.ptable == nil {
 		return addr, nil
 	}
-	return vm.ptable.TranslateRead(addr, ring)
+	return vm.ptable.TranslateRead(addr, vm.Ring)
 }
 
-func (vm *VirtMemory) translateWrite(addr uint32, ring byte) (uint32, *Excep) {
+func (vm *VirtMemory) translateWrite(addr uint32) (uint32, *Excep) {
 	if vm.ptable == nil {
 		return addr, nil
 	}
-	return vm.ptable.TranslateWrite(addr, ring)
+	return vm.ptable.TranslateWrite(addr, vm.Ring)
 }
 
-// ReadWordRing reads the byte at the given virtual address.
-func (vm *VirtMemory) ReadWordRing(addr uint32, ring byte) (uint32, *Excep) {
-	addr, e := vm.translateRead(addr, ring)
+// ReadWord reads the byte at the given virtual address.
+func (vm *VirtMemory) ReadWord(addr uint32) (uint32, *Excep) {
+	addr, e := vm.translateRead(addr)
 	if e != nil {
 		return 0, e
 	}
 	return vm.phyMem.ReadWord(addr)
 }
 
-// WriteWordRing writes the byte at the given virtual address.
-func (vm *VirtMemory) WriteWordRing(addr uint32, v uint32, ring byte) *Excep {
-	addr, e := vm.translateWrite(addr, ring)
+// WriteWord writes the byte at the given virtual address.
+func (vm *VirtMemory) WriteWord(addr uint32, v uint32) *Excep {
+	addr, e := vm.translateWrite(addr)
 	if e != nil {
 		return e
 	}
 	return vm.phyMem.WriteWord(addr, v)
 }
 
-// ReadByteRing reads the byte at the given virtual address under a certain
-// ring.
-func (vm *VirtMemory) ReadByteRing(addr uint32, ring byte) (byte, *Excep) {
-	addr, e := vm.translateRead(addr, ring)
+// ReadByte reads the byte at the given virtual address.
+func (vm *VirtMemory) ReadByte(addr uint32) (byte, *Excep) {
+	addr, e := vm.translateRead(addr)
 	if e != nil {
 		return 0, e
 	}
@@ -70,30 +71,10 @@ func (vm *VirtMemory) ReadByteRing(addr uint32, ring byte) (byte, *Excep) {
 
 // WriteByteRing writes a byte at the given virtual address under
 // a certain ring.
-func (vm *VirtMemory) WriteByteRing(addr uint32, v byte, ring byte) *Excep {
-	addr, e := vm.translateWrite(addr, ring)
+func (vm *VirtMemory) WriteByte(addr uint32, v byte) *Excep {
+	addr, e := vm.translateWrite(addr)
 	if e != nil {
 		return e
 	}
 	return vm.phyMem.WriteByte(addr, v)
-}
-
-// ReadWord reads the word at the given virtual address.
-func (vm *VirtMemory) ReadWord(addr uint32) (uint32, *Excep) {
-	return vm.ReadWordRing(addr, 0)
-}
-
-// WriteWord writes the word at the given virtual address.
-func (vm *VirtMemory) WriteWord(addr uint32, v uint32) *Excep {
-	return vm.WriteWordRing(addr, v, 0)
-}
-
-// ReadByte reads the byte at the given virtual address.
-func (vm *VirtMemory) ReadByte(addr uint32) (byte, *Excep) {
-	return vm.ReadByteRing(addr, 0)
-}
-
-// WriteByte writes a byte at the given virtual address.
-func (vm *VirtMemory) WriteByte(addr uint32, v byte) *Excep {
-	return vm.WriteByteRing(addr, v, 0)
 }
