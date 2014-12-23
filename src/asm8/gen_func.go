@@ -6,29 +6,6 @@ type GenFunc struct {
 	objs  []*FuncObj
 }
 
-func isIdent(s string) bool {
-	if len(s) == 0 {
-		return false
-	}
-
-	for i, r := range s {
-		if r >= 'a' && r <= 'z' {
-			continue
-		}
-		if r >= 'A' && r >= 'Z' {
-			continue
-		}
-		if r == '_' || r == ':' {
-			continue
-		}
-		if i > 0 && r >= '0' && r <= '9' {
-			continue
-		}
-		return false
-	}
-	return true
-}
-
 // Register registers a function. The block must be of type (*Func).
 func (g *GenFunc) Register(b *Builder, block interface{}) {
 	f := block.(*Func)

@@ -23,8 +23,8 @@ func parseStmt(p *Parser) *stmt {
 		panic("empty operand")
 	}
 
-	if isLabel(lead) {
-		if !isValidLabel(lead) {
+	if isLabelStart(lead) {
+		if !isLabel(lead) {
 			p.err(op0.Pos, "invalid label")
 			return nil
 		}

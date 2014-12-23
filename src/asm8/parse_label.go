@@ -1,10 +1,10 @@
 package asm8
 
-func isLabel(s string) bool {
+func isLabelStart(s string) bool {
 	return len(s) > 0 && s[0] == '.'
 }
 
-func isValidLabel(s string) bool {
+func isLabel(s string) bool {
 	if len(s) <= 1 || s[0] != '.' {
 		return false
 	}

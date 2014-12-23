@@ -57,17 +57,17 @@ Planned Features:
 - `asm8/lex_string.go`: Lexing strings (done)
 - `asm8/lex_operand.go`: Lexing operands (done)
 - `asm8/lex_all.go`: Put the lexing altogether (test done)
-- `asm8/stmt_lexer.go`: Replace endl with semis (done)
+- `asm8/stmt_lexer.go`: Replace endl with semicolons (done)
 - `asm8/parser.go`: Parser framework (done)
 - `asm8/parse_reg.go`: Register names (done)
 - `asm8/parse_label.go`: Label name check (done)
 - `asm8/parse_sym.go`: Symbol name check 
-- `asm8/parse_arg.go`: Argument count check
-- `asm8/inst.go`: Assembly instruction line data structure (done)
-- `asm8/inst_reg.go`: Register instructions
-- `asm8/inst_imm.go`: Immediate instructions
+- `asm8/parse_arg.go`: Argument count check (done)
+- `asm8/inst.go`: Assembly instruction line datas tructure (done)
+- `asm8/inst_reg.go`: Register instructions (done)
+- `asm8/inst_imm.go`: Immediate instructions 
 - `asm8/inst_br.go`: Branch instructions
-- `asm8/inst_jmp.go`: Jump instructions
+- `asm8/inst_jmp.go`: Jump instructions (done)
 - `asm8/inst_sys.go`: System instructions
 - `asm8/parse_inst.go`: Assembly instruction parsing (done)
 - `asm8/parse_stmt.go`: Assembly instruction and label parsing (done)
@@ -78,10 +78,10 @@ Planned Features:
 - `asm8/parse_all.go`: Put the parsing altogether
 - `asm8/sym_table.go`: Symbol table (done)
 - `asm8/sym_scope.go`: Symbol scope, stack of sym tables (done)
-- `asm8/resolve.go`: Symbol resolve
+- `asm8/resolve.go`: Symbol resolve check
 - `asm8/builder.go`: Builder framework
 - `asm8/build_func.go`: Function block builder
-- `asm8/layout.go`: Layout symbols
+- `asm8/link.go`: Layout and linking 
 - `asm8/image.go`: Image builder
 
 ### Programming Language (lang8)
