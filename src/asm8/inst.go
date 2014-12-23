@@ -10,6 +10,6 @@ const (
 	fillNone = iota
 	fillLabel
 	fillLink
-	fillValue
-	fillValueHigh
+	fillLow
+	fillHigh
 )

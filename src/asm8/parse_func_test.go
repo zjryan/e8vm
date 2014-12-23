@@ -56,7 +56,7 @@ func pf(s string) {
 func ExampleFunc_1() {
 	pf(`
 	func main {
-		lui r4 /*inline comment*/ something
+		lui r4 /*inline comment*/ r3
 
 		// blank lines are ignored
 		lui a5   anything		cool // some comment

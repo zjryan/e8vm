@@ -23,7 +23,11 @@ var (
 	opImuMap = map[string]uint32{
 		"andi": 3,
 		"ori":  4,
-		"lui":  5,
+	}
+
+	// op reg imm(signed or unsigned)
+	opImmMap = map[string]uint32{
+		"lui": 5,
 	}
 )
 
@@ -59,6 +63,22 @@ func parseIms(p *Parser, op *lex8.Token) uint32 {
 	return uint32(ret) & 0xffff
 }
 
+// parseImm parses an unsigned 16-bit immediate
+func parseImm(p *Parser, op *lex8.Token) uint32 {
+	ret, e := strconv.ParseInt(op.Lit, 0, 32)
+	if e != nil {
+		p.err(op.Pos, "invalid signed immediate %q: %s", op.Lit, e)
+		return 0
+	}
+
+	if ret > 0xffff || ret < -0x8000 {
+		p.err(op.Pos, "immediate out of 16-bit range: %s", op.Lit)
+		return 0
+	}
+
+	return uint32(ret) & 0xffff
+}
+
 func makeInstImm(op, d, s, im uint32) *inst {
 	ret := uint32(0)
 	ret |= (op & 0xff) << 24
@@ -81,21 +101,27 @@ func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	argCount := func(n int) bool { return argCount(p, ops, n) }
 
 	var op, d, s, im uint32
-	if len(args) >= 2 {
+	if len(args) >= 1 {
 		d = parseReg(p, args[0])
-		s = parseReg(p, args[1])
 	}
 
 	var found bool
 	if op, found = opImsMap[opName]; found {
 		// op reg reg imm(signed)
 		if argCount(3) {
+			s = parseReg(p, args[1])
 			im = parseIms(p, args[2])
 		}
 	} else if op, found = opImuMap[opName]; found {
 		// op reg reg imm(unsigned)
 		if argCount(3) {
+			s = parseReg(p, args[1])
 			im = parseImu(p, args[2])
+		}
+	} else if op, found = opImmMap[opName]; found {
+		// op reg imm(signed or unsigned)
+		if argCount(2) {
+			im = parseImm(p, args[2])
 		}
 	} else {
 		return nil, false
