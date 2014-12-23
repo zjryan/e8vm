@@ -21,18 +21,19 @@ func parseInstJmp(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	var op uint32
-	var sym string
-	var fill int
 
 	// op sym
-
-	if opName == "j" {
+	switch opName {
+	case "j":
 		op = 2
-	} else if opName == "jal" {
+	case "jal":
 		op = 3
-	} else {
+	default:
 		return nil, false
 	}
+
+	var sym string
+	var fill int
 
 	if argCount(p, ops, 2) {
 		sym = ops[1].Lit
