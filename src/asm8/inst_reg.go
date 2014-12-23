@@ -4,6 +4,6 @@ import (
 	"lex8"
 )
 
-func makeInstReg(p *Parser, ops []*lex8.Token) (*inst, bool) {
-	panic("todo")
+func parseInstReg(p *Parser, ops []*lex8.Token) (*inst, bool) {
+	return nil, true
 }

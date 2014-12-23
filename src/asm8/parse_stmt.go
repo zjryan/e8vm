@@ -59,5 +59,5 @@ func parseStmt(p *Parser) *stmt {
 		return &stmt{label: lead, ops: ops}
 	}
 
-	return &stmt{inst: makeInst(p, ops), ops: ops}
+	return &stmt{inst: parseInst(p, ops), ops: ops}
 }

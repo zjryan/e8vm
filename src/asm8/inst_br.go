@@ -4,6 +4,7 @@ import (
 	"lex8"
 )
 
-func makeInstBr(p *Parser, ops []*lex8.Token) (*inst, bool) {
-	panic("todo")
+func parseInstBr(p *Parser, ops []*lex8.Token) (*inst, bool) {
+	// TODO:
+	return nil, false
 }

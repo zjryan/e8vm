@@ -4,6 +4,6 @@ import (
 	"lex8"
 )
 
-func makeInstSys(p *Parser, ops []*lex8.Token) (*inst, bool) {
-	panic("todo")
+func parseInstSys(p *Parser, ops []*lex8.Token) (*inst, bool) {
+	return nil, false
 }

@@ -4,6 +4,6 @@ import (
 	"lex8"
 )
 
-func makeInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
-	panic("todo")
+func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
+	return nil, false
 }
