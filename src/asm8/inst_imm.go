@@ -90,10 +90,6 @@ func makeInstImm(op, d, s, im uint32) *inst {
 }
 
 func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
-	if len(ops) == 0 {
-		panic("0 ops")
-	}
-
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]

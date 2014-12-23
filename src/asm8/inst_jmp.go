@@ -14,10 +14,6 @@ func isValidSymbol(sym string) bool {
 }
 
 func parseInstJmp(p *Parser, ops []*lex8.Token) (*inst, bool) {
-	if len(ops) == 0 {
-		panic("0 ops")
-	}
-
 	op0 := ops[0]
 	opName := op0.Lit
 	var op uint32

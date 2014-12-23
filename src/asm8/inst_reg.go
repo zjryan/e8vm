@@ -78,10 +78,6 @@ func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *inst {
 }
 
 func parseInstReg(p *Parser, ops []*lex8.Token) (*inst, bool) {
-	if len(ops) == 0 {
-		panic("0 ops")
-	}
-
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
