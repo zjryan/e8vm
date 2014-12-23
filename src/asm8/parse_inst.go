@@ -7,6 +7,11 @@ import (
 // Inst is an assembly instruction line.
 type Inst struct {
 	Ops []*lex8.Token
+
+	label  string
+	inst   uint32
+	symbol string
+	fill   int
 }
 
 func parseInst(p *Parser) *Inst {
