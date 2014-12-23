@@ -13,4 +13,5 @@ type Func struct {
 	name   *Token
 	lbrace *Token
 	rbrace *Token
+	semi   *Token
 }

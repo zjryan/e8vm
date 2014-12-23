@@ -6,7 +6,7 @@ import (
 
 // Parser parses a file input stream into top-level syntax blocks.
 type Parser struct {
-	x    *Lexer
+	x    *StmtLexer
 	errs *ErrorList
 
 	t            *Token
@@ -18,7 +18,7 @@ type Parser struct {
 
 func newParser(file string, r io.ReadCloser) *Parser {
 	ret := new(Parser)
-	ret.x = NewLexer(file, r)
+	ret.x = NewStmtLexer(file, r)
 	ret.errs = NewErrList()
 	ret.next()
 
@@ -63,6 +63,8 @@ func typeStr(t int) string {
 		return "'{'"
 	case Rbrace:
 		return "'}'"
+	case Semi:
+		return ";"
 	case Endl:
 		return "end-line"
 	case Illegal:
@@ -110,27 +112,28 @@ func (p *Parser) acceptType(t int) bool {
 	return true
 }
 
-func (p *Parser) skipLine() {
-	for p.t.Type != Endl && p.t.Type != EOF {
+func (p *Parser) skipStmt() {
+	for !(p.see(Semi) || p.see(EOF)) {
+		p.next()
+	}
+
+	if p.see(Semi) {
 		p.next()
 	}
 }
 
-func (p *Parser) skipErrLine() bool {
-	if p.inErr {
-		p.skipLine()
-		p.clearErr()
-		return true
+func (p *Parser) skipErrStmt() bool {
+	if !p.inErr {
+		return false
 	}
-	return false
+
+	p.skipStmt()
+	p.clearErr()
+	return true
 }
 
 // Block returns the block by the parser function
 func (p *Parser) Block() interface{} {
-	for p.t.Type == Endl {
-		p.next()
-	}
-
 	if p.t.Type == EOF {
 		return nil
 	}

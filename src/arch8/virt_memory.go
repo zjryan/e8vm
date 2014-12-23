@@ -69,7 +69,7 @@ func (vm *VirtMemory) ReadByte(addr uint32) (byte, *Excep) {
 	return vm.phyMem.ReadByte(addr)
 }
 
-// WriteByteRing writes a byte at the given virtual address under
+// WriteByte writes a byte at the given virtual address under
 // a certain ring.
 func (vm *VirtMemory) WriteByte(addr uint32, v byte) *Excep {
 	addr, e := vm.translateWrite(addr)

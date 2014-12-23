@@ -69,7 +69,8 @@ func ExampleFunc_2() {
 	func main {}
 	`)
 	// Output:
-	// t.s8:2: expect end-line, got '}'
+	// func main {
+	// }
 }
 
 func ExampleFunc_3() {
@@ -89,7 +90,6 @@ func ExampleFunc_4() {
 	`)
 	// Output:
 	// t.s8:2: expect '{', got operand
-	// t.s8:3: expect keyword func, got '}'
 }
 
 func ExampleFunc_5() {

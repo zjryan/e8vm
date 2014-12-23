@@ -44,6 +44,7 @@ func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
 	return ret
 }
 
+// UserMode returns trun when the CPU is in user mode.
 func (c *CPU) UserMode() bool {
 	return c.virtMem.Ring > 0
 }

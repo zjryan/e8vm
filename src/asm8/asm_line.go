@@ -7,4 +7,3 @@ type asmLine struct {
 	label string
 	fill  int // the filing method
 }
-

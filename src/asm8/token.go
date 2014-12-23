@@ -10,6 +10,7 @@ const (
 	Lbrace
 	Rbrace
 	Endl
+	Semi
 	Illegal
 )
 

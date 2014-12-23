@@ -1,24 +1,10 @@
 package asm8
 
 func (f *Func) parseLines(p *Parser) {
-	for !p.see(Rbrace) {
-		var ops []*Token
-		for !p.see(Endl) {
-			t := p.expect(Operand)
-			if t != nil {
-				ops = append(ops, t)
-			} else if p.see(EOF) {
-				return
-			} else {
-				p.next()
-			}
-		}
-
-		if !p.skipErrLine() {
-			p.expect(Endl)
-			if ops != nil {
-				f.Lines = append(f.Lines, &Line{ops})
-			}
+	for !(p.see(Rbrace) || p.see(EOF)) {
+		line := parseAsmLine(p)
+		if line != nil {
+			f.Lines = append(f.Lines, line)
 		}
 	}
 }
@@ -29,17 +15,15 @@ func parseFunc(p *Parser) interface{} {
 	ret.kw = p.expectKeyword("func")
 	ret.name = p.expect(Operand)
 	ret.lbrace = p.expect(Lbrace)
-	p.expect(Endl)
-	if p.skipErrLine() {
+	if p.skipErrStmt() {
 		return ret
 	}
 
 	ret.parseLines(p)
 
 	ret.rbrace = p.expect(Rbrace)
-	if p.skipErrLine() {
-		return ret
-	}
+	ret.semi = p.expect(Semi)
+	p.skipErrStmt()
 
 	return ret
 }
