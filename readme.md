@@ -59,24 +59,24 @@ Planned Features:
 - `asm8/lex_all.go`: Put the lexing altogether (test done)
 - `asm8/stmt_lexer.go`: Replace endl with semis (done)
 - `asm8/parser.go`: Parser framework (done)
-- `asm8/sym_table.go`: Symbol table (done)
-- `asm8/sym_scope.go`: Symbol scope, stack of sym tables (done) 
-- `asm8/parse_inst.go`: Assembly statement parsing (done)
-- `asm8/parse_func.go`: Function parsing (test done)
-- `asm8/parse_var.go`: Variable block parser
-- `asm8/parse_const.go`: Const statement parser
-- `asm8/parse_import.go`: Import statement parser
-- `asm8/parse_all.go`: Put the parsing altogether
-- `asm8/builder.go`: Builder framework
-- `asm8/build_func.go`: Function block builder
-- `asm8/inst.go`: Variable length instruction
-- `asm8/inst_parser.go`: Instruction parsing helpers
+- `asm8/inst.go`: Assembly instruction line data structure (done)
 - `asm8/inst_reg.go`: Register instructions
 - `asm8/inst_imm.go`: Immediate instructions
 - `asm8/inst_br.go`: Branch instructions
 - `asm8/inst_jmp.go`: Jump instructions
 - `asm8/inst_sys.go`: System instructions
-- `asm8/inst_all.go`: Put all instructions together
+- `asm8/parse_inst.go`: Assembly instruction parsing (done)
+- `asm8/parse_stmt.go`: Assembly instruction and label parsing (done)
+- `asm8/parse_func.go`: Function parsing (test done)
+- `asm8/parse_var.go`: Variable block parser
+- `asm8/parse_const.go`: Const statement parser
+- `asm8/parse_import.go`: Import statement parser
+- `asm8/parse_all.go`: Put the parsing altogether
+- `asm8/sym_table.go`: Symbol table (done)
+- `asm8/sym_scope.go`: Symbol scope, stack of sym tables (done)
+- `asm8/resolve.go`: Symbol resolve
+- `asm8/builder.go`: Builder framework
+- `asm8/build_func.go`: Function block builder
 - `asm8/layout.go`: Layout symbols
 - `asm8/image.go`: Image builder
 

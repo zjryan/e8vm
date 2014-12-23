@@ -16,6 +16,9 @@ func parseInst(p *Parser, ops []*lex8.Token) (i *inst) {
 	if i, hit = parseInstBr(p, ops); hit {
 		return i
 	}
+	if i, hit = parseInstJmp(p, ops); hit {
+		return i
+	}
 	if i, hit = parseInstSys(p, ops); hit {
 		return i
 	}
