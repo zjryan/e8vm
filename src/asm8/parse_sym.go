@@ -63,13 +63,12 @@ func isPackName(s string) bool {
 	return true
 }
 
-func parseSym(p *Parser, t *lex8.Token) (pack, id string) {
+func parseSym(p *Parser, t *lex8.Token) (pack, sym string) {
 	if t.Type != Operand {
 		panic("symbol not an operand")
 	}
 
-	sym := t.Lit
-
+	sym = t.Lit
 	dot := strings.Index(sym, ".")
 	if dot >= 0 {
 		pack, sym = sym[:dot], sym[dot+1:]
