@@ -86,13 +86,18 @@ func parseInstReg(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	opName := op0.Lit
 	args := ops[1:]
 
-	argCount := func(n int) bool { return argCount(p, ops, n) }
-
 	// common args
 	var fn, d, s1, s2, sh, isFloat uint32
-	if len(args) >= 2 {
-		d = parseReg(p, args[0])
-		s1 = parseReg(p, args[1])
+
+	argCount := func(n int) bool {
+		if !argCount(p, ops, n) {
+			return false
+		}
+		if n >= 2 {
+			d = parseReg(p, args[0])
+			s1 = parseReg(p, args[1])
+		}
+		return true
 	}
 
 	var found bool

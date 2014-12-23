@@ -59,6 +59,10 @@ Planned Features:
 - `asm8/lex_all.go`: Put the lexing altogether (test done)
 - `asm8/stmt_lexer.go`: Replace endl with semis (done)
 - `asm8/parser.go`: Parser framework (done)
+- `asm8/parse_reg.go`: Register names (done)
+- `asm8/parse_label.go`: Label name check (done)
+- `asm8/parse_sym.go`: Symbol name check 
+- `asm8/parse_arg.go`: Argument count check
 - `asm8/inst.go`: Assembly instruction line data structure (done)
 - `asm8/inst_reg.go`: Register instructions
 - `asm8/inst_imm.go`: Immediate instructions

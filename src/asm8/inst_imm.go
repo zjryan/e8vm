@@ -98,11 +98,15 @@ func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	opName := op0.Lit
 	args := ops[1:]
 
-	argCount := func(n int) bool { return argCount(p, ops, n) }
-
 	var op, d, s, im uint32
-	if len(args) >= 1 {
-		d = parseReg(p, args[0])
+	argCount := func(n int) bool {
+		if !argCount(p, ops, n) {
+			return false
+		}
+		if n >= 1 {
+			d = parseReg(p, args[0])
+		}
+		return true
 	}
 
 	var found bool

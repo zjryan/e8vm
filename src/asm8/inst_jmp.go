@@ -35,7 +35,7 @@ func parseInstJmp(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	var sym string
 	var fill int
 
-	if argCount(p, ops, 2) {
+	if argCount(p, ops, 1) {
 		sym = ops[1].Lit
 		if isLabel(sym) {
 			if !isValidLabel(sym) {

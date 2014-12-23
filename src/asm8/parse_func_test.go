@@ -56,16 +56,16 @@ func pf(s string) {
 func ExampleFunc_1() {
 	pf(`
 	func main {
-		lui r4 /*inline comment*/ r3
+		add r4 /*inline comment*/ r3 r5
 
 		// blank lines are ignored
-		lui a5   anything		cool // some comment
+		sub r0   r0		r1 // some comment
 		/* some block comment also */
 	}`)
 	// Output:
 	// func main {
-	//     lui r4 something
-	//     lui a5 anything cool
+	//     add r4 r3 r5
+	//     sub r0 r0 r1
 	// }
 }
 
@@ -101,9 +101,21 @@ func ExampleFunc_5() {
 	pf(`
 	func main {
 		a "something" "key"
-		b
+		j .lab 
 	}
 	`)
 	// Output:
 	// t.s8:3: expect operand, got string
+}
+
+func ExampleFunc_6() {
+	pf(`func main { invalid }`)
+	// Output:
+	// t.s8:1: invalid asm instruction "invalid"
+}
+
+func ExampleFunc_7() {
+	pf(`func main { j .lab:inv }`)
+	// Output:
+	// t.s8:1: invalid label: ".lab:inv"
 }
