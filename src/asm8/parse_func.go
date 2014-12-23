@@ -6,16 +6,16 @@ import (
 
 // Func is an assembly function.
 type Func struct {
-	Insts []*Inst
+	stmts []*stmt
 
 	kw, name, lbrace, rbrace, semi *lex8.Token
 }
 
-func (f *Func) parseInsts(p *Parser) {
+func (f *Func) parseStmts(p *Parser) {
 	for !(p.see(Rbrace) || p.see(lex8.EOF)) {
-		inst := parseInst(p)
-		if inst != nil {
-			f.Insts = append(f.Insts, inst)
+		stmt := parseStmt(p)
+		if stmt != nil {
+			f.stmts = append(f.stmts, stmt)
 		}
 	}
 }
@@ -30,7 +30,7 @@ func parseFunc(p *Parser) *Func {
 		return ret
 	}
 
-	ret.parseInsts(p)
+	ret.parseStmts(p)
 
 	ret.rbrace = p.expect(Rbrace)
 	ret.semi = p.expect(Semi)
