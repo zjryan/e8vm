@@ -4,7 +4,7 @@ func (f *Func) parseLines(p *Parser) {
 	for !(p.see(Rbrace) || p.see(EOF)) {
 		line := parseAsmLine(p)
 		if line != nil {
-			f.Lines = append(f.Lines, line)
+			f.Lines = append(f.Lines, line.(*Line))
 		}
 	}
 }

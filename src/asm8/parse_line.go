@@ -1,6 +1,6 @@
 package asm8
 
-func parseAsmLine(p *Parser) *Line {
+func parseAsmLine(p *Parser) interface{} {
 	ret := new(Line)
 
 	// a good assembly line is a series of ops that ends with
@@ -28,6 +28,10 @@ func parseAsmLine(p *Parser) *Line {
 	}
 
 	p.clearErr()
+
+	if ret == nil {
+		return nil
+	}
 
 	return ret
 }
