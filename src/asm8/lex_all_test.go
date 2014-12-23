@@ -10,7 +10,7 @@ import (
 
 func tstr(t int) string {
 	switch t {
-	case EOF:
+	case lex8.EOF:
 		return "eof"
 	case Comment:
 		return "cm"
@@ -44,7 +44,7 @@ func o(s string) {
 		fmt.Printf("%d error(s)\n", len(errs))
 	} else {
 		for _, t := range toks {
-			if t.Type == EOF || t.Type == Endl ||
+			if t.Type == lex8.EOF || t.Type == Endl ||
 				t.Type == Lbrace || t.Type == Rbrace {
 				fmt.Printf("%s:%d: %s\n", t.Pos.File, t.Pos.Line,
 					tstr(t.Type))

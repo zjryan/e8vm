@@ -36,7 +36,7 @@ func (sx *StmtLexer) Token() *lex8.Token {
 		switch t.Type {
 		case Lbrace, Semi:
 			sx.insertSemi = false
-		case EOF:
+		case lex8.EOF:
 			if sx.insertSemi {
 				sx.insertSemi = false
 				sx.save = t

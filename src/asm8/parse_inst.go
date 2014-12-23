@@ -4,7 +4,7 @@ import (
 	"lex8"
 )
 
-// Line is an assembly line.
+// Inst is an assembly instruction line.
 type Inst struct {
 	Ops []*lex8.Token
 }
@@ -15,7 +15,7 @@ func parseInst(p *Parser) *Inst {
 	// a good assembly instruction is a series of ops that ends with
 	// a semicolon or a right-brace
 	for {
-		if p.acceptType(Semi) || p.see(Rbrace) || p.see(EOF) {
+		if p.acceptType(Semi) || p.see(Rbrace) || p.see(lex8.EOF) {
 			break
 		}
 

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+
+	"lex8"
 )
 
 func pf(s string) {
@@ -13,7 +15,7 @@ func pf(s string) {
 	var fs []*Func
 
 	for {
-		if p.see(EOF) {
+		if p.see(lex8.EOF) {
 			break
 		}
 

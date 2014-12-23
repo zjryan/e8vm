@@ -53,7 +53,7 @@ func Tokens(f string, r io.ReadCloser) ([]*lex8.Token, []*lex8.Error) {
 	for {
 		t := x.Token()
 		ret = append(ret, t)
-		if t.Type == EOF {
+		if t.Type == lex8.EOF {
 			break
 		}
 	}

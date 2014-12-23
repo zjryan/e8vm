@@ -12,7 +12,7 @@ type Func struct {
 }
 
 func (f *Func) parseInsts(p *Parser) {
-	for !(p.see(Rbrace) || p.see(EOF)) {
+	for !(p.see(Rbrace) || p.see(lex8.EOF)) {
 		inst := parseInst(p)
 		if inst != nil {
 			f.Insts = append(f.Insts, inst)

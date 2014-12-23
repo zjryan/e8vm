@@ -2,8 +2,7 @@ package asm8
 
 // asm8 token types.
 const (
-	EOF = iota
-	Comment
+	Comment = iota
 	Keyword
 	Operand
 	String

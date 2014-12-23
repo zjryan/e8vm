@@ -7,7 +7,8 @@ type Token struct {
 	Pos  *Pos
 }
 
+// Standard token types
 const (
-	EOF     = 0
-	Illegal = -1
+	EOF     = -1
+	Illegal = -2
 )

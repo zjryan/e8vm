@@ -44,7 +44,7 @@ func (p *Parser) next() *lex8.Token {
 
 func typeStr(t int) string {
 	switch t {
-	case EOF:
+	case lex8.EOF:
 		return "eof"
 	case Comment:
 		return "comment"
@@ -108,7 +108,7 @@ func (p *Parser) acceptType(t int) bool {
 }
 
 func (p *Parser) skipStmt() {
-	for !(p.see(Semi) || p.see(EOF)) {
+	for !(p.see(Semi) || p.see(lex8.EOF)) {
 		p.next()
 	}
 
