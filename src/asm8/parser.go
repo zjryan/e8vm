@@ -9,11 +9,8 @@ type Parser struct {
 	x    *StmtLexer
 	errs *ErrorList
 
-	t            *Token
-	inErr        bool
-	ParseComment bool
-
-	ParseFunc func(p *Parser) interface{}
+	t     *Token
+	inErr bool
 }
 
 func newParser(file string, r io.ReadCloser) *Parser {
@@ -37,13 +34,9 @@ func (p *Parser) seeKeyword(kw string) bool {
 func (p *Parser) clearErr()     { p.inErr = false }
 func (p *Parser) hasErr() bool  { return p.inErr }
 func (p *Parser) token() *Token { return p.t }
+
 func (p *Parser) next() *Token {
 	p.t = p.x.Token()
-	if !p.ParseComment {
-		for p.t.Type == Comment {
-			p.t = p.x.Token()
-		}
-	}
 	return p.t
 }
 
@@ -130,21 +123,6 @@ func (p *Parser) skipErrStmt() bool {
 	p.skipStmt()
 	p.clearErr()
 	return true
-}
-
-// Block returns the block by the parser function
-func (p *Parser) Block() interface{} {
-	if p.t.Type == EOF {
-		return nil
-	}
-
-	if p.ParseFunc == nil {
-		ret := p.t
-		p.next()
-		return ret
-	}
-
-	return p.ParseFunc(p)
 }
 
 // Errs returns the parsing errors

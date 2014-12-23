@@ -1,9 +1,14 @@
 package asm8
 
-func parseAsmLine(p *Parser) interface{} {
-	ret := new(Line)
+// Line is an assembly line.
+type Inst struct {
+	Ops []*Token
+}
 
-	// a good assembly line is a series of ops that ends with
+func parseInst(p *Parser) *Inst {
+	ret := new(Inst)
+
+	// a good assembly instruction is a series of ops that ends with
 	// a semicolon or a right-brace
 	for {
 		if p.acceptType(Semi) || p.see(Rbrace) || p.see(EOF) {

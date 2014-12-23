@@ -10,15 +10,18 @@ func pf(s string) {
 	r := strings.NewReader(s)
 	rc := ioutil.NopCloser(r)
 	p := newParser("t.s8", rc)
-	p.ParseFunc = parseFunc
 	var fs []*Func
 
 	for {
-		b := p.Block()
-		if b == nil {
+		if p.see(EOF) {
 			break
 		}
-		f := b.(*Func)
+
+		f := parseFunc(p)
+		if f == nil {
+			break
+		}
+
 		fs = append(fs, f)
 	}
 

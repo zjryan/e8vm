@@ -1,15 +1,26 @@
 package asm8
 
-func (f *Func) parseLines(p *Parser) {
+// Func is an assembly function.
+type Func struct {
+	Insts []*Inst
+
+	kw     *Token
+	name   *Token
+	lbrace *Token
+	rbrace *Token
+	semi   *Token
+}
+
+func (f *Func) parseInsts(p *Parser) {
 	for !(p.see(Rbrace) || p.see(EOF)) {
-		line := parseAsmLine(p)
-		if line != nil {
-			f.Lines = append(f.Lines, line.(*Line))
+		inst := parseInst(p)
+		if inst != nil {
+			f.Insts = append(f.Insts, inst)
 		}
 	}
 }
 
-func parseFunc(p *Parser) interface{} {
+func parseFunc(p *Parser) *Func {
 	ret := new(Func)
 
 	ret.kw = p.expectKeyword("func")
@@ -19,7 +30,7 @@ func parseFunc(p *Parser) interface{} {
 		return ret
 	}
 
-	ret.parseLines(p)
+	ret.parseInsts(p)
 
 	ret.rbrace = p.expect(Rbrace)
 	ret.semi = p.expect(Semi)

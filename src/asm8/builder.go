@@ -21,7 +21,7 @@ type Builder struct {
 
 func newBuilder(file string, r io.ReadCloser) *Builder {
 	ret := new(Builder)
-	ret.p = NewParser(file, r)
+	ret.p = newParser(file, r)
 	ret.errs = NewErrList()
 	ret.scope = NewSymScope()
 
@@ -32,13 +32,7 @@ func newBuilder(file string, r io.ReadCloser) *Builder {
 func (b *Builder) Build() (interface{}, []*Error) {
 	var blocks []interface{}
 
-	for {
-		block := b.p.Block()
-		if block == nil {
-			break
-		}
-		blocks = append(blocks, block)
-	}
+	parseAsm8(b.p)
 
 	// check for parsing errors
 	errs := b.p.Errs()

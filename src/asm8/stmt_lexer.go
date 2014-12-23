@@ -9,6 +9,8 @@ type StmtLexer struct {
 	x          *Lexer
 	save       *Token
 	insertSemi bool
+
+	ParseComment bool
 }
 
 // NewStmtLexer creates a new statement lexer.
@@ -51,7 +53,9 @@ func (sx *StmtLexer) Token() *Token {
 			}
 			continue // ignore this end line
 		case Comment:
-			// do nothing
+			if !sx.ParseComment {
+				continue
+			}
 		default:
 			sx.insertSemi = true
 		}
