@@ -5,3 +5,11 @@ type inst struct {
 	symbol string
 	fill   int
 }
+
+const (
+	fillNone = iota
+	fillLabel
+	fillLink
+	fillValue
+	fillValueHigh
+)

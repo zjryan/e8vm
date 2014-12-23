@@ -11,29 +11,6 @@ type stmt struct {
 	ops []*lex8.Token
 }
 
-func isValidLabel(s string) bool {
-	if len(s) <= 1 || s[0] != '.' {
-		return false
-	}
-
-	for i, r := range s[1:] {
-		if r >= '0' && r <= '9' && i > 0 {
-			continue
-		}
-		if r >= 'a' && r <= 'z' {
-			continue
-		}
-		if r >= 'A' && r <= 'Z' {
-			continue
-		}
-		if r == '_' {
-			continue
-		}
-		return false
-	}
-	return true
-}
-
 func parseStmt(p *Parser) *stmt {
 	ops := parseOps(p)
 	if len(ops) == 0 {
@@ -46,7 +23,7 @@ func parseStmt(p *Parser) *stmt {
 		panic("empty operand")
 	}
 
-	if lead[0] == '.' {
+	if isLabel(lead) {
 		if !isValidLabel(lead) {
 			p.err(op0.Pos, "invalid label")
 			return nil
