@@ -11,12 +11,4 @@ const (
 	Rbrace
 	Endl
 	Semi
-	Illegal
 )
-
-// Token defines a token structure.
-type Token struct {
-	Type int
-	Lit  string
-	Pos  *Pos
-}

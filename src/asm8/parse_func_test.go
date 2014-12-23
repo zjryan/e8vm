@@ -33,8 +33,8 @@ func pf(s string) {
 	} else {
 		for _, f := range fs {
 			fmt.Printf("func %s {\n", f.name.Lit)
-			for _, line := range f.Lines {
-				for i, op := range line.Ops {
+			for _, inst := range f.Insts {
+				for i, op := range inst.Ops {
 					if i == 0 {
 						fmt.Print("    ")
 					} else {

@@ -1,8 +1,12 @@
 package asm8
 
+import (
+	"lex8"
+)
+
 // Line is an assembly line.
 type Inst struct {
-	Ops []*Token
+	Ops []*lex8.Token
 }
 
 func parseInst(p *Parser) *Inst {

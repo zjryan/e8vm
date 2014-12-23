@@ -1,47 +1,51 @@
 package asm8
 
-func lexComment(x *Lexer) *Token {
-	if x.r != '/' {
+import (
+	"lex8"
+)
+
+func lexComment(x *lex8.Lexer) *lex8.Token {
+	if x.Rune() != '/' {
 		panic("incorrect comment start")
 	}
 
-	x.next()
+	x.Next()
 
-	if x.r == '/' {
+	if x.Rune() == '/' {
 		return lexLineComment(x)
-	} else if x.r == '*' {
+	} else if x.Rune() == '*' {
 		return lexBlockComment(x)
 	}
-	x.err("illegal char %q", x.r)
-	return x.token(Illegal)
+	x.Err("illegal char %q", x.Rune())
+	return x.MakeToken(lex8.Illegal)
 }
 
-func lexLineComment(x *Lexer) *Token {
+func lexLineComment(x *lex8.Lexer) *lex8.Token {
 	for {
-		x.next()
-		if x.eof() || x.r == '\n' {
+		x.Next()
+		if x.Ended() || x.Rune() == '\n' {
 			break
 		}
 	}
-	return x.token(Comment)
+	return x.MakeToken(Comment)
 }
 
-func lexBlockComment(x *Lexer) *Token {
+func lexBlockComment(x *lex8.Lexer) *lex8.Token {
 	star := false
 	for {
-		x.next()
-		if x.eof() {
-			x.err("unexpected eof in block comment")
-			return x.token(Comment)
+		x.Next()
+		if x.Ended() {
+			x.Err("unexpected eof in block comment")
+			return x.MakeToken(Comment)
 		}
 
-		if star && x.r == '/' {
-			x.next()
+		if star && x.Rune() == '/' {
+			x.Next()
 			break
 		}
 
-		star = x.r == '*'
+		star = x.Rune() == '*'
 	}
 
-	return x.token(Comment)
+	return x.MakeToken(Comment)
 }

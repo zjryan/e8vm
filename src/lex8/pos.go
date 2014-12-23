@@ -1,4 +1,4 @@
-package asm8
+package lex8
 
 // Pos is the file line position in a file
 type Pos struct {

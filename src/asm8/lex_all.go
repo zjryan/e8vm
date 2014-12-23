@@ -2,41 +2,66 @@ package asm8
 
 import (
 	"io"
+
+	"lex8"
 )
 
-func lexAsm8(x *Lexer) *Token {
-	if x.isWhite(x.r) {
+func lexAsm8(x *lex8.Lexer) *lex8.Token {
+	r := x.Rune()
+	if x.IsWhite(r) {
 		panic("incorrect token start")
 	}
 
-	switch x.r {
+	switch r {
 	case '\n':
-		x.next()
-		return x.token(Endl)
+		x.Next()
+		return x.MakeToken(Endl)
 	case '{':
-		x.next()
-		return x.token(Lbrace)
+		x.Next()
+		return x.MakeToken(Lbrace)
 	case '}':
-		x.next()
-		return x.token(Rbrace)
+		x.Next()
+		return x.MakeToken(Rbrace)
 	case '/':
 		return lexComment(x)
 	case '"':
 		return lexString(x)
 	}
 
-	if isOperandChar(x.r) {
+	if isOperandChar(r) {
 		return lexOperand(x)
 	}
 
-	x.err("illegal char %q", x.r)
-	x.next()
-	return x.token(Illegal)
+	x.Err("illegal char %q", r)
+	x.Next()
+	return x.MakeToken(lex8.Illegal)
 }
 
 // NewLexer creates a new lexer of a file stream.
-func NewLexer(file string, r io.ReadCloser) *Lexer {
-	ret := newLexer(file, r)
-	ret.lexFunc = lexAsm8
+func NewLexer(file string, r io.ReadCloser) *lex8.Lexer {
+	ret := lex8.NewLexer(file, r)
+	ret.LexFunc = lexAsm8
 	return ret
+}
+
+// Tokens parses a file in a token array
+func Tokens(f string, r io.ReadCloser) ([]*lex8.Token, []*lex8.Error) {
+	x := NewLexer(f, r)
+
+	var ret []*lex8.Token
+
+	for {
+		t := x.Token()
+		ret = append(ret, t)
+		if t.Type == EOF {
+			break
+		}
+	}
+
+	errs := x.Errs()
+	if errs != nil {
+		return nil, errs
+	}
+
+	return ret, nil
 }

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+
+	"lex8"
 )
 
 func tstr(t int) string {
@@ -24,7 +26,7 @@ func tstr(t int) string {
 		return "rb"
 	case Endl:
 		return "endl"
-	case Illegal:
+	case lex8.Illegal:
 		return "!"
 	}
 	return fmt.Sprintf("!%d", t)

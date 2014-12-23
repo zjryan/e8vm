@@ -1,14 +1,14 @@
 package asm8
 
+import (
+	"lex8"
+)
+
 // Func is an assembly function.
 type Func struct {
 	Insts []*Inst
 
-	kw     *Token
-	name   *Token
-	lbrace *Token
-	rbrace *Token
-	semi   *Token
+	kw, name, lbrace, rbrace, semi *lex8.Token
 }
 
 func (f *Func) parseInsts(p *Parser) {

@@ -1,33 +1,37 @@
 package asm8
 
-func lexString(x *Lexer) *Token {
-	if x.r != '"' {
+import (
+	"lex8"
+)
+
+func lexString(x *lex8.Lexer) *lex8.Token {
+	if !x.See('"') {
 		panic("incorrect string start")
 	}
 
 	escaped := false
 
 	for {
-		x.next()
-		if x.eof() {
-			x.err("unexpected eof in string")
-			return x.token(String)
-		} else if x.r == '\n' {
-			x.err("unexpected endl in string")
-			return x.token(String)
+		x.Next()
+		if x.Ended() {
+			x.Err("unexpected eof in string")
+			return x.MakeToken(String)
+		} else if x.See('\n') {
+			x.Err("unexpected endl in string")
+			return x.MakeToken(String)
 		}
 
 		if escaped {
 			escaped = false
 		} else {
-			if x.r == '\\' {
+			if x.See('\\') {
 				escaped = true
-			} else if x.r == '"' {
-				x.next()
+			} else if x.See('"') {
+				x.Next()
 				break
 			}
 		}
 	}
 
-	return x.token(String)
+	return x.MakeToken(String)
 }

@@ -2,27 +2,29 @@ package asm8
 
 import (
 	"io"
+
+	"lex8"
 )
 
 // Parser parses a file input stream into top-level syntax blocks.
 type Parser struct {
 	x    *StmtLexer
-	errs *ErrorList
+	errs *lex8.ErrorList
 
-	t     *Token
+	t     *lex8.Token
 	inErr bool
 }
 
 func newParser(file string, r io.ReadCloser) *Parser {
 	ret := new(Parser)
 	ret.x = NewStmtLexer(file, r)
-	ret.errs = NewErrList()
+	ret.errs = lex8.NewErrList()
 	ret.next()
 
 	return ret
 }
 
-func (p *Parser) err(pos *Pos, f string, args ...interface{}) {
+func (p *Parser) err(pos *lex8.Pos, f string, args ...interface{}) {
 	p.inErr = true
 	p.errs.Addf(pos, f, args...)
 }
@@ -31,11 +33,11 @@ func (p *Parser) see(t int) bool { return p.t.Type == t }
 func (p *Parser) seeKeyword(kw string) bool {
 	return p.see(Keyword) && p.t.Lit == kw
 }
-func (p *Parser) clearErr()     { p.inErr = false }
-func (p *Parser) hasErr() bool  { return p.inErr }
-func (p *Parser) token() *Token { return p.t }
+func (p *Parser) clearErr()          { p.inErr = false }
+func (p *Parser) hasErr() bool       { return p.inErr }
+func (p *Parser) token() *lex8.Token { return p.t }
 
-func (p *Parser) next() *Token {
+func (p *Parser) next() *lex8.Token {
 	p.t = p.x.Token()
 	return p.t
 }
@@ -60,14 +62,14 @@ func typeStr(t int) string {
 		return ";"
 	case Endl:
 		return "end-line"
-	case Illegal:
+	case lex8.Illegal:
 		return "illegal"
 	}
 
 	return "unknown"
 }
 
-func (p *Parser) expectKeyword(lit string) *Token {
+func (p *Parser) expectKeyword(lit string) *lex8.Token {
 	if p.inErr {
 		return nil
 	}
@@ -82,7 +84,7 @@ func (p *Parser) expectKeyword(lit string) *Token {
 	return ret
 }
 
-func (p *Parser) expect(t int) *Token {
+func (p *Parser) expect(t int) *lex8.Token {
 	if p.inErr {
 		return nil
 	}
@@ -126,7 +128,7 @@ func (p *Parser) skipErrStmt() bool {
 }
 
 // Errs returns the parsing errors
-func (p *Parser) Errs() []*Error {
+func (p *Parser) Errs() []*lex8.Error {
 	ret := p.x.Errs()
 	if ret != nil {
 		return ret

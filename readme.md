@@ -16,7 +16,7 @@ Planned Features:
 
 ## Table of Content (Planned)
 
-###  Architecture (arch8)
+### Architecture (arch8)
 
 - `arch8/regs.go`: Registers (test done)
 - `arch8/page.go`: Page (test done)
@@ -40,15 +40,19 @@ Planned Features:
 - `arch8/machine.go`: Bind stuff together and image loading. (done)
 - `arch8/run_raw.go`: A shortcut function to run a raw image. (done)
 
+### Lexing Framework (lex8)
+
+- `lex8/pos.go`: File position (done)
+- `lex8/error.go`: File parsing error (done)
+- `lex8/err_list.go`: File parsing error list (done)
+- `lex8/rune_scanner.go`: Rune scanner (done)
+- `lex8/lex_scanner.go`: Buffered scanner for tokenizing (done)
+- `lex8/token.go`: Token structure (done)
+- `lex8/lexer.go`: Lexer Framework (done)
+
 ### Assembler (asm8)
 
-- `asm8/pos.go`: File position (done)
-- `asm8/error.go`: File parsing error (done)
-- `asm8/err_list.go`: File parsing error list (done)
-- `asm8/rune_scanner.go`: Rune scanner (done)
-- `asm8/lex_scanner.go`: Buffered scanner for tokenizing (done)
 - `asm8/token.go`: Asm8 Tokens (done)
-- `asm8/lexer.go`: Lexer Framework (done)
 - `asm8/lex_comment.go`: Lexing comments (done)
 - `asm8/lex_string.go`: Lexing strings (done)
 - `asm8/lex_operand.go`: Lexing operands (done)

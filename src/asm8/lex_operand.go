@@ -1,5 +1,9 @@
 package asm8
 
+import (
+	"lex8"
+)
+
 func isOperandChar(r rune) bool {
 	if r >= 'a' && r <= 'z' {
 		return true
@@ -28,19 +32,19 @@ func isKeyword(lit string) bool {
 	return false
 }
 
-func lexOperand(x *Lexer) *Token {
-	if !isOperandChar(x.r) {
+func lexOperand(x *lex8.Lexer) *lex8.Token {
+	if !isOperandChar(x.Rune()) {
 		panic("incorrect operand start")
 	}
 
 	for {
-		x.next()
-		if x.eof() || !isOperandChar(x.r) {
+		x.Next()
+		if x.Ended() || !isOperandChar(x.Rune()) {
 			break
 		}
 	}
 
-	ret := x.token(Operand)
+	ret := x.MakeToken(Operand)
 	if isKeyword(ret.Lit) {
 		ret.Type = Keyword
 	}

@@ -1,4 +1,4 @@
-package asm8
+package lex8
 
 import (
 	"bufio"
