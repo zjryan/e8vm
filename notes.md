@@ -5,17 +5,26 @@
 # Asm grammar
 
 ```
-import (
+import {
     "pack"
-)
+}
 
-const (
-    Struct:field = 3
-    Struct:
-    Struct:function =
-)
+const {
+    StructName:field 0
+    StructName:dfadf 0
+}
 
-func Struct:main {
+var somedata {
+    align 4
+    x 33 32 32 43
+    x 32 33 44 32
+    i32 32 32
+    i32 32 -32 0x32 
+    i8 32 33
+    "something" 0
+}
+
+func StructName:Hello {
 
 .begin
     addi r0 3
@@ -25,12 +34,11 @@ func Struct:main {
     slt r0 r3 r4
     ld r0 r0 0
     lbu r3 r0 -3
-    br r0 r0 .begin // really?
+    beq r0 r0 .begin
     j .end
 
 .end
     j main
-
 }
 ```
 
