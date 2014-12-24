@@ -1,5 +1,9 @@
 package asm8
 
+import (
+	"lex8"
+)
+
 func isLabelStart(s string) bool {
 	return len(s) > 0 && s[0] == '.'
 }
@@ -24,5 +28,22 @@ func isLabel(s string) bool {
 		}
 		return false
 	}
+	return true
+}
+
+func parseLabel(p *Parser, t *lex8.Token) bool {
+	if t.Type != Operand {
+		panic("not an operand")
+	}
+
+	lab := t.Lit
+	if !isLabelStart(lab) {
+		return false
+	}
+
+	if !isLabel(lab) {
+		p.err(t.Pos, "invalid label: %s", lab)
+	}
+
 	return true
 }
