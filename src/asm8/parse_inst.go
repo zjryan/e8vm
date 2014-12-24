@@ -4,23 +4,14 @@ import (
 	"lex8"
 )
 
-func parseInst(p *Parser, ops []*lex8.Token) (i *inst) {
-	var hit bool
+type instParse func(*Parser, []*lex8.Token) (*inst, bool)
+type instParsers []instParse
 
-	if i, hit = parseInstReg(p, ops); hit {
-		return i
-	}
-	if i, hit = parseInstImm(p, ops); hit {
-		return i
-	}
-	if i, hit = parseInstBr(p, ops); hit {
-		return i
-	}
-	if i, hit = parseInstJmp(p, ops); hit {
-		return i
-	}
-	if i, hit = parseInstSys(p, ops); hit {
-		return i
+func (ips instParsers) parse(p *Parser, ops []*lex8.Token) *inst {
+	for _, ip := range ips {
+		if i, hit := ip(p, ops); hit {
+			return i
+		}
 	}
 
 	op0 := ops[0]

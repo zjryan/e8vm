@@ -64,12 +64,13 @@ Planned Features:
 - `asm8/parse_sym.go`: Symbol name check (done)
 - `asm8/parse_arg.go`: Argument count check (done)
 - `asm8/inst.go`: Assembly instruction line datas tructure (done)
+- `asm8/parse_inst.go`: Assembly instruction parsing framework (done)
 - `asm8/inst_reg.go`: Register instructions (done)
 - `asm8/inst_imm.go`: Immediate instructions (done)
-- `asm8/inst_br.go`: Branch instructions
+- `asm8/inst_br.go`: Branch instructions (done)
 - `asm8/inst_jmp.go`: Jump instructions (done)
 - `asm8/inst_sys.go`: System instructions (done)
-- `asm8/parse_inst.go`: Assembly instruction parsing (done)
+- `asm8/inst_all.go`: Put them all together (done)
 - `asm8/parse_stmt.go`: Assembly instruction and label parsing (done)
 - `asm8/parse_func.go`: Function parsing (test done)
 - `asm8/parse_var.go`: Variable block parser

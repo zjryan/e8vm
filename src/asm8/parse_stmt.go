@@ -23,16 +23,11 @@ func parseStmt(p *Parser) *stmt {
 		panic("empty operand")
 	}
 
-	if isLabelStart(lead) {
-		if !isLabel(lead) {
-			p.err(op0.Pos, "invalid label")
-			return nil
-		}
+	if parseLabel(p, op0) {
 		if len(ops) > 1 {
 			p.err(op0.Pos, "label should take the entire line")
 			return nil
 		}
-
 		return &stmt{label: lead, ops: ops}
 	}
 
