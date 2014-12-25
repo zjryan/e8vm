@@ -14,7 +14,7 @@ func (i *InstImm) I(cpu *CPU, in uint32) *Excep {
 
 	s := cpu.regs[src]
 	d := cpu.regs[dest]
-	ims := uint32(int32(in<<16) >> 16)
+	ims := uint32(int32(im<<16) >> 16)
 	addr := s + ims
 	var e *Excep
 	var b byte

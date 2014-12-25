@@ -8,13 +8,12 @@ import (
 type Line struct {
 	Addr uint32
 
-	Bytes []byte
-	Inst  uint32
-	Str   string
+	Inst uint32
+	Str  string
 
-	IsJump     bool
-	Target     uint32
-	TargetLine *Line
+	IsJump bool
+	To     uint32
+	ToLine *Line
 }
 
 func (line *Line) String() string {
@@ -26,10 +25,17 @@ func (line *Line) String() string {
 		)
 	}
 
-	return fmt.Sprintf("%08x:  %08x   %s (%08x)",
+	return fmt.Sprintf("%08x:  %08x   %s  // %08x",
 		line.Addr,
 		line.Inst,
 		line.Str,
-		line.Target,
+		line.To,
 	)
+}
+
+func newLine(addr uint32, in uint32) *Line {
+	ret := new(Line)
+	ret.Addr = addr
+	ret.Inst = in
+	return ret
 }
