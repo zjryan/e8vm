@@ -1,5 +1,9 @@
 package asm8
 
+import (
+	"lex8"
+)
+
 type inst struct {
 	inst   uint32
 	pack   string
@@ -7,6 +11,8 @@ type inst struct {
 	fill   int
 
 	extras []uint32 // for pseudo asms
+
+	symTok *lex8.Token
 }
 
 const (

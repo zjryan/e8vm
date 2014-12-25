@@ -98,6 +98,7 @@ func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
 		op, d, s, im uint32
 		pack, sym    string
 		fill         int
+		symTok       *lex8.Token
 	)
 
 	argCount := func(n int) bool {
@@ -114,6 +115,7 @@ func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
 		if isSymbol(t.Lit) {
 			pack, sym = parseSym(p, t)
 			fill = fillLow
+			symTok = t
 		} else {
 			im = f(p, t)
 		}
@@ -148,6 +150,7 @@ func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	ret.pack = pack
 	ret.symbol = sym
 	ret.fill = fill
+	ret.symTok = symTok
 
 	return ret, true
 }

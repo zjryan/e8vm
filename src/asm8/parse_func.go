@@ -10,6 +10,8 @@ type Func struct {
 
 	kw, name             *lex8.Token
 	lbrace, rbrace, semi *lex8.Token
+
+	addr uint32
 }
 
 func (f *Func) parseStmts(p *Parser) {
@@ -19,6 +21,13 @@ func (f *Func) parseStmts(p *Parser) {
 			f.stmts = append(f.stmts, stmt)
 		}
 	}
+}
+
+func parseBareFunc(p *Parser) *Func {
+	ret := new(Func)
+	ret.name = &lex8.Token{Operand, "_", nil}
+	ret.parseStmts(p)
+	return ret
 }
 
 func parseFunc(p *Parser) *Func {

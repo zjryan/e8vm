@@ -27,6 +27,7 @@ func parseInstBr(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	var (
 		op, s1, s2 uint32
 		lab        string
+		symTok     *lex8.Token
 
 		found bool
 	)
@@ -36,11 +37,11 @@ func parseInstBr(p *Parser, ops []*lex8.Token) (*inst, bool) {
 		if argCount(p, ops, 3) {
 			s1 = parseReg(p, args[0])
 			s2 = parseReg(p, args[1])
-			t := args[2]
-			if parseLabel(p, t) {
-				lab = t.Lit
+			symTok = args[2]
+			if parseLabel(p, symTok) {
+				lab = symTok.Lit
 			} else {
-				p.err(t.Pos, "expects a label for %s", opName)
+				p.err(symTok.Pos, "expects a label for %s", opName)
 			}
 		}
 	} else {
@@ -50,6 +51,7 @@ func parseInstBr(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	ret := makeInstBr(op, s1, s2)
 	ret.symbol = lab
 	ret.fill = fillLabel
+	ret.symTok = symTok
 
 	return ret, true
 }

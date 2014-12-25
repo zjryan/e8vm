@@ -1,11 +1,20 @@
 package asm8
 
+import (
+	"lex8"
+)
+
 func buildFunc(b *Builder, f *Func) {
 	b.scope.Push()
 
+	b.clearErr()
+
 	declareLabels(b, f)
-	setStmtOffset(b, f)
-	fillStmtLabels(b, f)
+
+	if !b.hasError {
+		setStmtOffset(b, f)
+		fillStmtLabels(b, f)
+	}
 
 	b.scope.Pop()
 }
@@ -37,14 +46,26 @@ func declareLabels(b *Builder, f *Func) {
 func setStmtOffset(b *Builder, f *Func) {
 	offset := uint32(0)
 
-	for _, stmt := range f.stmts {
-		stmt.offset = offset
-		if stmt.isLabel() {
+	for _, s := range f.stmts {
+		s.offset = offset
+		if s.isLabel() {
 			continue
 		}
 
 		offset += 4
-		offset += uint32(len(stmt.extras)) * 4
+		offset += uint32(len(s.extras)) * 4
+	}
+}
+
+func fillDelta(b *Builder, t *lex8.Token, inst *uint32, d uint32) {
+	if isJump(*inst) {
+		*inst |= d & 0x3fffffff
+	} else {
+		// it is a branch
+		if !inBrRange(d) {
+			b.err(t.Pos, "%q is out of branch range", t.Lit)
+		}
+		*inst |= d & 0x3ffff
 	}
 }
 
@@ -53,44 +74,30 @@ func fillStmtLabels(b *Builder, f *Func) {
 		if s.isLabel() {
 			continue
 		}
-		if s.fill != fillLabel {
-			continue
-		}
 
-		s.fill = fillNone
-
-		if s.pack != "" {
-			panic("fill label with pack symbol")
-		}
-
-		name := s.symbol
-		op := s.ops[len(s.ops)-1] // last op must be the label
-		if op.Lit != name {
-			panic("picking the wrong op")
-		}
-
-		sym := b.scope.Query(s.symbol)
-		if sym.Type != SymLabel {
-			panic("not a label")
-		}
-
-		if sym == nil {
-			b.err(op.Pos, "label %q not declared", name)
-			continue
-		}
-
-		lab := sym.Item.(*stmt)
-		delta := (lab.offset + 4 - s.offset) >> 2
-
-		inst := &s.inst.inst
-		if isJump(*inst) {
-			*inst |= delta & 0x3fffffff
-		} else {
-			// it is a branch
-			if !inBrRange(delta) {
-				b.err(op.Pos, "label %q out of range of branching", name)
+		switch s.fill {
+		case fillLabel:
+			if s.pack != "" {
+				panic("fill label with pack symbol")
 			}
-			*inst |= delta & 0x3ffff
+
+			t := s.symTok
+
+			sym := b.scope.Query(s.symbol)
+			if sym.Type != SymLabel {
+				panic("not a label")
+			}
+
+			if sym == nil {
+				b.err(t.Pos, "label %q not declared", t.Lit)
+				continue
+			}
+
+			lab := sym.Item.(*stmt)
+			delta := (lab.offset + 4 - s.offset) >> 2
+			fillDelta(b, t, &s.inst.inst, delta)
+		default:
+			panic("todo")
 		}
 	}
 }

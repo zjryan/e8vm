@@ -30,10 +30,12 @@ func parseInstJmp(p *Parser, ops []*lex8.Token) (*inst, bool) {
 
 	var pack, sym string
 	var fill int
+	var symTok *lex8.Token
 
 	if argCount(p, ops, 1) {
 		if parseLabel(p, ops[1]) {
 			sym = ops[1].Lit
+			symTok = ops[1]
 			fill = fillLabel
 		} else {
 			pack, sym = parseSym(p, ops[1])
@@ -46,6 +48,7 @@ func parseInstJmp(p *Parser, ops []*lex8.Token) (*inst, bool) {
 		pack:   pack,
 		symbol: sym,
 		fill:   fill,
+		symTok: symTok,
 	}
 	return ret, true
 }
