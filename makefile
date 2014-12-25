@@ -10,7 +10,7 @@ fmt:
 	gofmt -s -w -l .
 
 tags:
-	gotags `find . -name "*.go"` > tags
+	gotags -R . > tags
 
 test:
 	go test ./...

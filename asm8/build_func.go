@@ -27,12 +27,12 @@ func declareLabels(b *Builder, f *Func) {
 
 		lab := stmt.label
 		op := stmt.ops[0]
-		sym := b.scope.Declare(&Symbol{
+		sym := &Symbol{
 			Name: lab,
 			Type: SymLabel,
 			Item: stmt,
 			Pos:  op.Pos,
-		})
+		}
 
 		decl := b.scope.Declare(sym)
 		if decl != nil {
@@ -76,6 +76,8 @@ func fillStmtLabels(b *Builder, f *Func) {
 		}
 
 		switch s.fill {
+		case fillNone:
+			// do nothing
 		case fillLabel:
 			if s.pack != "" {
 				panic("fill label with pack symbol")
@@ -84,20 +86,20 @@ func fillStmtLabels(b *Builder, f *Func) {
 			t := s.symTok
 
 			sym := b.scope.Query(s.symbol)
-			if sym.Type != SymLabel {
-				panic("not a label")
-			}
-
 			if sym == nil {
 				b.err(t.Pos, "label %q not declared", t.Lit)
 				continue
 			}
 
+			if sym.Type != SymLabel {
+				panic("not a label")
+			}
+
 			lab := sym.Item.(*stmt)
-			delta := (lab.offset + 4 - s.offset) >> 2
+			delta := uint32(int32(lab.offset - s.offset - 4) >> 2)
 			fillDelta(b, t, &s.inst.inst, delta)
 		default:
-			panic("todo")
+			b.err(s.ops[0].Pos, "not implemented filling: %d", s.fill)
 		}
 	}
 }

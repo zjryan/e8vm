@@ -139,7 +139,7 @@ func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
 		if argCount(2) {
 			parseSym(args[1], parseImm)
 		}
-		if opName == "lui" {
+		if opName == "lui" && fill == fillLow {
 			fill = fillHigh
 		}
 	} else {

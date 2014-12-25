@@ -14,7 +14,8 @@ func Dasm(bs []byte, addr uint32) []*Line {
 
 	nline := len(bs) / 4
 	for i := 0; i < nline; i++ {
-		inst := binary.LittleEndian.Uint32(bs[i : i+4])
+		off := i * 4
+		inst := binary.LittleEndian.Uint32(bs[off : off+4])
 		ret = append(ret, NewLine(addr, inst))
 		addr += 4
 	}

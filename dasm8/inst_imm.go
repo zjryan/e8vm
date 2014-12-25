@@ -19,6 +19,9 @@ var (
 	opImuMap = map[uint32]string{
 		3: "andi",
 		4: "ori",
+	}
+
+	opImu2Map = map[uint32]string{
 		5: "lui",
 	}
 )
@@ -35,6 +38,8 @@ func instImm(addr uint32, in uint32) *Line {
 		s = fmt.Sprintf("%s %s %s %d", opStr, dest, src, ims)
 	} else if opStr, found := opImuMap[op]; found {
 		s = fmt.Sprintf("%s %s %s 0x%04x", opStr, dest, src, imu)
+	} else if opStr, found := opImu2Map[op]; found {
+		s = fmt.Sprintf("%s %s 0x%04x", opStr, dest, imu)
 	}
 
 	ret := newLine(addr, in)
