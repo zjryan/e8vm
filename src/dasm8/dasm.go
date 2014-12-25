@@ -2,11 +2,34 @@ package dasm8
 
 import (
 	"fmt"
+
+	"encoding/binary"
 )
 
 // Dasm disassembles a byte block.
 func Dasm(bs []byte, addr uint32) []*Line {
 	var ret []*Line
+
+	base := addr
+
+	nline := len(bs) / 4
+	for i := 0; i < nline; i++ {
+		inst := binary.LittleEndian.Uint32(bs[i : i+4])
+		ret = append(ret, NewLine(addr, inst))
+		addr += 4
+	}
+
+	// link the jumps
+	for _, line := range ret {
+		if !line.IsJump {
+			continue
+		}
+
+		index := int(line.To-base) / 4
+		if index < nline {
+			line.ToLine = ret[index]
+		}
+	}
 
 	return ret
 }
