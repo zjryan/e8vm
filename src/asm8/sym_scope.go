@@ -55,6 +55,8 @@ func (s *SymScope) Query(n string) *Symbol {
 }
 
 // Declare declares a symbole on the top of the symbol table stack.
+// It returns nil on successful, and returns the conflict symbol when
+// it is already declared.
 func (s *SymScope) Declare(sym *Symbol) *Symbol {
 	return s.top.Declare(sym)
 }

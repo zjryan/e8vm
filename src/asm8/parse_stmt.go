@@ -9,6 +9,8 @@ type stmt struct {
 	label string
 
 	ops []*lex8.Token
+
+	offset uint32
 }
 
 func parseStmt(p *Parser) *stmt {
@@ -32,4 +34,8 @@ func parseStmt(p *Parser) *stmt {
 	}
 
 	return &stmt{inst: parseInst(p, ops), ops: ops}
+}
+
+func (s *stmt) isLabel() bool {
+	return s.inst == nil && s.label != ""
 }

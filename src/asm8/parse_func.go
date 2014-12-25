@@ -26,6 +26,12 @@ func parseFunc(p *Parser) *Func {
 
 	ret.kw = p.expectKeyword("func")
 	ret.name = p.expect(Operand)
+
+	name := ret.name.Lit
+	if !isIdent(name) {
+		p.err(ret.name.Pos, "invalid function name %q", name)
+	}
+
 	ret.lbrace = p.expect(Lbrace)
 	if p.skipErrStmt() {
 		return ret

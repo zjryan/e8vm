@@ -5,6 +5,8 @@ type inst struct {
 	pack   string
 	symbol string
 	fill   int
+
+	extras []uint32 // for pseudo asms
 }
 
 const (
@@ -14,3 +16,12 @@ const (
 	fillLow
 	fillHigh
 )
+
+func isJump(inst uint32) bool {
+	return (inst >> 31) > 0
+}
+
+func inBrRange(delta uint32) bool {
+	d := int32(delta)
+	return d >= -0x20000 && d <= 0x1ffff
+}
