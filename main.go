@@ -18,8 +18,8 @@ func buildBareFunc(file, code string) ([]byte, []*lex8.Error) {
 
 var code = `
 	mov r0 r1
-	.lab
-	j .l
+.lab
+	j .lab
 `
 
 func main() {
