@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 func pf(s string) {
