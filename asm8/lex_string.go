@@ -1,7 +1,7 @@
 package asm8
 
 import (
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 func lexString(x *lex8.Lexer) *lex8.Token {

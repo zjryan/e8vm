@@ -3,7 +3,7 @@ package asm8
 import (
 	"strings"
 
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 func isSymbol(sym string) bool {

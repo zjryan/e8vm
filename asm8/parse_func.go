@@ -1,7 +1,7 @@
 package asm8
 
 import (
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 // Func is an assembly function.

@@ -3,7 +3,7 @@ package asm8
 import (
 	"io"
 
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 // BuildBareFunc builds a function body into an image.

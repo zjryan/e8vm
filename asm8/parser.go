@@ -3,7 +3,7 @@ package asm8
 import (
 	"io"
 
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 // Parser parses a file input stream into top-level syntax blocks.

@@ -3,7 +3,7 @@ package asm8
 import (
 	"strconv"
 
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 var (

@@ -3,7 +3,7 @@ package asm8
 import (
 	"io"
 
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 // StmtLexer replaces end-lines with semicolons

@@ -1,7 +1,7 @@
 package asm8
 
 import (
-	"lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 var opJmpMap = map[string]uint32{
