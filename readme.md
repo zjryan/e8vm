@@ -29,8 +29,8 @@ Planned Features:
 - `arch8/inst_reg.go`: Register instructions (test done)
 - `arch8/inst_imm.go`: Immediate instructions (test done)
 - `arch8/inst_br.go`: Branch instructions (test done)
-- `arch8/inst_jmp.go`: Jump instructions (done)
 - `arch8/inst_sys.go`: System instructions (done)
+- `arch8/inst_jmp.go`: Jump instructions (done)
 - `arch8/inst_all.go`: Put all instructions together (done)
 - `arch8/int_bus.go`: Interrupt bus (done)
 - `arch8/multi_core.go`: Shared memory multicore (done)
@@ -39,6 +39,18 @@ Planned Features:
 - `arch8/ticker.go`: A ticker that generates time interrupts. (done)
 - `arch8/machine.go`: Bind stuff together and image loading. (done)
 - `arch8/run_raw.go`: A shortcut function to run a raw image. (done)
+
+### Disassembler (dasm8)
+
+- `dasm8/reg.go`: Register names (done)
+- `dasm8/line.go`: Disassemble line structure (done)
+- `dasm8/inst_reg.go`: Register instructions (done)
+- `dasm8/inst_imm.go`: Immediate instructions (done)
+- `dasm8/inst_br.go`: Branch instructions (done)
+- `dasm8/inst_sys.go`: System instructions (done)
+- `dasm8/inst_jmp.go`: Jump instructions (done)
+- `dasm8/inst_all.go`: Put all instructions together (done)
+- `dasm8/dasm.go`: Disassembling (done)
 
 ### Lexing Framework (lex8)
 
@@ -68,8 +80,8 @@ Planned Features:
 - `asm8/inst_reg.go`: Register instructions (done)
 - `asm8/inst_imm.go`: Immediate instructions (done)
 - `asm8/inst_br.go`: Branch instructions (done)
-- `asm8/inst_jmp.go`: Jump instructions (done)
 - `asm8/inst_sys.go`: System instructions (done)
+- `asm8/inst_jmp.go`: Jump instructions (done)
 - `asm8/inst_all.go`: Put them all together (done)
 - `asm8/parse_stmt.go`: Assembly instruction and label parsing (done)
 - `asm8/parse_func.go`: Function parsing (test done)
