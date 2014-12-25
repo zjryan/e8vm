@@ -8,7 +8,8 @@ import (
 type Func struct {
 	stmts []*stmt
 
-	kw, name, lbrace, rbrace, semi *lex8.Token
+	kw, name             *lex8.Token
+	lbrace, rbrace, semi *lex8.Token
 }
 
 func (f *Func) parseStmts(p *Parser) {
