@@ -31,4 +31,4 @@ stayall:
 	STAYPATH=`pwd`/stay-tests stayall
 
 lint:
-	golint `find . -name "*.go"`
+	golint ./...
