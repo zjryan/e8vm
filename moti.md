@@ -11,6 +11,8 @@
 
 ## Reality
 
+Reading a real project is even hard to start.
+
 - Language has too many corner features, everyone uses a different
   subset
 - Projects are often complex and monolithic
