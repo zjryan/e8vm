@@ -32,7 +32,7 @@ For starters:
 - Language is even smaller than Go, can be learnt 100%
 - Project is composed of small files with no circular dependencies, natually layered
 - Toolchains needs no setup. Code compiles and runs inside browser with one click.
-- Documentations are only for explaining teh non-obvious
+- Documentations are only for explaining the non-obvious
 
 So that people can start reading.
 
