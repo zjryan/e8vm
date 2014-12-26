@@ -24,7 +24,7 @@ type Serial struct {
 var _ Device = new(Serial) // Serial is a device
 
 const (
-	serialBase     = 0
+	serialBase     = 128
 	serialInHead   = serialBase + 0  // updated by hardware
 	serialInTail   = serialBase + 4  // updated by cpu
 	serialInWait   = serialBase + 8  // cycles to wait to raise an interrupt
