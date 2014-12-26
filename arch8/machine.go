@@ -23,8 +23,9 @@ func NewMachine(memSize uint32, ncore int) *Machine {
 	// hook-up devices
 	p := ret.phyMem.Page(pageBasicIO)
 
-	ret.AddDevice(NewSerial(p, ret.cores))
 	ret.AddDevice(NewTicker(ret.cores))
+	ret.AddDevice(NewSerial(p, ret.cores))
+	ret.AddDevice(NewConsole(p, ret.cores))
 
 	return ret
 }
