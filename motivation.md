@@ -38,7 +38,7 @@ So that people can start reading.
 
 ## Near future plan (2 years)
 
-- A code blog/book online website
+- An online code blog/book website
 - A small language and compiler
 - A simple architecture that is synthesized inside the browser
 - A versioning Dropbox-like online file system
