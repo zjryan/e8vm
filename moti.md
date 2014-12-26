@@ -53,6 +53,7 @@ So that people can start reading.
 - With the feedback, learn more on how to write readable code
 - Accumulate some reviewed/rated highly readable code
 - Encourage people to participate with online currency
+- Code compiles to Javascript, x86 and ARM
 - Build a library/wiki of code
 - Build online coding courses and games
 - Build an online coding/logic Q&A website
