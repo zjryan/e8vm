@@ -1,9 +1,5 @@
 package arch8
 
-import (
-	"fmt"
-)
-
 // Inst is an interface for executing one single instruction
 type Inst interface {
 	I(cpu *CPU, in uint32) *Excep
@@ -193,23 +189,4 @@ func (c *CPU) Tick() *Excep {
 	}
 
 	return e
-}
-
-
-// PrintStatus prints out the core status.
-func (c *CPU) PrintStatus() {
-	p := func(name string, reg int) {
-		fmt.Printf(" %3s = 0x%08x %-11d\n", name, c.regs[reg], int32(c.regs[reg]))
-	}
-
-	p("r0", R0)
-	p("r1", R1)
-	p("r2", R2)
-	p("r3", R3)
-	p("r4", R4)
-	p("sp", SP)
-	p("ret", RET)
-	p("pc", PC)
-
-	fmt.Printf("ring = %d\n", c.virtMem.Ring)
 }

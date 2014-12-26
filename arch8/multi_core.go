@@ -65,7 +65,24 @@ func (c *MultiCore) PrintStatus() {
 		if len(c.cores) > 1 {
 			fmt.Printf("[core %d]\n", i)
 		}
-		core.PrintStatus()
+		printCPUStatus(core)
 		fmt.Println()
 	}
+}
+
+func printCPUStatus(c *CPU) {
+	p := func(name string, reg int) {
+		fmt.Printf(" %3s = 0x%08x %-11d\n", name, c.regs[reg], int32(c.regs[reg]))
+	}
+
+	p("r0", R0)
+	p("r1", R1)
+	p("r2", R2)
+	p("r3", R3)
+	p("r4", R4)
+	p("sp", SP)
+	p("ret", RET)
+	p("pc", PC)
+
+	fmt.Printf("ring = %d\n", c.virtMem.Ring)
 }
