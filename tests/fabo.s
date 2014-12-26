@@ -31,7 +31,7 @@
 	lw		r1 sp -8 // load the arg again
 	addi	r1 r1 -2 // -2
 
-	sw		r1 sp 8 
+	sw		r1 sp 8
 	addi 	sp sp 16
 	jal		.fabo
 	lw		r2 sp -4
