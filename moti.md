@@ -27,14 +27,14 @@ Deeper reasons:
 
 ## Dream: Let code talk and live
 
-For starters.
+For starters:
 
 - Language is even smaller than Go, can be learnt 100%
 - Project is composed of small files with no circular dependencies, natually layered
 - Toolchains needs no setup. Code compiles and runs inside browser with one click.
 - Documentations are only for explaining teh non-obvious
 
-Let code become literature.
+So that people can start reading.
 
 ## Near future plan (2 years)
 
@@ -58,3 +58,5 @@ Let code become literature.
 - Build an online coding/logic Q&A website
 - Build an online code market
 - Be the best programmer headhunting platform
+
+Let code become literature.
