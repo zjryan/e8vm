@@ -37,10 +37,10 @@ var _ Device = new(Console)
 const (
 	consoleBase = 0
 
-	consoleIn       = consoleBase + 0
-	consoleInValid  = consoleBase + 1
-	consoleOut      = consoleBase + 2
-	consoleOutValid = consoleBase + 3
+	consoleOut      = consoleBase + 0
+	consoleOutValid = consoleBase + 1
+	consoleIn       = consoleBase + 2
+	consoleInValid  = consoleBase + 3
 )
 
 func (c *Console) interrupt(code byte) {
