@@ -6,7 +6,7 @@
 - Code is *the* way to unambiguously record working logic
 - For writers, easier to maintain 
 - For readers, easier to understand
-- To communicate and preserve
+- To communicate and preserve knowledge
 - Build a sound foundation for the future of computation
 
 ## Reality
