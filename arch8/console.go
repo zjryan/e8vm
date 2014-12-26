@@ -19,6 +19,7 @@ type Console struct {
 	Output io.Writer
 }
 
+// NewConsole creates a new simple console.
 func NewConsole(p *Page, i IntBus) *Console {
 	ret := new(Console)
 	ret.intBus = i
@@ -47,6 +48,7 @@ func (c *Console) interrupt(code byte) {
 	c.intBus.Interrupt(code, c.Core)
 }
 
+// Tick flushes the buffered byte to the console.
 func (c *Console) Tick() {
 	outValid := c.p.ReadByte(consoleOutValid)
 	if outValid != 0 {
@@ -55,8 +57,8 @@ func (c *Console) Tick() {
 		if e != nil {
 			log.Print(e)
 		}
-
 		c.p.WriteByte(consoleOutValid, 0)
+		c.interrupt(c.IntOut) // out available
 	}
 
 	// TODO: input part
