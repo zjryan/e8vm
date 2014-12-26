@@ -91,11 +91,10 @@ Planned Features:
 - `asm8/parse_all.go`: Put the parsing altogether
 - `asm8/sym_table.go`: Symbol table (done)
 - `asm8/sym_scope.go`: Symbol scope, stack of sym tables (done)
-- `asm8/resolve.go`: Symbol resolve check
 - `asm8/builder.go`: Builder framework
 - `asm8/build_func.go`: Function block builder
 - `asm8/link.go`: Layout and linking 
-- `asm8/image.go`: Image builder
+- `asm8/writer.go`: Image builder
 
 ### Programming Language (lang8)
 

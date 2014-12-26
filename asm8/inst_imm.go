@@ -11,7 +11,9 @@ var (
 	opImsMap = map[string]uint32{
 		"addi": 1,
 		"slti": 2,
+	}
 
+	opMemMap = map[string]uint32{
 		"lw":  6,
 		"lb":  7,
 		"lbu": 8,
@@ -125,6 +127,15 @@ func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
 	if op, found = opImsMap[opName]; found {
 		// op reg reg imm(signed)
 		if argCount(3) {
+			s = parseReg(p, args[1])
+			parseSym(args[2], parseIms)
+		}
+	} else if op, found = opMemMap[opName]; found {
+		if len(args) == 2 {
+			// mem op can omit the offset if it is 0
+			d = parseReg(p, args[0])
+			s = parseReg(p, args[1])
+		} else if argCount(3) {
 			s = parseReg(p, args[1])
 			parseSym(args[2], parseIms)
 		}

@@ -8,7 +8,9 @@ var (
 	opImsMap = map[uint32]string{
 		1: "addi",
 		2: "slti",
+	}
 
+	opMemMap = map[uint32]string{
 		6:  "lw",
 		7:  "lb",
 		8:  "lbu",
@@ -36,6 +38,12 @@ func instImm(addr uint32, in uint32) *Line {
 	var s string
 	if opStr, found := opImsMap[op]; found {
 		s = fmt.Sprintf("%s %s %s %d", opStr, dest, src, ims)
+	} else if opStr, found := opMemMap[op]; found {
+		if ims == 0 {
+			s = fmt.Sprintf("%s %s %s", opStr, dest, src)
+		} else {
+			s = fmt.Sprintf("%s %s %s %d", opStr, dest, src, ims)
+		}
 	} else if opStr, found := opImuMap[op]; found {
 		s = fmt.Sprintf("%s %s %s 0x%04x", opStr, dest, src, imu)
 	} else if opStr, found := opImu2Map[op]; found {

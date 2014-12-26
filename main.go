@@ -4,76 +4,15 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"strings"
+	// "io/ioutil"
+	// "strings"
+	"os"
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/dasm8"
-	"lonnie.io/e8vm/lex8"
+	// "lonnie.io/e8vm/lex8"
 )
-
-func buildBareFunc(file, code string) ([]byte, []*lex8.Error) {
-	rc := ioutil.NopCloser(strings.NewReader(code))
-	return asm8.BuildBareFunc(file, rc)
-}
-
-var code = `
-
-.main
-	xor 	r0 r0 r0 // clear r0
-
-	addi 	r1 r0 10
-	lui     sp 0x1000
-	addi 	sp sp 4096 // set sp
-	sw		r1 sp 0
-	addi  	sp sp 8
-
-	jal		.fabo
-	lw 		r1 sp -4
-	addi	sp sp -8
-
-	halt
-
-.fabo
-	sw		ret sp 0
-	lw		r1 sp -8
-	beq		r1 r0 .ret0
-	addi    r1 r1 -1
-	beq		r1 r0 .ret1
-
-	sw		r1 sp 8  // arg for recursive call
-	addi	sp sp 16
-	jal		.fabo
-	lw		r2 sp -4
-	addi	sp sp -16
-	sw		r2 sp 4  // save the return value
-
-	lw		r1 sp -8 // load the arg again
-	addi	r1 r1 -2 // -2
-
-	sw		r1 sp 8 
-	addi 	sp sp 16
-	jal		.fabo
-	lw		r2 sp -4
-	addi    sp sp -16
-
-	lw		r1 sp 4
-	add		r1 r1 r2
-	j 		.out
-
-.ret0
-	mov     r1 r0
-	j       .out
-
-.ret1
-	addi 	r1 r0 1
-
-.out
-	sw		r1 sp -4
-	lw		pc sp 0 // return
-
-`
 
 var (
 	doDasm  = flag.Bool("d", false, "do dump")
@@ -101,7 +40,21 @@ func run(bs []byte) (int, error) {
 }
 
 func main() {
-	bs, es := buildBareFunc("test.s", code)
+	flag.Parse()
+
+	args := flag.Args()
+	if len(args) != 1 {
+		fmt.Fprintf(os.Stderr, "need exactly one input file\n")
+		os.Exit(-1)
+	}
+
+	f, e := os.Open(args[0])
+	if e != nil {
+		fmt.Fprintf(os.Stderr, "open: %s", e)
+		os.Exit(-1)
+	}
+
+	bs, es := asm8.BuildBareFunc(args[0], f)
 	if len(es) > 0 {
 		for _, e := range es {
 			fmt.Println(e)
