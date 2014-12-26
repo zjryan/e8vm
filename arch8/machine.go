@@ -85,3 +85,8 @@ func (m *Machine) LoadImage(r io.Reader, offset uint32) error {
 		pn++
 	}
 }
+
+// PrintCoreStatus prints the cpu statuses.
+func (m *Machine) PrintCoreStatus() {
+	m.cores.PrintStatus()
+}

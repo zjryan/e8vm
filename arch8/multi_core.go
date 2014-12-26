@@ -1,5 +1,9 @@
 package arch8
 
+import (
+	"fmt"
+)
+
 // MultiCore simulates a shared memory multicore processor.
 type MultiCore struct {
 	cores  []*CPU
@@ -53,4 +57,15 @@ func (c *MultiCore) Interrupt(code byte, core byte) {
 	}
 
 	c.cores[core].Interrupt(code)
+}
+
+// PrintStatus prints out the core status of all the cores.
+func (c *MultiCore) PrintStatus() {
+	for i, core := range c.cores {
+		if len(c.cores) > 1 {
+			fmt.Printf("[core %d]\n", i)
+		}
+		core.PrintStatus()
+		fmt.Println()
+	}
 }
