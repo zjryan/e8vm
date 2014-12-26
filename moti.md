@@ -27,12 +27,14 @@ Deeper reasons:
 
 ## Dream: Let code talk and live
 
+For starters.
+
 - Language is even smaller than Go, can be learnt 100%
 - Project is composed of small files with no circular dependencies, natually layered
 - Toolchains needs no setup. Code compiles and runs inside browser with one click.
 - Documentations are only for explaining teh non-obvious
 
-Coding is literature.
+Let code become literature.
 
 ## Near future plan (2 years)
 
