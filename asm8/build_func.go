@@ -77,7 +77,7 @@ func fillStmtLabels(b *Builder, f *Func) {
 
 		switch s.fill {
 		case fillNone:
-			// do nothing
+			continue // need to do nothing
 		case fillLabel:
 			if s.pack != "" {
 				panic("fill label with pack symbol")
@@ -96,7 +96,7 @@ func fillStmtLabels(b *Builder, f *Func) {
 			}
 
 			lab := sym.Item.(*stmt)
-			delta := uint32(int32(lab.offset - s.offset - 4) >> 2)
+			delta := uint32(int32(lab.offset-s.offset-4) >> 2)
 			fillDelta(b, t, &s.inst.inst, delta)
 		default:
 			b.err(s.ops[0].Pos, "not implemented filling: %d", s.fill)
