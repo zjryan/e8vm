@@ -84,5 +84,5 @@ func printCPUStatus(c *CPU) {
 	p("ret", RET)
 	p("pc", PC)
 
-	fmt.Printf("ring = %d\n", c.virtMem.Ring)
+	fmt.Printf("ring = %d\n", c.ring)
 }

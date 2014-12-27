@@ -44,7 +44,7 @@ func TestCPU(t *testing.T) {
 	cpu.interrupt.EnableInt(errTimeInt.Code)
 	cpu.interrupt.writeWord(intKernelSP, 0x10000)  // page 16
 	cpu.interrupt.writeWord(intHandlerPC, 0x10000) // page 16
-	cpu.virtMem.Ring = 1
+	cpu.ring = 1
 
 	e = cpu.Tick()
 	as(e == nil, "should have no error")
@@ -64,7 +64,7 @@ func TestCPU(t *testing.T) {
 
 	cpu.Reset()
 	cpu.interrupt.Enable()
-	cpu.virtMem.Ring = 1
+	cpu.ring = 1
 	m.WriteWord(0x10000, 2) // write an iret
 	e = cpu.Tick()
 	as(e == nil, "unexpected error: %s", e)
@@ -73,7 +73,7 @@ func TestCPU(t *testing.T) {
 	as(e == nil, "unexpected error: %s", e)
 	as(cpu.regs[PC] == 0x8000, "pc not iret'ed")
 	as(cpu.regs[SP] == 0, "sp not restored")
-	as(cpu.virtMem.Ring == 1, "ring not restored")
+	as(cpu.ring == 1, "ring not restored")
 	as(cpu.interrupt.Enabled(), "interrupt not enabled again")
 	has, code := cpu.interrupt.Poll()
 	as(!has && code == 0, "interrupt was not cleared")

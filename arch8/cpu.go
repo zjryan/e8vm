@@ -8,6 +8,7 @@ type Inst interface {
 // CPU defines the structure of a processing unit.
 type CPU struct {
 	regs []uint32
+	ring byte
 
 	phyMem    *PhyMemory
 	virtMem   *VirtMemory
@@ -46,7 +47,7 @@ func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
 
 // UserMode returns trun when the CPU is in user mode.
 func (c *CPU) UserMode() bool {
-	return c.virtMem.Ring > 0
+	return c.ring > 0
 }
 
 // Reset resets the CPU's internal states, i.e., registers,
@@ -57,13 +58,13 @@ func (c *CPU) Reset() {
 	}
 	c.regs[PC] = InitPC
 	c.virtMem.SetTable(0)
-	c.virtMem.Ring = 0
+	c.ring = 0
 	c.interrupt.Disable()
 }
 
 func (c *CPU) tick() *Excep {
 	pc := c.regs[PC]
-	inst, e := c.virtMem.ReadWord(pc)
+	inst, e := c.readWord(pc)
 	if e != nil {
 		return e
 	}
@@ -96,24 +97,46 @@ func (c *CPU) Interrupt(code byte) {
 	c.interrupt.Issue(code)
 }
 
+func (c *CPU) readWord(addr uint32) (uint32, *Excep) {
+	return c.virtMem.ReadWord(addr, c.ring)
+}
+
+func (c *CPU) readByte(addr uint32) (uint8, *Excep) {
+	return c.virtMem.ReadByte(addr, c.ring)
+}
+
+func (c *CPU) writeWord(addr uint32, v uint32) *Excep {
+	return c.virtMem.WriteWord(addr, c.ring, v)
+}
+
+func (c *CPU) writeByte(addr uint32, v uint8) *Excep {
+	return c.virtMem.WriteByte(addr, c.ring, v)
+}
+
 // Ienter enters a interrupt routine.
 func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 	ksp := c.interrupt.kernelSP()
 	base := ksp - intFrameSize
 
-	if e := c.virtMem.WriteWord(base+intFrameSP, c.regs[SP]); e != nil {
+	writeWord := func(off uint32, v uint32) *Excep {
+		return c.virtMem.WriteWord(base+off, 0, v)
+	}
+	writeByte := func(off uint32, b uint8) *Excep {
+		return c.virtMem.WriteByte(base+off, 0, b)
+	}
+	if e := writeWord(intFrameSP, c.regs[SP]); e != nil {
 		return e
 	}
-	if e := c.virtMem.WriteWord(base+intFrameRET, c.regs[RET]); e != nil {
+	if e := writeWord(intFrameRET, c.regs[RET]); e != nil {
 		return e
 	}
-	if e := c.virtMem.WriteWord(base+intFrameArg, arg); e != nil {
+	if e := writeWord(intFrameArg, arg); e != nil {
 		return e
 	}
-	if e := c.virtMem.WriteByte(base+intFrameCode, code); e != nil {
+	if e := writeByte(intFrameCode, code); e != nil {
 		return e
 	}
-	if e := c.virtMem.WriteByte(base+intFrameRing, c.virtMem.Ring); e != nil {
+	if e := writeByte(intFrameRing, c.ring); e != nil {
 		return e
 	}
 
@@ -121,7 +144,7 @@ func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 	c.regs[SP] = ksp
 	c.regs[RET] = c.regs[PC]
 	c.regs[PC] = c.interrupt.handlerPC()
-	c.virtMem.Ring = 0
+	c.ring = 0
 
 	return nil
 }
@@ -129,7 +152,7 @@ func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 // Syscall jumps to the system call handler and switches to ring 0.
 func (c *CPU) Syscall() *Excep {
 	c.regs[PC] = c.interrupt.syscallPC()
-	c.virtMem.Ring = 0
+	c.ring = 0
 	return nil
 }
 
@@ -137,21 +160,25 @@ func (c *CPU) Syscall() *Excep {
 // It restores the SP, RET, PC registers, restores the ring level,
 // clears the served interrupt bit and enables interrupt again.
 func (c *CPU) Iret() *Excep {
+	if c.ring != 0 {
+		panic("iret in userland")
+	}
+
 	ksp := c.interrupt.kernelSP()
 	base := ksp - intFrameSize
-	sp, e := c.virtMem.ReadWord(base + intFrameSP)
+	sp, e := c.readWord(base + intFrameSP)
 	if e != nil {
 		return e
 	}
-	ret, e := c.virtMem.ReadWord(base + intFrameRET)
+	ret, e := c.readWord(base + intFrameRET)
 	if e != nil {
 		return e
 	}
-	code, e := c.virtMem.ReadByte(base + intFrameCode)
+	code, e := c.readByte(base + intFrameCode)
 	if e != nil {
 		return e
 	}
-	ring, e := c.virtMem.ReadByte(base + intFrameRing)
+	ring, e := c.readByte(base + intFrameRing)
 	if e != nil {
 		return e
 	}
@@ -159,7 +186,7 @@ func (c *CPU) Iret() *Excep {
 	c.regs[PC] = c.regs[RET]
 	c.regs[RET] = ret
 	c.regs[SP] = sp
-	c.virtMem.Ring = ring
+	c.ring = ring
 	c.interrupt.Clear(code)
 	c.interrupt.Enable()
 

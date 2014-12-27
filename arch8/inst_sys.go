@@ -19,7 +19,7 @@ func (i *InstSys) I(cpu *CPU, in uint32) *Excep {
 		}
 		return cpu.Syscall()
 	case 66: // usermod
-		cpu.virtMem.Ring = 1
+		cpu.ring = 1
 	case 67: // vtable
 		if cpu.UserMode() {
 			return errInvalidInst

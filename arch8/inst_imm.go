@@ -37,17 +37,17 @@ func (i *InstImm) I(cpu *CPU, in uint32) *Excep {
 	case 5: // lui
 		d = im << 16
 	case 6: // lw
-		d, e = cpu.virtMem.ReadWord(addr)
+		d, e = cpu.readWord(addr)
 	case 7: // lb
-		b, e = cpu.virtMem.ReadByte(addr)
+		b, e = cpu.readByte(addr)
 		d = uint32(int32(int8(b)))
 	case 8: // lbu
-		b, e = cpu.virtMem.ReadByte(addr)
+		b, e = cpu.readByte(addr)
 		d = uint32(b)
 	case 9: // sw
-		e = cpu.virtMem.WriteWord(addr, d)
+		e = cpu.writeWord(addr, d)
 	case 10: // sb
-		e = cpu.virtMem.WriteByte(addr, byte(d))
+		e = cpu.writeByte(addr, byte(d))
 	default:
 		return errInvalidInst
 	}
