@@ -32,3 +32,6 @@ stayall:
 
 lint:
 	golint ./...
+
+symdep:
+	symdep lonnie.io/e8vm/asm8
