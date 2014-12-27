@@ -12,8 +12,8 @@ func buildFunc(b *Builder, f *Func) {
 	declareLabels(b, f)
 
 	if !b.hasError {
-		setStmtOffset(b, f)
-		fillStmtLabels(b, f)
+		setOffsets(b, f)
+		fillLabels(b, f)
 	}
 
 	b.scope.Pop()
@@ -43,7 +43,7 @@ func declareLabels(b *Builder, f *Func) {
 	}
 }
 
-func setStmtOffset(b *Builder, f *Func) {
+func setOffsets(b *Builder, f *Func) {
 	offset := uint32(0)
 
 	for _, s := range f.stmts {
@@ -69,7 +69,7 @@ func fillDelta(b *Builder, t *lex8.Token, inst *uint32, d uint32) {
 	}
 }
 
-func fillStmtLabels(b *Builder, f *Func) {
+func fillLabels(b *Builder, f *Func) {
 	for _, s := range f.stmts {
 		if s.isLabel() {
 			continue
