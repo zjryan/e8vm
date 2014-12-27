@@ -49,7 +49,7 @@ func TestVirtMemory(t *testing.T) {
 		wd := w + i
 		e := vm.WriteWord(off+i*PageSize, 0, wd)
 		as(e == nil, "write error: %s", e)
-		w2, e := vm.ReadWord((10*1024+(3-i))*PageSize + off, 0)
+		w2, e := vm.ReadWord((10*1024+(3-i))*PageSize+off, 0)
 		as(e == nil, "read error: %s", e)
 		eo(w2 != wd, "expect 0x%08x, got 0x%08x", wd, w2)
 	}
@@ -60,7 +60,7 @@ func TestVirtMemory(t *testing.T) {
 		bt := b + byte(i)
 		e := vm.WriteByte(off+i*PageSize, 0, bt)
 		as(e == nil, "write error: %s", e)
-		b2, e := vm.ReadByte((10*1024+(3-i))*PageSize + off, 0)
+		b2, e := vm.ReadByte((10*1024+(3-i))*PageSize+off, 0)
 		as(e == nil, "read error: %s", e)
 		eo(b2 != bt, "expect 0x%02x, got 0x%02x", bt, b2)
 	}
