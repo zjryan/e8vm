@@ -15,9 +15,10 @@ import (
 )
 
 var (
-	doDasm  = flag.Bool("d", false, "do dump")
-	ncycle  = flag.Int("n", 100000, "max cycles to execute")
-	memSize = flag.Int("m", 1<<30, "memory size")
+	doDasm      = flag.Bool("d", false, "do dump")
+	ncycle      = flag.Int("n", 100000, "max cycles to execute")
+	memSize     = flag.Int("m", 1<<30, "memory size")
+	printStatus = flag.Bool("s", false, "print status after execution")
 )
 
 func run(bs []byte) (int, error) {
@@ -31,7 +32,9 @@ func run(bs []byte) (int, error) {
 	}
 
 	ret, exp := m.Run(*ncycle)
-	m.PrintCoreStatus()
+	if *printStatus {
+		m.PrintCoreStatus()
+	}
 
 	if exp == nil {
 		return ret, nil
