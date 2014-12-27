@@ -74,32 +74,27 @@ func fillStmtLabels(b *Builder, f *Func) {
 		if s.isLabel() {
 			continue
 		}
-
-		switch s.fill {
-		case fillNone:
-			continue // need to do nothing
-		case fillLabel:
-			if s.pack != "" {
-				panic("fill label with pack symbol")
-			}
-
-			t := s.symTok
-
-			sym := b.scope.Query(s.symbol)
-			if sym == nil {
-				b.err(t.Pos, "label %q not declared", t.Lit)
-				continue
-			}
-
-			if sym.Type != SymLabel {
-				panic("not a label")
-			}
-
-			lab := sym.Item.(*stmt)
-			delta := uint32(int32(lab.offset-s.offset-4) >> 2)
-			fillDelta(b, t, &s.inst.inst, delta)
-		default:
-			b.err(s.ops[0].Pos, "not implemented filling: %d", s.fill)
+		if s.fill != fillLabel {
+			continue
 		}
+		if s.pack != "" {
+			panic("fill label with pack symbol")
+		}
+
+		t := s.symTok
+
+		sym := b.scope.Query(s.symbol)
+		if sym == nil {
+			b.err(t.Pos, "label %q not declared", t.Lit)
+			continue
+		}
+
+		if sym.Type != SymLabel {
+			panic("not a label")
+		}
+
+		lab := sym.Item.(*stmt)
+		delta := uint32(int32(lab.offset-s.offset-4) >> 2)
+		fillDelta(b, t, &s.inst.inst, delta)
 	}
 }
