@@ -17,10 +17,10 @@ type inst struct {
 
 const (
 	fillNone = iota
+	fillLow  // for immediate instructions
+	fillHigh // for lui
+	fillLink // for jumps
 	fillLabel
-	fillLink
-	fillLow
-	fillHigh
 )
 
 func isJump(inst uint32) bool {
