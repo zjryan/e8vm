@@ -55,6 +55,8 @@ func setOffsets(b *Builder, f *Func) {
 		offset += 4
 		offset += uint32(len(s.extras)) * 4
 	}
+
+	f.size = offset
 }
 
 func fillDelta(b *Builder, t *lex8.Token, inst *uint32, d uint32) {
