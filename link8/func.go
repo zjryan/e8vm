@@ -58,9 +58,10 @@ func (f *Func) AddLink(fill int, pkg, sym uint32) {
 	f.links = append(f.links, link)
 }
 
+// Constant fill-later methods.
 const (
-	FillNone = iota
-	FillLink
-	FillLow
-	FillHigh
+	FillNone = iota // no fill
+	FillLink        // fill as linking offset for jump instructions
+	FillLow         // fill with the lower 16 bits
+	FillHigh        // fill with the higher 16 bits
 )

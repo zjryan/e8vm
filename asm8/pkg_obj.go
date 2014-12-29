@@ -56,6 +56,11 @@ func (p *PkgObj) PkgIndex(path string) (*PkgObj, uint32) {
 	return ret, index
 }
 
+// Declare declares a symbol inside the package.  If the symbol is a function
+// or variable, it is also declared as an object file symbol in the underlying
+// link8.Package, and it returns the index.  If the symbol is a constant, it
+// returns 0 after the declaration. Other types will panic. Redeclaration will
+// panic.
 func (p *PkgObj) Declare(s *Symbol) uint32 {
 	_, found := p.symbols[s.Name]
 	if found {
@@ -81,6 +86,9 @@ func (p *PkgObj) Declare(s *Symbol) uint32 {
 	}
 }
 
+// Query returns the symbol declared by name and its symbol index
+// if the symbol is a function or variable. It returns nil, 0 when
+// the symbol of name is not found.
 func (p *PkgObj) Query(name string) (*Symbol, uint32) {
 	ret, found := p.symbols[name]
 	if !found {
@@ -97,6 +105,6 @@ func (p *PkgObj) Query(name string) (*Symbol, uint32) {
 		}
 		return ret, index
 	default:
-		panic("invalid query")
+		panic("bug")
 	}
 }

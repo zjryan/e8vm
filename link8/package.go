@@ -119,4 +119,5 @@ func (p *Package) Func(index uint32) *Func {
 	return ret
 }
 
-type Var struct{}
+// Var reprsents a variable object
+type Var struct{} // TODO:
