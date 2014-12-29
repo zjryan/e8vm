@@ -25,8 +25,8 @@ func buildPkgScope(b *Builder, pkg *Package) {
 	}
 }
 
-func buildPkg(b *Builder, pkg *Package) *pkgObj {
-	ret := newPkgObj(pkg.Path)
+func buildPkg(b *Builder, pkg *Package) *PkgObj {
+	ret := NewPkgObj(pkg.Path)
 	b.curPkg = ret
 
 	b.scope.Push()

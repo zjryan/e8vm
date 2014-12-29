@@ -56,6 +56,8 @@ func (p *Package) Require(req *Package) uint32 {
 	return index
 }
 
+// PkgIndex returns the package imported and also its import
+// index.
 func (p *Package) PkgIndex(name string) (*Package, uint32) {
 	index, found := p.pkgIndex[name]
 	if !found {

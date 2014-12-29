@@ -44,7 +44,7 @@ func (f *Func) Size() uint32 {
 // lowest 2 bits in the offset field. The other bits
 // of the offset fields will be automatically calculated
 // based on the number of instructions in insts.
-func (f *Func) addLink(fill int, pkg, sym uint32) {
+func (f *Func) AddLink(fill int, pkg, sym uint32) {
 	if len(f.insts) == 0 {
 		panic("no inst to link")
 	}

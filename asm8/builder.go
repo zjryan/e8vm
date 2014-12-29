@@ -2,7 +2,6 @@ package asm8
 
 import (
 	"lonnie.io/e8vm/lex8"
-	"lonnie.io/e8vm/link8"
 )
 
 // Builder manipulates an AST, checks its syntax, and builds the assembly
@@ -10,7 +9,7 @@ type Builder struct {
 	errs  *lex8.ErrorList
 	scope *SymScope
 
-	curPkg *link8.Package
+	curPkg *PkgObj
 
 	hasError bool
 }

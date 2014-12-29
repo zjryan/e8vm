@@ -20,10 +20,10 @@ func (s *Symbol) clone() *Symbol {
 // asm8 symbol types
 const (
 	SymImport = iota // Item.type == *PkgObj
-	SymFunc			 // Item.type == *Func
-	SymConst		 // Item.type == *Const	
-	SymVar			 // Item.type == *Var
-	SymLabel		 // Item.type == *stmt
+	SymFunc          // Item.type == *Func
+	SymConst         // Item.type == *Const
+	SymVar           // Item.type == *Var
+	SymLabel         // Item.type == *stmt
 )
 
 func symStr(s int) string {

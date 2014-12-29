@@ -107,7 +107,7 @@ func fillLabels(b *Builder, f *Func) {
 	}
 }
 
-func queryPkg(b *Builder, t *lex8.Token, pack string) *link8.Package {
+func queryPkg(b *Builder, t *lex8.Token, pack string) *PkgObj {
 	sym := b.scope.Query(pack)
 	if sym == nil {
 		b.err(t.Pos, "package %q not found", pack)
@@ -116,19 +116,23 @@ func queryPkg(b *Builder, t *lex8.Token, pack string) *link8.Package {
 		b.err(t.Pos, "%q is a %s, not a package", t.Lit, symStr(sym.Type))
 		return nil
 	}
-	return sym.Item.(*link8.Package)
+	return sym.Item.(*PkgObj)
 }
 
 func init() {
-	as := func(b bool) { if !b { panic("bug") } }
+	as := func(b bool) {
+		if !b {
+			panic("bug")
+		}
+	}
 	as(fillNone == 0 && fillLabel == 4)
 	as(fillLink == link8.FillLink)
 	as(fillHigh == link8.FillHigh)
 	as(fillLow == link8.FillLow)
 }
 
-// resolveSymbol resolves the symbol in the statement, 
-// returns the symbol linking object and its <sym, pkg> index pair 
+// resolveSymbol resolves the symbol in the statement,
+// returns the symbol linking object and its <sym, pkg> index pair
 // in the current package context.
 func resolveSymbol(b *Builder, s *stmt) (ret *Symbol, pkg, index uint32) {
 	t := s.symTok
@@ -136,7 +140,7 @@ func resolveSymbol(b *Builder, s *stmt) (ret *Symbol, pkg, index uint32) {
 	if s.pack == "" {
 		ret = b.scope.Query(s.symbol) // find the symbol in scope
 		if ret != nil {
-			var p *link8.Package
+			var p *PkgObj
 			p, pkg = b.curPkg.PkgIndex(ret.Package)
 			index = p.SymIndex(ret.Name)
 		}
@@ -170,6 +174,11 @@ func linkSymbol(b *Builder, s *stmt, f *link8.Func) {
 	if b.curPkg == nil {
 		b.err(t.Pos, "no context for resolving %q", t.Lit)
 		return // this may happen for bare function
+	}
+
+	if s.symTok.Type == SymConst {
+		panic("todo")
+		return
 	}
 
 	sym, pkg, index := resolveSymbol(b, s)
