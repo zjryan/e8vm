@@ -10,10 +10,12 @@ type Symbol struct {
 	Type int
 	Item interface{}
 	Pos  *lex8.Pos
+
+	Package string // Package path
 }
 
 func (s *Symbol) clone() *Symbol {
-	return &Symbol{s.Name, s.Type, s.Item, s.Pos}
+	return &Symbol{s.Name, s.Type, s.Item, s.Pos, s.Package}
 }
 
 // asm8 symbol types

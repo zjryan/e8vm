@@ -25,16 +25,9 @@ func (w *writer) writeU32(u uint32) {
 	}
 }
 
-func (w *writer) writeFunc(f *Func) {
-	for _, s := range f.stmts {
-		if s.isLabel() {
-			continue
-		}
-
-		w.writeU32(s.inst.inst)
-		for _, inst := range s.extras {
-			w.writeU32(inst)
-		}
+func (w *writer) writeFunc(f *funcObj) {
+	for _, i := range f.insts {
+		w.writeU32(i)
 	}
 }
 

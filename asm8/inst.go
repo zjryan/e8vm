@@ -10,8 +10,6 @@ type inst struct {
 	symbol string
 	fill   int
 
-	extras []uint32 // for pseudo asms
-
 	symTok *lex8.Token
 }
 

@@ -4,7 +4,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func buildFunc(b *Builder, f *Func) {
+func buildFunc(b *Builder, f *Func) *funcObj {
 	b.scope.Push()
 
 	b.clearErr()
@@ -17,8 +17,12 @@ func buildFunc(b *Builder, f *Func) {
 	}
 
 	b.scope.Pop()
+
+	return makeFuncObj(b, f)
 }
 
+// declareLabels adds the labels into the scope,
+// so that later they can be queried for filling.
 func declareLabels(b *Builder, f *Func) {
 	for _, stmt := range f.stmts {
 		if !stmt.isLabel() {
@@ -43,6 +47,7 @@ func declareLabels(b *Builder, f *Func) {
 	}
 }
 
+// setOffsets calculates the offset in function for each instruction.
 func setOffsets(b *Builder, f *Func) {
 	offset := uint32(0)
 
@@ -53,12 +58,11 @@ func setOffsets(b *Builder, f *Func) {
 		}
 
 		offset += 4
-		offset += uint32(len(s.extras)) * 4
 	}
-
-	f.size = offset
 }
 
+// fillDelta will fill the particular instruction
+// with a jumping/branching offset d.
 func fillDelta(b *Builder, t *lex8.Token, inst *uint32, d uint32) {
 	if isJump(*inst) {
 		*inst |= d & 0x3fffffff
@@ -71,6 +75,9 @@ func fillDelta(b *Builder, t *lex8.Token, inst *uint32, d uint32) {
 	}
 }
 
+// fillLabels fills all the labels in the function. After the filling, all the
+// symbols left will be fillLink, fillHigh and fillLow and all branches (which
+// must use labels) will be filled.
 func fillLabels(b *Builder, f *Func) {
 	for _, s := range f.stmts {
 		if s.isLabel() {
@@ -99,4 +106,81 @@ func fillLabels(b *Builder, f *Func) {
 		delta := uint32(int32(lab.offset-s.offset-4) >> 2)
 		fillDelta(b, t, &s.inst.inst, delta)
 	}
+}
+
+// makeFuncObj converts a function AST node f into a function object. It will
+// resolve the symbols with fillLink, fillHigh and fillLow into <pack, sym>
+// index pairs for the current package, using the symbol scope and the curPkg
+// context in the builder.
+func makeFuncObj(b *Builder, f *Func) *funcObj {
+	ret := new(funcObj)
+
+	if fillLabel != 4 {
+		panic("bug")
+	}
+
+	for _, s := range f.stmts {
+		if s.isLabel() {
+			continue
+		}
+
+		ret.addInst(s.inst.inst)
+
+		if !(s.fill > fillNone && s.fill < fillLabel) {
+			continue
+		}
+
+		t := s.symTok
+		if b.curPkg == nil {
+			b.err(t.Pos, "no context for resolving %q", t.Lit)
+			continue
+		}
+
+		var sym *Symbol
+		if s.pack == "" {
+			sym = b.scope.Query(s.symbol)
+		} else {
+			sym = b.scope.Query(s.pack)
+			if sym == nil {
+				b.err(t.Pos, "package %q not found", s.pack)
+				continue
+			} else if sym.Type != SymImport {
+				t := s.symTok
+				b.err(t.Pos, "%q is a %s, not a package",
+					t.Lit, symStr(sym.Type))
+				continue
+			}
+
+			pkg := sym.Item.(*Package)
+			sym = pkg.symTable.Query(s.symbol)
+		}
+
+		if sym == nil {
+			b.err(t.Pos, "%q not found", t.Lit)
+			continue
+		} else if sym.Type == SymImport || sym.Type == SymLabel {
+			b.err(t.Pos, "%q is a %s, not a symbol",
+				t.Lit, symStr(sym.Type))
+			continue
+		} else if s.fill == fillLink && sym.Type != SymFunc {
+			b.err(t.Pos, "%q is a %s, not a function",
+				t.Lit, symStr(sym.Type))
+			continue
+		}
+
+		pkgIndex, pkgFound := b.curPkg.pkgIndex[sym.Package]
+		if !pkgFound {
+			panic("package not found in import")
+		}
+		pkg := b.curPkg.imports[pkgIndex]
+
+		symIndex, symFound := pkg.symIndex[sym.Name]
+		if !symFound {
+			panic("symbol not found in package")
+		}
+
+		ret.addLink(s.fill, pkgIndex, symIndex)
+	}
+
+	return ret
 }

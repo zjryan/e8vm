@@ -10,7 +10,4 @@ type Func struct {
 
 	kw, name             *lex8.Token
 	lbrace, rbrace, semi *lex8.Token
-
-	addr uint32
-	size uint32
 }

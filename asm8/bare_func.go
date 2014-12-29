@@ -15,13 +15,13 @@ func BuildBareFunc(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	}
 
 	b := newBuilder()
-	buildFunc(b, fn)
+	fobj := buildFunc(b, fn)
 	if es := b.Errs(); es != nil {
 		return nil, es
 	}
 
 	w := newWriter()
-	w.writeFunc(fn)
+	w.writeFunc(fobj)
 
 	return w.bytes(), nil
 }

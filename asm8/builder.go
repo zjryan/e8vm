@@ -9,6 +9,9 @@ type Builder struct {
 	errs  *lex8.ErrorList
 	scope *SymScope
 
+	pkgs   map[string]*Package
+	curPkg *Package
+
 	hasError bool
 }
 

@@ -1,18 +1,5 @@
 package asm8
 
-import (
-	"lonnie.io/e8vm/lex8"
-)
-
-type stmt struct {
-	*inst
-	label string
-
-	ops []*lex8.Token
-
-	offset uint32
-}
-
 func parseStmt(p *Parser) *stmt {
 	ops := parseOps(p)
 	if len(ops) == 0 {
