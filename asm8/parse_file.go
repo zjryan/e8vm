@@ -1,5 +1,9 @@
 package asm8
 
+import (
+	"lonnie.io/e8vm/lex8"
+)
+
 func parseFile(p *Parser) *File {
 	ret := new(File)
 
@@ -7,7 +11,7 @@ func parseFile(p *Parser) *File {
 		panic("todo")
 	}
 
-	for {
+	for !p.see(lex8.EOF) {
 		if p.seeKeyword("func") {
 			if f := parseFunc(p); f != nil {
 				ret.Funcs = append(ret.Funcs, f)

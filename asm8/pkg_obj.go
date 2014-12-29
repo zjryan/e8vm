@@ -16,7 +16,14 @@ type PkgObj struct {
 func NewPkgObj(p string) *PkgObj {
 	ret := new(PkgObj)
 	ret.Package = link8.NewPackage(p)
+
+	ret.requires = make(map[uint32]*PkgObj)
 	ret.symbols = make(map[string]*Symbol)
+
+	id := ret.Require(ret)
+	if id != 0 {
+		panic("bug")
+	}
 
 	return ret
 }

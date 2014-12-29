@@ -44,7 +44,7 @@ func traceUsed(lnk *Linker, p *Package, index uint32) []pkgSym {
 
 				for _, link := range f.links {
 					pkg := ps.Import(link.pkg)
-					if !t.hit(pkg, link.sym) {
+					if t.hit(pkg, link.sym) {
 						continue
 					}
 

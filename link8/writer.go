@@ -52,8 +52,8 @@ func writeFunc(w *writer, p *Package, f *Func) {
 
 	updateCur()
 	for i, inst := range f.insts {
-		if i == curIndex {
-			fill := curLink.offset & 0x4
+		if curLink != nil && i == curIndex {
+			fill := curLink.offset & 0x3
 			if fill == FillLink {
 				if (inst >> 31) != 0x1 {
 					panic("not a jump")

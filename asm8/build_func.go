@@ -161,6 +161,8 @@ func resolveSymbol(b *Builder, s *stmt) (ret *Symbol, pkg, index uint32) {
 	if ret == nil {
 		b.err(t.Pos, "%q not found", t.Lit)
 		return nil, 0, 0
+	} else if ret.Type == SymConst {
+		return nil, 0, 0 // not my job to fill this
 	} else if ret.Type == SymImport || ret.Type == SymLabel {
 		b.err(t.Pos, "%s %q not a symbol", symStr(ret.Type), t.Lit)
 		return nil, 0, 0
@@ -174,11 +176,6 @@ func linkSymbol(b *Builder, s *stmt, f *link8.Func) {
 	if b.curPkg == nil {
 		b.err(t.Pos, "no context for resolving %q", t.Lit)
 		return // this may happen for bare function
-	}
-
-	if s.symTok.Type == SymConst {
-		panic("todo")
-		return
 	}
 
 	sym, pkg, index := resolveSymbol(b, s)

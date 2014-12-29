@@ -5,13 +5,13 @@ import (
 	"flag"
 	"fmt"
 	// "io/ioutil"
-	// "strings"
 	"os"
+	"strings"
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/dasm8"
-	// "lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/lex8"
 )
 
 var (
@@ -51,13 +51,21 @@ func main() {
 		os.Exit(-1)
 	}
 
-	f, e := os.Open(args[0])
+	fname := args[0]
+	f, e := os.Open(fname)
 	if e != nil {
 		fmt.Fprintf(os.Stderr, "open: %s", e)
 		os.Exit(-1)
 	}
 
-	bs, es := asm8.BuildBareFunc(args[0], f)
+	var bs []byte
+	var es []*lex8.Error
+	if strings.HasSuffix(fname, "_bare.s") {
+		bs, es = asm8.BuildBareFunc(fname, f)
+	} else {
+		bs, es = asm8.BuildSingleFile(fname, f)
+	}
+
 	if len(es) > 0 {
 		for _, e := range es {
 			fmt.Println(e)
