@@ -3,6 +3,7 @@ package asm8
 import (
 	"io"
 
+	"lonnie.io/e8vm/link8"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -20,8 +21,10 @@ func BuildBareFunc(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 		return nil, es
 	}
 
-	w := newWriter()
-	w.writeBareFunc(fobj)
+	ret, e := link8.LinkBareFunc(fobj)
+	if e != nil {
+		return nil, lex8.SingleErr(e)
+	}
 
-	return w.bytes(), nil
+	return ret, nil
 }

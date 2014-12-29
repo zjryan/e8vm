@@ -2,10 +2,11 @@ package asm8
 
 import (
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/link8"
 )
 
 // buildFunc builds a function object from a function AST node.
-func buildFunc(b *Builder, f *Func) *funcObj {
+func buildFunc(b *Builder, f *Func) *link8.Func {
 	b.scope.Push()
 	defer b.scope.Pop()
 
@@ -106,7 +107,7 @@ func fillLabels(b *Builder, f *Func) {
 	}
 }
 
-func queryPkg(b *Builder, t *lex8.Token, pack string) *pkgObj {
+func queryPkg(b *Builder, t *lex8.Token, pack string) *link8.Package {
 	sym := b.scope.Query(pack)
 	if sym == nil {
 		b.err(t.Pos, "package %q not found", pack)
@@ -115,25 +116,29 @@ func queryPkg(b *Builder, t *lex8.Token, pack string) *pkgObj {
 		b.err(t.Pos, "%q is a %s, not a package", t.Lit, symStr(sym.Type))
 		return nil
 	}
-	return sym.Item.(*pkgObj)
+	return sym.Item.(*link8.Package)
 }
 
 func init() {
-	if fillLabel != 4 || fillNone != 0 {
-		panic("bug")
-	}
+	as := func(b bool) { if !b { panic("bug") } }
+	as(fillNone == 0 && fillLabel == 4)
+	as(fillLink == link8.FillLink)
+	as(fillHigh == link8.FillHigh)
+	as(fillLow == link8.FillLow)
 }
 
-// resolveSymbol resolves a symbol, returns the symbol object
-// and its <sym, pkg> index pair in the current package context.
+// resolveSymbol resolves the symbol in the statement, 
+// returns the symbol linking object and its <sym, pkg> index pair 
+// in the current package context.
 func resolveSymbol(b *Builder, s *stmt) (ret *Symbol, pkg, index uint32) {
 	t := s.symTok
 
 	if s.pack == "" {
 		ret = b.scope.Query(s.symbol) // find the symbol in scope
 		if ret != nil {
-			pkg = b.curPkg.PkgIndex(ret.Package)
-			index = b.curPkg.requires[pkg].SymIndex(ret.Name)
+			var p *link8.Package
+			p, pkg = b.curPkg.PkgIndex(ret.Package)
+			index = p.SymIndex(ret.Name)
 		}
 	} else {
 		p := queryPkg(b, t, s.pack) // find the package
@@ -141,9 +146,10 @@ func resolveSymbol(b *Builder, s *stmt) (ret *Symbol, pkg, index uint32) {
 			return
 		}
 
-		pkg = b.curPkg.PkgIndex(p.path)
+		path := p.Path()
+		_, pkg = b.curPkg.PkgIndex(path)
 		ret, index = p.Query(s.symbol)
-		if ret != nil && ret.Package != p.path {
+		if ret != nil && ret.Package != path {
 			panic("bug")
 		}
 	}
@@ -159,7 +165,7 @@ func resolveSymbol(b *Builder, s *stmt) (ret *Symbol, pkg, index uint32) {
 	return
 }
 
-func linkSymbol(b *Builder, s *stmt, f *funcObj) {
+func linkSymbol(b *Builder, s *stmt, f *link8.Func) {
 	t := s.symTok
 	if b.curPkg == nil {
 		b.err(t.Pos, "no context for resolving %q", t.Lit)
@@ -181,19 +187,19 @@ func linkSymbol(b *Builder, s *stmt, f *funcObj) {
 	}
 
 	// save the link
-	f.addLink(s.fill, pkg, index)
+	f.AddLink(s.fill, pkg, index)
 }
 
 // makeFuncObj converts a function AST node f into a function object. It
 // resolves the symbols of fillLink, fillHigh and fillLow into <pack, sym>
 // index pairs, using the symbol scope and the curPkg context in the Builder b.
-func makeFuncObj(b *Builder, f *Func) *funcObj {
-	ret := new(funcObj)
+func makeFuncObj(b *Builder, f *Func) *link8.Func {
+	ret := link8.NewFunc()
 	for _, s := range f.stmts {
 		if s.isLabel() {
 			continue // skip labels
 		}
-		ret.addInst(s.inst.inst)
+		ret.AddInst(s.inst.inst)
 
 		if !(s.fill > fillNone && s.fill < fillLabel) {
 			continue // only care about fillHigh, fillLow and fillLink

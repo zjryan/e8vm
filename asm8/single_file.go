@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/link8"
 )
 
 // BuildSingleFile builds a package named "main" from a single file.
@@ -24,9 +25,9 @@ func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 		return nil, es
 	}
 
-	ret, e := linkPkg(main)
+	ret, e := link8.LinkMain(main)
 	if e != nil {
-		return nil, []*lex8.Error{e}
+		return nil, lex8.SingleErr(e)
 	}
 
 	return ret, nil

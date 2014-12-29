@@ -1,4 +1,4 @@
-package asm8
+package link8
 
 import (
 	"bytes"
@@ -25,7 +25,11 @@ func (w *writer) writeU32(u uint32) {
 	}
 }
 
-func (w *writer) writeBareFunc(f *funcObj) {
+func (w *writer) writeBareFunc(f *Func) {
+	if len(f.links) != 0 {
+		panic("not a bare function")
+	}
+
 	for _, i := range f.insts {
 		w.writeU32(i)
 	}
@@ -35,10 +39,7 @@ func (w *writer) bytes() []byte {
 	return w.buf.Bytes()
 }
 
-func writeFunc(w *writer, s pkgSym) {
-	p := s.p
-	f := p.FuncObj(s.sym)
-
+func writeFunc(w *writer, p *Package, f *Func) {
 	cur := 0
 	var curLink *link
 	var curIndex int
@@ -53,7 +54,7 @@ func writeFunc(w *writer, s pkgSym) {
 	for i, inst := range f.insts {
 		if i == curIndex {
 			fill := curLink.offset & 0x4
-			if fill == fillLink {
+			if fill == FillLink {
 				if (inst >> 31) != 0x1 {
 					panic("not a jump")
 				}
@@ -62,9 +63,9 @@ func writeFunc(w *writer, s pkgSym) {
 				}
 
 				pc := f.addr + uint32(i)*4 + 4
-				target := p.requires[curLink.pkg].FuncObj(curLink.sym).addr
+				target := p.requires[curLink.pkg].Func(curLink.sym).addr
 				inst |= (target - pc) >> 2
-			} else if fill == fillHigh || fill == fillLow {
+			} else if fill == FillHigh || fill == FillLow {
 				if (inst & 0xffff) != 0 {
 					panic("already filled")
 				}
@@ -74,16 +75,14 @@ func writeFunc(w *writer, s pkgSym) {
 				var v uint32
 				switch sym.Type {
 				case SymFunc:
-					v = pkg.FuncObj(curLink.sym).addr
+					v = pkg.Func(curLink.sym).addr
 				case SymVar:
-					panic("todo")
-				case SymConst:
 					panic("todo")
 				default:
 					panic("bug")
 				}
 
-				if fill == fillHigh {
+				if fill == FillHigh {
 					inst |= v >> 16
 				} else { // fillLow
 					inst |= v & 0xffff

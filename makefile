@@ -34,4 +34,5 @@ lint:
 	golint ./...
 
 symdep:
+	symdep lonnie.io/e8vm/link8
 	symdep lonnie.io/e8vm/asm8

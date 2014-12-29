@@ -15,9 +15,9 @@ type inst struct {
 
 const (
 	fillNone = iota
+	fillLink // for jumps
 	fillLow  // for immediate instructions
 	fillHigh // for lui
-	fillLink // for jumps
 	fillLabel
 )
 

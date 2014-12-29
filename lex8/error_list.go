@@ -46,3 +46,8 @@ func (lst *ErrorList) Print(w io.Writer) error {
 
 	return nil
 }
+
+// SingleErr returns an error array with one error.
+func SingleErr(e error) []*Error {
+	return []*Error{{Err: e}}
+}

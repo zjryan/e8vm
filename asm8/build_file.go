@@ -9,6 +9,8 @@ func buildFile(b *Builder, f *File) {
 	pkg := b.curPkg
 	for _, f := range f.Funcs {
 		obj := buildFunc(b, f)
-		pkg.funcs[f.index] = obj
+		if obj != nil {
+			pkg.DefineFunc(f.index, obj)
+		}
 	}
 }
