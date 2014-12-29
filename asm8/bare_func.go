@@ -21,7 +21,7 @@ func BuildBareFunc(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	}
 
 	w := newWriter()
-	w.writeFunc(fobj)
+	w.writeBareFunc(fobj)
 
 	return w.bytes(), nil
 }

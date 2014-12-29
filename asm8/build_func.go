@@ -202,5 +202,9 @@ func makeFuncObj(b *Builder, f *Func) *funcObj {
 		linkSymbol(b, s, ret)
 	}
 
+	if ret.TooLarge() {
+		b.err(f.name.Pos, "too many instructions in func", f.name.Lit)
+	}
+
 	return ret
 }

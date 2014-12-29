@@ -40,6 +40,9 @@ func buildPkg(b *Builder, pkg *Package) *pkgObj {
 	for _, file := range pkg.Files {
 		buildFile(b, file)
 	}
+	if b.Errs() != nil {
+		return nil // error on building
+	}
 
 	return ret
 }

@@ -99,5 +99,13 @@ func (p *pkgObj) Query(name string) (*Symbol, uint32) {
 	return p.symbols[index], index
 }
 
+func (p *pkgObj) FuncObj(index uint32) *funcObj {
+	ret, found := p.funcs[index]
+	if !found {
+		panic("not found")
+	}
+	return ret
+}
+
 type varObj struct{}
 type constObj struct{}

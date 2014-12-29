@@ -9,10 +9,20 @@ type link struct {
 type funcObj struct {
 	insts []uint32
 	links []*link
+
+	addr uint32
 }
 
 func (o *funcObj) addInst(i uint32) {
 	o.insts = append(o.insts, i)
+}
+
+func (o *funcObj) TooLarge() bool {
+	return len(insts)*4 >= 0x80000000
+}
+
+func (o *funcObj) Size() uint32 {
+	return uint32(len(insts) * 4)
 }
 
 // addLink links the last instruction in inst to
