@@ -21,3 +21,9 @@ func (e *Error) Error() string {
 		e.Err.Error(),
 	)
 }
+
+// Errorf creates a lex8.Error similar to fmt.Errorf
+func Errorf(f string, args ...interface{}) *Error {
+	e := fmt.Errorf(f, args...)
+	return &Error{Err: e}
+}

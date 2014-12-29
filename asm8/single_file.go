@@ -24,5 +24,10 @@ func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 		return nil, es
 	}
 
-	return linkPkg(main), nil
+	ret, e := linkPkg(main)
+	if e != nil {
+		return nil, []*lex8.Error{e}
+	}
+
+	return ret, nil
 }
