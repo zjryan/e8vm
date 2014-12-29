@@ -41,6 +41,7 @@ func newPkgObj(p string) *pkgObj {
 	return ret
 }
 
+// Require assigns a relative index for the required package.
 func (p *pkgObj) Require(req *pkgObj) uint32 {
 	if index, found := p.pkgIndex[req.path]; found {
 		return index
@@ -52,6 +53,27 @@ func (p *pkgObj) Require(req *pkgObj) uint32 {
 	return index
 }
 
+// PkgIndex returns the relative package index of a required package.
+// It panics when the package is not Require()'d yet.
+func (p *pkgObj) PkgIndex(name string) uint32 {
+	ret, found := p.pkgIndex[name]
+	if !found {
+		panic("not found")
+	}
+	return ret
+}
+
+// SymIndex returns the index of a symbol in the package.
+// It panics when the symbol is not Declare()'d yet.
+func (p *pkgObj) SymIndex(name string) uint32 {
+	ret, found := p.symIndex[name]
+	if !found {
+		panic("not found")
+	}
+	return ret
+}
+
+// Declare declares a symbol and assigns a symbol index.
 func (p *pkgObj) Declare(s *Symbol) uint32 {
 	_, found := p.symIndex[s.Name]
 	if found {
@@ -64,13 +86,14 @@ func (p *pkgObj) Declare(s *Symbol) uint32 {
 	return index
 }
 
-func (p *pkgObj) Query(name string) *Symbol {
+// Query returns the symbol with the particular name.
+func (p *pkgObj) Query(name string) (*Symbol, uint32) {
 	index, found := p.symIndex[name]
 	if !found {
-		return nil
+		return nil, 0
 	}
 
-	return p.symbols[index]
+	return p.symbols[index], index
 }
 
 type varObj struct{}

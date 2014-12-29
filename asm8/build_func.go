@@ -7,17 +7,14 @@ import (
 // buildFunc builds a function object from a function AST node.
 func buildFunc(b *Builder, f *Func) *funcObj {
 	b.scope.Push()
+	defer b.scope.Pop()
 
 	b.clearErr()
-
 	declareLabels(b, f)
-
 	if !b.hasError {
 		setOffsets(b, f)
 		fillLabels(b, f)
 	}
-
-	b.scope.Pop()
 
 	return makeFuncObj(b, f)
 }
@@ -109,78 +106,100 @@ func fillLabels(b *Builder, f *Func) {
 	}
 }
 
-// makeFuncObj converts a function AST node f into a function object. It will
-// resolve the symbols with fillLink, fillHigh and fillLow into <pack, sym>
-// index pairs for the current package, using the symbol scope and the curPkg
-// context in the builder.
-func makeFuncObj(b *Builder, f *Func) *funcObj {
-	ret := new(funcObj)
+func queryPkg(b *Builder, t *lex8.Token, pack string) *pkgObj {
+	sym := b.scope.Query(pack)
+	if sym == nil {
+		b.err(t.Pos, "package %q not found", pack)
+		return nil
+	} else if sym.Type != SymImport {
+		b.err(t.Pos, "%q is a %s, not a package", t.Lit, symStr(sym.Type))
+		return nil
+	}
+	return sym.Item.(*pkgObj)
+}
 
-	if fillLabel != 4 {
+func init() {
+	if fillLabel != 4 || fillNone != 0 {
 		panic("bug")
 	}
+}
 
-	for _, s := range f.stmts {
-		if s.isLabel() {
-			continue
+// resolveSymbol resolves a symbol, returns the symbol object
+// and its <sym, pkg> index pair in the current package context.
+func resolveSymbol(b *Builder, s *stmt) (ret *Symbol, pkg, index uint32) {
+	t := s.symTok
+
+	if s.pack == "" {
+		ret = b.scope.Query(s.symbol) // find the symbol in scope
+		if ret != nil {
+			pkg = b.curPkg.PkgIndex(ret.Package)
+			index = b.curPkg.requires[pkg].SymIndex(ret.Name)
+		}
+	} else {
+		p := queryPkg(b, t, s.pack) // find the package
+		if p == nil {
+			return
 		}
 
+		pkg = b.curPkg.PkgIndex(p.path)
+		ret, index = p.Query(s.symbol)
+		if ret != nil && ret.Package != p.path {
+			panic("bug")
+		}
+	}
+
+	if ret == nil {
+		b.err(t.Pos, "%q not found", t.Lit)
+		return nil, 0, 0
+	} else if ret.Type == SymImport || ret.Type == SymLabel {
+		b.err(t.Pos, "%s %q not a symbol", symStr(ret.Type), t.Lit)
+		return nil, 0, 0
+	}
+
+	return
+}
+
+func linkSymbol(b *Builder, s *stmt, f *funcObj) {
+	t := s.symTok
+	if b.curPkg == nil {
+		b.err(t.Pos, "no context for resolving %q", t.Lit)
+		return // this may happen for bare function
+	}
+
+	sym, pkg, index := resolveSymbol(b, s)
+	if sym == nil {
+		return
+	}
+
+	if s.fill == fillLink && sym.Type != SymFunc {
+		b.err(t.Pos, "%s %q is not a function", symStr(sym.Type), t.Lit)
+		return
+	} else if pkg > 0 && !IsPublic(sym.Name) {
+		// for imported package, check if it is public
+		b.err(t.Pos, "%q is not public", t.Lit)
+		return
+	}
+
+	// save the link
+	f.addLink(s.fill, pkg, index)
+}
+
+// makeFuncObj converts a function AST node f into a function object. It
+// resolves the symbols of fillLink, fillHigh and fillLow into <pack, sym>
+// index pairs, using the symbol scope and the curPkg context in the Builder b.
+func makeFuncObj(b *Builder, f *Func) *funcObj {
+	ret := new(funcObj)
+	for _, s := range f.stmts {
+		if s.isLabel() {
+			continue // skip labels
+		}
 		ret.addInst(s.inst.inst)
 
 		if !(s.fill > fillNone && s.fill < fillLabel) {
-			continue
+			continue // only care about fillHigh, fillLow and fillLink
 		}
 
-		t := s.symTok
-		if b.curPkg == nil {
-			b.err(t.Pos, "no context for resolving %q", t.Lit)
-			continue
-		}
-
-		var sym *Symbol
-		if s.pack == "" {
-			sym = b.scope.Query(s.symbol)
-		} else {
-			sym = b.scope.Query(s.pack)
-			if sym == nil {
-				b.err(t.Pos, "package %q not found", s.pack)
-				continue
-			} else if sym.Type != SymImport {
-				t := s.symTok
-				b.err(t.Pos, "%q is a %s, not a package",
-					t.Lit, symStr(sym.Type))
-				continue
-			}
-
-			pkg := sym.Item.(*pkgObj)
-			sym = pkg.Query(s.symbol)
-		}
-
-		if sym == nil {
-			b.err(t.Pos, "%q not found", t.Lit)
-			continue
-		} else if sym.Type == SymImport || sym.Type == SymLabel {
-			b.err(t.Pos, "%q is a %s, not a symbol",
-				t.Lit, symStr(sym.Type))
-			continue
-		} else if s.fill == fillLink && sym.Type != SymFunc {
-			b.err(t.Pos, "%q is a %s, not a function",
-				t.Lit, symStr(sym.Type))
-			continue
-		}
-
-		pkgIndex, pkgFound := b.curPkg.pkgIndex[sym.Package]
-		if !pkgFound {
-			panic("package not found in import")
-		}
-		pkg := b.curPkg.requires[pkgIndex]
-
-		symIndex, symFound := pkg.symIndex[sym.Name]
-		if !symFound {
-			panic("symbol not found in package")
-		}
-
-		ret.addLink(s.fill, pkgIndex, symIndex)
+		linkSymbol(b, s, ret)
 	}
 
 	return ret
