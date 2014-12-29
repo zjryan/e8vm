@@ -1,9 +1,5 @@
 package asm8
 
-type File struct {
-	Funcs []*Func
-}
-
 func parseFile(p *Parser) *File {
 	ret := new(File)
 
