@@ -4,6 +4,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
+// buildFunc builds a function object from a function AST node.
 func buildFunc(b *Builder, f *Func) *funcObj {
 	b.scope.Push()
 
@@ -151,8 +152,8 @@ func makeFuncObj(b *Builder, f *Func) *funcObj {
 				continue
 			}
 
-			pkg := sym.Item.(*Package)
-			sym = pkg.symTable.Query(s.symbol)
+			pkg := sym.Item.(*pkgObj)
+			sym = pkg.Query(s.symbol)
 		}
 
 		if sym == nil {
@@ -172,7 +173,7 @@ func makeFuncObj(b *Builder, f *Func) *funcObj {
 		if !pkgFound {
 			panic("package not found in import")
 		}
-		pkg := b.curPkg.imports[pkgIndex]
+		pkg := b.curPkg.requires[pkgIndex]
 
 		symIndex, symFound := pkg.symIndex[sym.Name]
 		if !symFound {

@@ -1,21 +1,19 @@
 package asm8
 
+// Package represents a package node.
 type Package struct {
-	name string
-	path string
-
-	imports  []*Package
-	symNames []string
-	symObjs  []interface{}
-
-	symTable *SymTable
-	symIndex map[string]uint32
-	pkgIndex map[string]uint32
-
-	funcs  []*funcObj
-	vars   []*varObj
-	consts []*constObj
+	Path  string
+	Files []*File
 }
 
-type varObj struct{}
-type constObj struct{}
+// NewPackage creates an empty package node.
+func NewPackage(path string) *Package {
+	ret := new(Package)
+	ret.Path = path
+	return ret
+}
+
+// AddFile adds a file into the package.
+func (p *Package) AddFile(f *File) {
+	p.Files = append(p.Files, f)
+}

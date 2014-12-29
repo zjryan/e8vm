@@ -2,13 +2,18 @@ package asm8
 
 type link struct {
 	offset uint32
-	pkg    uint32
+	pkg    uint32 // relative package index
 	sym    uint32
+
+	pkgAbs uint32 // absolute package index
 }
 
 type funcObj struct {
 	insts []uint32
 	links []*link
+
+	refCount int    // reference count
+	addr     uint32 // for layout
 }
 
 func (o *funcObj) addInst(i uint32) {
@@ -32,6 +37,6 @@ func (o *funcObj) addLink(fill int, pkg, sym uint32) {
 
 	offset := uint32(len(o.insts))*4 - 4
 	offset |= uint32(fill) & 0x3
-	link := &link{offset, pkg, sym}
+	link := &link{offset: offset, pkg: pkg, sym: sym}
 	o.links = append(o.links, link)
 }

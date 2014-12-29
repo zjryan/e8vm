@@ -6,11 +6,10 @@ import (
 
 // Symbol is a data structure for saving a symbol.
 type Symbol struct {
-	Name string
-	Type int
-	Item interface{}
-	Pos  *lex8.Pos
-
+	Name    string
+	Type    int
+	Item    interface{}
+	Pos     *lex8.Pos
 	Package string // Package path
 }
 

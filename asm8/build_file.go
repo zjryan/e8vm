@@ -1,0 +1,14 @@
+package asm8
+
+func buildFile(b *Builder, f *File) {
+	b.scope.Push() // file scope
+	defer b.scope.Pop()
+
+	// TODO: import required packages, and add them into the symbol table
+
+	pkg := b.curPkg
+	for _, f := range f.Funcs {
+		obj := buildFunc(b, f)
+		pkg.funcs[f.index] = obj
+	}
+}

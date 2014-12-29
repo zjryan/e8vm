@@ -10,4 +10,6 @@ type Func struct {
 
 	kw, name             *lex8.Token
 	lbrace, rbrace, semi *lex8.Token
+
+	index uint32
 }
