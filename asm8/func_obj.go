@@ -4,16 +4,11 @@ type link struct {
 	offset uint32
 	pkg    uint32 // relative package index
 	sym    uint32
-
-	pkgAbs uint32 // absolute package index
 }
 
 type funcObj struct {
 	insts []uint32
 	links []*link
-
-	refCount int    // reference count
-	addr     uint32 // for layout
 }
 
 func (o *funcObj) addInst(i uint32) {

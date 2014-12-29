@@ -19,11 +19,10 @@ func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	pkg.AddFile(file)
 
 	b := newBuilder()
-	obj := buildPkg(b, pkg)
+	main := buildPkg(b, pkg)
 	if es := b.Errs(); es != nil {
 		return nil, es
 	}
 
-	// TODO: layout and write out obj
-	panic(obj)
+	return linkPkg(main), nil
 }

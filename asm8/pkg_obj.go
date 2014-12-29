@@ -5,7 +5,6 @@ import (
 )
 
 type pkgObj struct {
-	name string
 	path string
 
 	requires []*pkgObj // all the packages that requires for building
@@ -23,7 +22,6 @@ type pkgObj struct {
 
 func newPkgObj(p string) *pkgObj {
 	ret := new(pkgObj)
-	ret.name = path.Base(p)
 	ret.path = p
 
 	ret.symIndex = make(map[string]uint32)
@@ -39,6 +37,11 @@ func newPkgObj(p string) *pkgObj {
 	}
 
 	return ret
+}
+
+// Returns the package's default name.
+func (p *pkgObj) Name() string {
+	return path.Base(p.path)
 }
 
 // Require assigns a relative index for the required package.
