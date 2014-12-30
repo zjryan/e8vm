@@ -4,7 +4,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func argCount(p *Parser, ops []*lex8.Token, n int) bool {
+func argCount(p *parser, ops []*lex8.Token, n int) bool {
 	if len(ops) == n+1 {
 		return true
 	}

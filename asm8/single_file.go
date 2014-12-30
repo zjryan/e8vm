@@ -16,7 +16,7 @@ func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	}
 
 	pkgName := "main"
-	pkg := NewPackage(pkgName)
+	pkg := newPkg(pkgName)
 	pkg.AddFile(file)
 
 	b := newBuilder()

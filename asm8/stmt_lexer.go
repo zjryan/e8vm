@@ -7,7 +7,7 @@ import (
 )
 
 // StmtLexer replaces end-lines with semicolons
-type StmtLexer struct {
+type stmtLexer struct {
 	x          *lex8.Lexer
 	save       *lex8.Token
 	insertSemi bool
@@ -16,15 +16,15 @@ type StmtLexer struct {
 }
 
 // NewStmtLexer creates a new statement lexer.
-func NewStmtLexer(file string, r io.ReadCloser) *StmtLexer {
-	ret := new(StmtLexer)
-	ret.x = NewLexer(file, r)
+func newStmtLexer(file string, r io.ReadCloser) *stmtLexer {
+	ret := new(stmtLexer)
+	ret.x = newLexer(file, r)
 
 	return ret
 }
 
 // Token returns the next token of lexing
-func (sx *StmtLexer) Token() *lex8.Token {
+func (sx *stmtLexer) Token() *lex8.Token {
 	if sx.save != nil {
 		ret := sx.save
 		sx.save = nil
@@ -67,6 +67,6 @@ func (sx *StmtLexer) Token() *lex8.Token {
 }
 
 // Errs returns the list of lexing errors.
-func (sx *StmtLexer) Errs() []*lex8.Error {
+func (sx *stmtLexer) Errs() []*lex8.Error {
 	return sx.x.Errs()
 }

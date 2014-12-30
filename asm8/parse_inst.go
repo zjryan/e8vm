@@ -4,10 +4,10 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-type instParse func(*Parser, []*lex8.Token) (*inst, bool)
+type instParse func(*parser, []*lex8.Token) (*inst, bool)
 type instParsers []instParse
 
-func (ips instParsers) parse(p *Parser, ops []*lex8.Token) *inst {
+func (ips instParsers) parse(p *parser, ops []*lex8.Token) *inst {
 	for _, ip := range ips {
 		if i, hit := ip(p, ops); hit {
 			return i

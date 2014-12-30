@@ -63,7 +63,7 @@ func isPackName(s string) bool {
 	return true
 }
 
-func parseSym(p *Parser, t *lex8.Token) (pack, sym string) {
+func parseSym(p *parser, t *lex8.Token) (pack, sym string) {
 	if t.Type != Operand {
 		panic("symbol not an operand")
 	}

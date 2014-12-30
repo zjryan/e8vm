@@ -1,20 +1,20 @@
 package asm8
 
 // SymTable save the symbol
-type SymTable struct {
-	m map[string]*Symbol
+type symTabel struct {
+	m map[string]*symbol
 }
 
 // NewSymTable creates an empty symbol table
-func NewSymTable() *SymTable {
-	ret := new(SymTable)
-	ret.m = make(map[string]*Symbol)
+func newSymTable() *symTabel {
+	ret := new(symTabel)
+	ret.m = make(map[string]*symbol)
 
 	return ret
 }
 
 // Query searches for a symbol with a particular name.
-func (tab *SymTable) Query(n string) *Symbol {
+func (tab *symTabel) Query(n string) *symbol {
 	s := tab.m[n]
 	if s == nil {
 		return nil
@@ -26,7 +26,7 @@ func (tab *SymTable) Query(n string) *Symbol {
 // Declare adds a symbol into the table.
 // It returns nil on successful, and returns the conflict symbol
 // when it is already declared.
-func (tab *SymTable) Declare(s *Symbol) *Symbol {
+func (tab *symTabel) Declare(s *symbol) *symbol {
 	n := s.Name
 	p := tab.m[n]
 	if p != nil {

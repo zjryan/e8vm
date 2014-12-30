@@ -4,7 +4,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseOps(p *Parser) (ops []*lex8.Token) {
+func parseOps(p *parser) (ops []*lex8.Token) {
 	for !p.acceptType(Semi) {
 		t := p.expect(Operand)
 		if t != nil {

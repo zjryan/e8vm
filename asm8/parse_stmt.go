@@ -1,6 +1,6 @@
 package asm8
 
-func parseStmt(p *Parser) *stmt {
+func parseStmt(p *parser) *stmt {
 	ops := parseOps(p)
 	if len(ops) == 0 {
 		return nil

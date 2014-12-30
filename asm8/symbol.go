@@ -5,7 +5,7 @@ import (
 )
 
 // Symbol is a data structure for saving a symbol.
-type Symbol struct {
+type symbol struct {
 	Name    string
 	Type    int
 	Item    interface{}
@@ -13,8 +13,8 @@ type Symbol struct {
 	Package string // Package path
 }
 
-func (s *Symbol) clone() *Symbol {
-	return &Symbol{s.Name, s.Type, s.Item, s.Pos, s.Package}
+func (s *symbol) clone() *symbol {
+	return &symbol{s.Name, s.Type, s.Item, s.Pos, s.Package}
 }
 
 // asm8 symbol types
@@ -43,7 +43,7 @@ func symStr(s int) string {
 }
 
 // IsPublic checks if a symbol name is public.
-func IsPublic(name string) bool {
+func isPublic(name string) bool {
 	if name == "" {
 		return false
 	}

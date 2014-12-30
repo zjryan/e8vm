@@ -4,8 +4,8 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseFile(p *Parser) *File {
-	ret := new(File)
+func parseFile(p *parser) *file {
+	ret := new(file)
 
 	for p.seeKeyword("import") {
 		panic("todo")

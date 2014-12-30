@@ -1,10 +1,10 @@
 package asm8
 
-func buildPkgScope(b *Builder, pkg *Package) {
+func buildPkgScope(b *builder, pkg *pkg) {
 	for _, file := range pkg.Files {
 		for _, fn := range file.Funcs {
 			t := fn.name
-			sym := &Symbol{
+			sym := &symbol{
 				fn.name.Lit,
 				SymFunc,
 				fn,
@@ -25,8 +25,8 @@ func buildPkgScope(b *Builder, pkg *Package) {
 	}
 }
 
-func buildPkg(b *Builder, pkg *Package) *PkgObj {
-	ret := NewPkgObj(pkg.Path)
+func buildPkg(b *builder, pkg *pkg) *lib {
+	ret := newLib(pkg.Path)
 	b.curPkg = ret
 
 	b.scope.Push()

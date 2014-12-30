@@ -1,19 +1,19 @@
 package asm8
 
 // Package represents a package node.
-type Package struct {
+type pkg struct {
 	Path  string
-	Files []*File
+	Files []*file
 }
 
 // NewPackage creates an empty package node.
-func NewPackage(path string) *Package {
-	ret := new(Package)
+func newPkg(path string) *pkg {
+	ret := new(pkg)
 	ret.Path = path
 	return ret
 }
 
 // AddFile adds a file into the package.
-func (p *Package) AddFile(f *File) {
+func (p *pkg) AddFile(f *file) {
 	p.Files = append(p.Files, f)
 }

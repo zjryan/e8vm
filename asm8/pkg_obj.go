@@ -5,20 +5,20 @@ import (
 )
 
 // PkgObj is a package object.
-type PkgObj struct {
+type lib struct {
 	*link8.Package
 
-	requires map[uint32]*PkgObj
-	symbols  map[string]*Symbol
+	requires map[uint32]*lib
+	symbols  map[string]*symbol
 }
 
 // NewPkgObj creates a new package compile object
-func NewPkgObj(p string) *PkgObj {
-	ret := new(PkgObj)
+func newLib(p string) *lib {
+	ret := new(lib)
 	ret.Package = link8.NewPackage(p)
 
-	ret.requires = make(map[uint32]*PkgObj)
-	ret.symbols = make(map[string]*Symbol)
+	ret.requires = make(map[uint32]*lib)
+	ret.symbols = make(map[string]*symbol)
 
 	id := ret.Require(ret)
 	if id != 0 {
@@ -30,7 +30,7 @@ func NewPkgObj(p string) *PkgObj {
 
 // Require imports a package in and grants the package
 // a import index.
-func (p *PkgObj) Require(req *PkgObj) uint32 {
+func (p *lib) Require(req *lib) uint32 {
 	ret := p.Package.Require(req.Package)
 	_, found := p.requires[ret]
 	if !found {
@@ -42,7 +42,7 @@ func (p *PkgObj) Require(req *PkgObj) uint32 {
 
 // PkgIndex returns the package import index, consistent with
 // the underlying link8.Package.
-func (p *PkgObj) PkgIndex(path string) (*PkgObj, uint32) {
+func (p *lib) LibIndex(path string) (*lib, uint32) {
 	pkg, index := p.Package.PkgIndex(path)
 	if pkg == nil {
 		return nil, 0
@@ -61,7 +61,7 @@ func (p *PkgObj) PkgIndex(path string) (*PkgObj, uint32) {
 // link8.Package, and it returns the index.  If the symbol is a constant, it
 // returns 0 after the declaration. Other types will panic. Redeclaration will
 // panic.
-func (p *PkgObj) Declare(s *Symbol) uint32 {
+func (p *lib) Declare(s *symbol) uint32 {
 	_, found := p.symbols[s.Name]
 	if found {
 		panic("redeclare")
@@ -89,7 +89,7 @@ func (p *PkgObj) Declare(s *Symbol) uint32 {
 // Query returns the symbol declared by name and its symbol index
 // if the symbol is a function or variable. It returns nil, 0 when
 // the symbol of name is not found.
-func (p *PkgObj) Query(name string) (*Symbol, uint32) {
+func (p *lib) Query(name string) (*symbol, uint32) {
 	ret, found := p.symbols[name]
 	if !found {
 		return nil, 0

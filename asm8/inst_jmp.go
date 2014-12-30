@@ -13,7 +13,7 @@ func isValidSymbol(sym string) bool {
 	return true
 }
 
-func parseInstJmp(p *Parser, ops []*lex8.Token) (*inst, bool) {
+func parseInstJmp(p *parser, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	var op uint32

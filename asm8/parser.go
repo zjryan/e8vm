@@ -7,37 +7,37 @@ import (
 )
 
 // Parser parses a file input stream into top-level syntax blocks.
-type Parser struct {
-	x    *StmtLexer
+type parser struct {
+	x    *stmtLexer
 	errs *lex8.ErrorList
 
 	t     *lex8.Token
 	inErr bool
 }
 
-func newParser(file string, r io.ReadCloser) *Parser {
-	ret := new(Parser)
-	ret.x = NewStmtLexer(file, r)
+func newParser(file string, r io.ReadCloser) *parser {
+	ret := new(parser)
+	ret.x = newStmtLexer(file, r)
 	ret.errs = lex8.NewErrList()
 	ret.next()
 
 	return ret
 }
 
-func (p *Parser) err(pos *lex8.Pos, f string, args ...interface{}) {
+func (p *parser) err(pos *lex8.Pos, f string, args ...interface{}) {
 	p.inErr = true
 	p.errs.Addf(pos, f, args...)
 }
 
-func (p *Parser) see(t int) bool { return p.t.Type == t }
-func (p *Parser) seeKeyword(kw string) bool {
+func (p *parser) see(t int) bool { return p.t.Type == t }
+func (p *parser) seeKeyword(kw string) bool {
 	return p.see(Keyword) && p.t.Lit == kw
 }
-func (p *Parser) clearErr()          { p.inErr = false }
-func (p *Parser) hasErr() bool       { return p.inErr }
-func (p *Parser) token() *lex8.Token { return p.t }
+func (p *parser) clearErr()          { p.inErr = false }
+func (p *parser) hasErr() bool       { return p.inErr }
+func (p *parser) token() *lex8.Token { return p.t }
 
-func (p *Parser) next() *lex8.Token {
+func (p *parser) next() *lex8.Token {
 	p.t = p.x.Token()
 	return p.t
 }
@@ -69,7 +69,7 @@ func typeStr(t int) string {
 	return "unknown"
 }
 
-func (p *Parser) expectKeyword(lit string) *lex8.Token {
+func (p *parser) expectKeyword(lit string) *lex8.Token {
 	if p.inErr {
 		return nil
 	}
@@ -84,7 +84,7 @@ func (p *Parser) expectKeyword(lit string) *lex8.Token {
 	return ret
 }
 
-func (p *Parser) expect(t int) *lex8.Token {
+func (p *parser) expect(t int) *lex8.Token {
 	if p.inErr {
 		return nil
 	}
@@ -99,7 +99,7 @@ func (p *Parser) expect(t int) *lex8.Token {
 	return ret
 }
 
-func (p *Parser) acceptType(t int) bool {
+func (p *parser) acceptType(t int) bool {
 	if p.t.Type != t {
 		return false
 	}
@@ -107,7 +107,7 @@ func (p *Parser) acceptType(t int) bool {
 	return true
 }
 
-func (p *Parser) skipStmt() {
+func (p *parser) skipStmt() {
 	for !(p.see(Semi) || p.see(lex8.EOF)) {
 		p.next()
 	}
@@ -117,7 +117,7 @@ func (p *Parser) skipStmt() {
 	}
 }
 
-func (p *Parser) skipErrStmt() bool {
+func (p *parser) skipErrStmt() bool {
 	if !p.inErr {
 		return false
 	}
@@ -128,7 +128,7 @@ func (p *Parser) skipErrStmt() bool {
 }
 
 // Errs returns the parsing errors
-func (p *Parser) Errs() []*lex8.Error {
+func (p *parser) Errs() []*lex8.Error {
 	ret := p.x.Errs()
 	if ret != nil {
 		return ret

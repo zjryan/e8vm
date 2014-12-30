@@ -1,6 +1,6 @@
 package asm8
 
-func buildFile(b *Builder, f *File) {
+func buildFile(b *builder, f *file) {
 	b.scope.Push() // file scope
 	defer b.scope.Pop()
 

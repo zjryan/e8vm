@@ -50,7 +50,7 @@ var (
 	}
 )
 
-func parseShift(p *Parser, op *lex8.Token) uint32 {
+func parseShift(p *parser, op *lex8.Token) uint32 {
 	ret, e := strconv.ParseUint(op.Lit, 0, 32)
 	if e != nil {
 		p.err(op.Pos, "invalid shift %q: %s", op.Lit, e)
@@ -77,7 +77,7 @@ func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *inst {
 	return &inst{inst: ret}
 }
 
-func parseInstReg(p *Parser, ops []*lex8.Token) (*inst, bool) {
+func parseInstReg(p *parser, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]

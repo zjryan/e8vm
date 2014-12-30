@@ -25,7 +25,7 @@ func makeInstSys(op, reg uint32) *inst {
 	return &inst{inst: ret}
 }
 
-func parseInstSys(p *Parser, ops []*lex8.Token) (*inst, bool) {
+func parseInstSys(p *parser, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]

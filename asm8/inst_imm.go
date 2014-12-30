@@ -34,7 +34,7 @@ var (
 )
 
 // parseImu parses an unsigned 16-bit immediate
-func parseImu(p *Parser, op *lex8.Token) uint32 {
+func parseImu(p *parser, op *lex8.Token) uint32 {
 	ret, e := strconv.ParseUint(op.Lit, 0, 32)
 	if e != nil {
 		p.err(op.Pos, "invalid unsigned immediate %q: %s", op.Lit, e)
@@ -50,7 +50,7 @@ func parseImu(p *Parser, op *lex8.Token) uint32 {
 }
 
 // parseIms parses an unsigned 16-bit immediate
-func parseIms(p *Parser, op *lex8.Token) uint32 {
+func parseIms(p *parser, op *lex8.Token) uint32 {
 	ret, e := strconv.ParseInt(op.Lit, 0, 32)
 	if e != nil {
 		p.err(op.Pos, "invalid signed immediate %q: %s", op.Lit, e)
@@ -66,7 +66,7 @@ func parseIms(p *Parser, op *lex8.Token) uint32 {
 }
 
 // parseImm parses an unsigned 16-bit immediate
-func parseImm(p *Parser, op *lex8.Token) uint32 {
+func parseImm(p *parser, op *lex8.Token) uint32 {
 	ret, e := strconv.ParseInt(op.Lit, 0, 32)
 	if e != nil {
 		p.err(op.Pos, "invalid signed immediate %q: %s", op.Lit, e)
@@ -91,7 +91,7 @@ func makeInstImm(op, d, s, im uint32) *inst {
 	return &inst{inst: ret}
 }
 
-func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
+func parseInstImm(p *parser, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
@@ -113,7 +113,7 @@ func parseInstImm(p *Parser, ops []*lex8.Token) (*inst, bool) {
 		return true
 	}
 
-	parseSym := func(t *lex8.Token, f func(*Parser, *lex8.Token) uint32) {
+	parseSym := func(t *lex8.Token, f func(*parser, *lex8.Token) uint32) {
 		if isSymbol(t.Lit) {
 			pack, sym = parseSym(p, t)
 			fill = fillLow
