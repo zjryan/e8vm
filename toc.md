@@ -46,6 +46,19 @@
 - `lex8/token.go`: Token structure (done)
 - `lex8/lexer.go`: Lexer Framework (done)
 
+## Linker (link8)
+
+- `link8/symbol.go`: Link symbol (done)
+- `link8/func.go`: Function, linkable code section (done)
+- `link8/var.go`: Var, data section (done)
+- `link8/package.go`: Package, building unit (done)
+- `link8/pkg_sym.go`: A symbol in a package (done)
+- `link8/linker.go`: Linker framework (done)
+- `link8/trace_use.go`: Tracing symbol usage (done)
+- `link8/layout.go`: Section layout (done)
+- `link8/writer.go`: Binary writer (done)
+- `link8/link.go`: Link sections together (done)
+
 ### Assembler (asm8)
 
 - `asm8/token.go`: Asm8 Tokens (done)
@@ -59,7 +72,10 @@
 - `asm8/parse_label.go`: Label name check (done)
 - `asm8/parse_sym.go`: Symbol name check (done)
 - `asm8/parse_arg.go`: Argument count check (done)
-- `asm8/inst.go`: Assembly instruction line datas tructure (done)
+- `ams8/parse_reg.go`: Parsing register (done)
+- `asm8/parse_label.go`: Parsing Label (done)
+- `asm8/inst.go`: Assembly instruction AST node (done)
+- `asm8/stmt.go`: Statement AST node (done)
 - `asm8/parse_inst.go`: Assembly instruction parsing framework (done)
 - `asm8/inst_reg.go`: Register instructions (done)
 - `asm8/inst_imm.go`: Immediate instructions (done)
@@ -67,18 +83,22 @@
 - `asm8/inst_sys.go`: System instructions (done)
 - `asm8/inst_jmp.go`: Jump instructions (done)
 - `asm8/inst_all.go`: Put them all together (done)
+- `asm8/parse_ops.go`: Parsing operands in a statement (done)
 - `asm8/parse_stmt.go`: Assembly instruction and label parsing (done)
 - `asm8/parse_func.go`: Function parsing (test done)
 - `asm8/parse_var.go`: Variable block parser
 - `asm8/parse_const.go`: Const statement parser
 - `asm8/parse_import.go`: Import statement parser
-- `asm8/parse_all.go`: Put the parsing altogether
+- `asm8/parse_file.go`: File parser (partially done)
+- `asm8/symbol.go`: Symbol (done)
 - `asm8/sym_table.go`: Symbol table (done)
 - `asm8/sym_scope.go`: Symbol scope, stack of sym tables (done)
-- `asm8/builder.go`: Builder framework
-- `asm8/build_func.go`: Function block builder
-- `asm8/link.go`: Layout and linking 
-- `asm8/writer.go`: Image builder
+- `asm8/builder.go`: Builder framework (done)
+- `asm8/build_func.go`: Function block builder (done)
+- `asm8/build_file.go`: File builder (partially done)
+- `asm8/build_pkg.go`: Package builder (partially done)
+- `asm8/bare_func.go`: Build bare function (done)
+- `asm8/single_file.go`: Build single file package function (done)
 
 ## Programming Language (lang8)
 
