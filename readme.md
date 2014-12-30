@@ -13,3 +13,11 @@ Planned Features:
 - **Tested and Documented.**
   Each file (will) come with test cases, examples, and markdown description.
 - **Real.** The simulation (will) work like a real computer.
+
+## TODOs
+
+- Build code reading website
+- Complete vars and consts
+- Package building system
+- Online filesystem and online editing
+- Linking github
