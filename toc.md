@@ -102,7 +102,7 @@
 - `asm8/build_file.go`: File builder (partially done)
 - `asm8/build_pkg.go`: Package builder (partially done)
 - `asm8/bare_func.go`: Build bare function (done)
-- `asm8/single_file.go`: Build single file package function (done)
+- `asm8/single_file.go`: Build single file package (done)
 
 ## Programming Language (lang8)
 
