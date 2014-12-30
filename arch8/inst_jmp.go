@@ -1,11 +1,11 @@
 package arch8
 
 // InstJmp executes jump instruction
-type InstJmp struct{}
+type instJmp struct{}
 
 // I executes the jump instruction.
 // Might return invalid instruction exception.
-func (i *InstJmp) I(cpu *CPU, in uint32) *Excep {
+func (i *instJmp) I(cpu *cpu, in uint32) *Excep {
 	op := (in >> 30) & 0x3 // (32:30]
 	off := in & 0x3fffffff
 

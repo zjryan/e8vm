@@ -10,9 +10,9 @@ import (
 // Serial is a serial console device
 // It is basically two DMA pipes of ring buffered bytes:
 // one pipe for input, one pipe for output.
-type Serial struct {
-	intBus IntBus
-	p      *Page
+type serial struct {
+	intBus intBus
+	p      *page
 
 	Core   byte
 	IntIn  byte
@@ -21,7 +21,7 @@ type Serial struct {
 	Output io.Writer
 }
 
-var _ Device = new(Serial) // Serial is a device
+var _ device = new(serial) // Serial is a device
 
 const (
 	serialBase     = 128
@@ -42,8 +42,8 @@ const (
 )
 
 // NewSerial creates a new serial controller.
-func NewSerial(p *Page, i IntBus) *Serial {
-	ret := new(Serial)
+func newSerial(p *page, i intBus) *serial {
+	ret := new(serial)
 	ret.intBus = i
 	ret.p = p
 
@@ -57,12 +57,12 @@ func NewSerial(p *Page, i IntBus) *Serial {
 	return ret
 }
 
-func (s *Serial) interrupt(code byte) {
+func (s *serial) interrupt(code byte) {
 	s.intBus.Interrupt(code, s.Core)
 }
 
 // WriteByte appends a byte into the input ring buffer.
-func (s *Serial) WriteByte(b byte) bool {
+func (s *serial) WriteByte(b byte) bool {
 	head := s.p.ReadWord(serialInHead)
 	tail := s.p.ReadWord(serialInTail)
 	n := head - tail
@@ -85,7 +85,7 @@ func (s *Serial) WriteByte(b byte) bool {
 }
 
 // OutLen returns the current buffer length of the output ring buffer.
-func (s *Serial) OutLen() uint32 {
+func (s *serial) OutLen() uint32 {
 	head := s.p.ReadWord(serialOutHead)
 	tail := s.p.ReadWord(serialOutTail)
 	ret := head - tail
@@ -99,7 +99,7 @@ func (s *Serial) OutLen() uint32 {
 }
 
 // InLen returns the current buffer length of the input ring buffer.
-func (s *Serial) InLen() uint32 {
+func (s *serial) InLen() uint32 {
 	head := s.p.ReadWord(serialInHead)
 	tail := s.p.ReadWord(serialInTail)
 	ret := head - tail
@@ -113,7 +113,7 @@ func (s *Serial) InLen() uint32 {
 }
 
 // ReadByte reads a byte out of serial output ring buffer.
-func (s *Serial) ReadByte() (byte, bool) {
+func (s *serial) ReadByte() (byte, bool) {
 	head := s.p.ReadWord(serialOutHead)
 	tail := s.p.ReadWord(serialOutTail)
 	n := head - tail
@@ -134,7 +134,7 @@ func (s *Serial) ReadByte() (byte, bool) {
 	return b, true
 }
 
-func (s *Serial) countDown() {
+func (s *serial) countDown() {
 	inWait := s.p.ReadWord(serialInWait)
 	outWait := s.p.ReadWord(serialOutWait)
 
@@ -161,7 +161,7 @@ func (s *Serial) countDown() {
 	s.p.WriteWord(serialOutWait, outWait)
 }
 
-func (s *Serial) flush() {
+func (s *serial) flush() {
 	buf := new(bytes.Buffer)
 	for {
 		b, valid := s.ReadByte()
@@ -182,7 +182,7 @@ func (s *Serial) flush() {
 
 // Tick counts down the waiting counters and triggers
 // interrupt when the count down reaches zero.
-func (s *Serial) Tick() {
+func (s *serial) Tick() {
 	s.flush()
 	s.countDown()
 }

@@ -1,12 +1,12 @@
 package arch8
 
 // InstImm executes immediate instructions
-type InstImm struct{}
+type instImm struct{}
 
 // I executes the instruction.
 // Might return invalid instruction exception,
 // or memory related exceptions.
-func (i *InstImm) I(cpu *CPU, in uint32) *Excep {
+func (i *instImm) I(cpu *cpu, in uint32) *Excep {
 	op := (in >> 24) & 0xff  // (32:24]
 	dest := (in >> 21) & 0x7 // (24:21]
 	src := (in >> 18) & 0x7  // (21:18]

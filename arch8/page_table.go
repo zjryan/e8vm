@@ -3,8 +3,8 @@ package arch8
 // PageTable describes a page table in a physical memory.
 // It can be used to translate a virtual memory address into a physical
 // memory address.
-type PageTable struct {
-	mem  *PhyMemory // the physical memory
+type pageTable struct {
+	mem  *phyMemory // the physical memory
 	root uint32     // root address
 
 	// last translation
@@ -17,9 +17,9 @@ type PageTable struct {
 // NewPageTable creates a new page table pointer.
 // The page table is saved at addr.
 // If addr is not page size aligned, it is aligned down.
-func NewPageTable(m *PhyMemory, addr uint32) *PageTable {
+func newPageTable(m *phyMemory, addr uint32) *pageTable {
 	addr -= addr % PageSize
-	ret := new(PageTable)
+	ret := new(pageTable)
 	ret.mem = m
 	ret.root = addr
 
@@ -66,7 +66,7 @@ func (pte ptEntry) test(addr uint32, ring byte) *Excep {
 
 // Translate transalate a virutal address into physical address.
 // It returns an error if the translation fails
-func (pt *PageTable) Translate(addr uint32, ring byte) (uint32, *Excep) {
+func (pt *pageTable) Translate(addr uint32, ring byte) (uint32, *Excep) {
 	vpn := addr / PageSize
 	off := addr % PageSize
 
@@ -103,7 +103,7 @@ func (pt *PageTable) Translate(addr uint32, ring byte) (uint32, *Excep) {
 	return ppn*PageSize + off, nil
 }
 
-func (pt *PageTable) updatePte() *Excep {
+func (pt *pageTable) updatePte() *Excep {
 	e := pt.mem.WriteWord(pt.pte1Addr, uint32(pt.pte1))
 	if e != nil {
 		return e
@@ -118,7 +118,7 @@ func (pt *PageTable) updatePte() *Excep {
 }
 
 // TranslateRead translates the address and sets the use bit.
-func (pt *PageTable) TranslateRead(addr uint32, ring byte) (uint32, *Excep) {
+func (pt *pageTable) TranslateRead(addr uint32, ring byte) (uint32, *Excep) {
 	ret, e := pt.Translate(addr, ring)
 	if e != nil {
 		return 0, e
@@ -136,7 +136,7 @@ func (pt *PageTable) TranslateRead(addr uint32, ring byte) (uint32, *Excep) {
 }
 
 // TranslateWrite translates the address and sets the use and dirty bit
-func (pt *PageTable) TranslateWrite(addr uint32, ring byte) (uint32, *Excep) {
+func (pt *pageTable) TranslateWrite(addr uint32, ring byte) (uint32, *Excep) {
 	ret, e := pt.Translate(addr, ring)
 	if e != nil {
 		return 0, e

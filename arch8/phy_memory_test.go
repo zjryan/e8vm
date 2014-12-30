@@ -18,7 +18,7 @@ func TestPhyMemory(t *testing.T) {
 	}
 
 	size := uint32(20 * PageSize)
-	m := NewPhyMemory(size)
+	m := newPhyMemory(size)
 	eo(m.Size() != size, "size mismatch")
 
 	w, e := m.ReadWord(4)

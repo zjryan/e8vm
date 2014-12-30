@@ -8,9 +8,9 @@ import (
 
 // Console is a simple console that can output/input a single
 // byte at a time
-type Console struct {
-	intBus IntBus
-	p      *Page
+type console struct {
+	intBus intBus
+	p      *page
 
 	Core   byte
 	IntIn  byte
@@ -20,8 +20,8 @@ type Console struct {
 }
 
 // NewConsole creates a new simple console.
-func NewConsole(p *Page, i IntBus) *Console {
-	ret := new(Console)
+func newConsole(p *page, i intBus) *console {
+	ret := new(console)
 	ret.intBus = i
 	ret.p = p
 
@@ -33,7 +33,7 @@ func NewConsole(p *Page, i IntBus) *Console {
 	return ret
 }
 
-var _ Device = new(Console)
+var _ device = new(console)
 
 const (
 	consoleBase = 0
@@ -44,12 +44,12 @@ const (
 	consoleInValid  = consoleBase + 3
 )
 
-func (c *Console) interrupt(code byte) {
+func (c *console) interrupt(code byte) {
 	c.intBus.Interrupt(code, c.Core)
 }
 
 // Tick flushes the buffered byte to the console.
-func (c *Console) Tick() {
+func (c *console) Tick() {
 	outValid := c.p.ReadByte(consoleOutValid)
 	if outValid != 0 {
 		out := c.p.ReadByte(consoleOut)

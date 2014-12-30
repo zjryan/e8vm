@@ -6,7 +6,7 @@ import (
 
 type ti1 int
 
-func (i ti1) I(cpu *CPU, in uint32) *Excep {
+func (i ti1) I(cpu *cpu, in uint32) *Excep {
 	switch in {
 	case 0:
 		return errHalt
@@ -29,8 +29,8 @@ func TestCPU(t *testing.T) {
 		}
 	}
 
-	m := NewPhyMemory(PageSize * 32)
-	cpu := NewCPU(m, ti1(0), 0)
+	m := newPhyMemory(PageSize * 32)
+	cpu := newCPU(m, ti1(0), 0)
 	e := cpu.Tick()
 	as(e == errHalt, "not halting")
 

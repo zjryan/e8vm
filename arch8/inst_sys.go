@@ -1,11 +1,11 @@
 package arch8
 
 // InstSys exectues a system instruction
-type InstSys struct{}
+type instSys struct{}
 
 // I executes the system instruction.
 // Returns any exception encountered.
-func (i *InstSys) I(cpu *CPU, in uint32) *Excep {
+func (i *instSys) I(cpu *cpu, in uint32) *Excep {
 	op := (in >> 24) & 0xff // (32:24]
 	src := (in >> 21) & 0x7 // (24:21]
 	s := cpu.regs[src]

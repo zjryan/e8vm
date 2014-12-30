@@ -1,16 +1,16 @@
 package arch8
 
 // InstArch8 dispatches and executes an arch8 instruction.
-type InstArch8 struct {
-	reg InstReg
-	imm InstImm
-	br  InstBr
-	sys InstSys
-	jmp InstJmp
+type instArch8 struct {
+	reg instReg
+	imm instImm
+	br  instBr
+	sys instSys
+	jmp instJmp
 }
 
 // I executes an arch8 instructino
-func (i *InstArch8) I(cpu *CPU, in uint32) *Excep {
+func (i *instArch8) I(cpu *cpu, in uint32) *Excep {
 	if (in >> 31) == 0 {
 		op := (in >> 24) & 0xff
 		switch {

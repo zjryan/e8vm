@@ -5,11 +5,11 @@ import (
 )
 
 // InstReg executes register based instructions
-type InstReg struct{}
+type instReg struct{}
 
 // I executes the register instruction.
 // Might return invalid instruction exception.
-func (i *InstReg) I(cpu *CPU, in uint32) *Excep {
+func (i *instReg) I(cpu *cpu, in uint32) *Excep {
 	// bit (32:24] == 0
 	if ((in >> 24) & 0xff) != 0 {
 		panic("not a register inst")

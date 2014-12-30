@@ -1,11 +1,11 @@
 package arch8
 
 // InstBr exectues branch instruction
-type InstBr struct{}
+type instBr struct{}
 
 // I executes the instruction.
 // Might return invalid instruction exception.
-func (i *InstBr) I(cpu *CPU, in uint32) *Excep {
+func (i *instBr) I(cpu *cpu, in uint32) *Excep {
 	op := (in >> 24) & 0xff  // (32:24]
 	src1 := (in >> 21) & 0x7 // (24:21]
 	src2 := (in >> 18) & 0x7 // (21:18]

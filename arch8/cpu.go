@@ -1,20 +1,20 @@
 package arch8
 
 // Inst is an interface for executing one single instruction
-type Inst interface {
-	I(cpu *CPU, in uint32) *Excep
+type inst interface {
+	I(cpu *cpu, in uint32) *Excep
 }
 
 // CPU defines the structure of a processing unit.
-type CPU struct {
+type cpu struct {
 	regs []uint32
 	ring byte
 
-	phyMem    *PhyMemory
-	virtMem   *VirtMemory
-	interrupt *Interrupt
+	phyMem    *phyMemory
+	virtMem   *virtMemory
+	interrupt *interrupt
 
-	inst  Inst
+	inst  inst
 	index byte
 }
 
@@ -22,22 +22,22 @@ type CPU struct {
 const InitPC = 0x8000
 
 // NewCPU creates a CPU with memroy and instruction binding
-func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
+func newCPU(mem *phyMemory, i inst, index byte) *cpu {
 	if index >= 32 {
 		panic("too many cores")
 	}
 
-	ret := new(CPU)
+	ret := new(cpu)
 	ret.regs = makeRegs()
 	ret.phyMem = mem
-	ret.virtMem = NewVirtMemory(ret.phyMem)
+	ret.virtMem = newVirtMemory(ret.phyMem)
 	ret.index = index
 
 	intPage := ret.phyMem.Page(pageInterrupt) // page 1 is the interrupt page
 	if intPage == nil {
 		panic("memory too small")
 	}
-	ret.interrupt = NewInterrupt(intPage, index)
+	ret.interrupt = newInterrupt(intPage, index)
 	ret.inst = i
 
 	ret.regs[PC] = InitPC
@@ -46,13 +46,13 @@ func NewCPU(mem *PhyMemory, i Inst, index byte) *CPU {
 }
 
 // UserMode returns trun when the CPU is in user mode.
-func (c *CPU) UserMode() bool {
+func (c *cpu) UserMode() bool {
 	return c.ring > 0
 }
 
 // Reset resets the CPU's internal states, i.e., registers,
 // the page table, and disables interrupt
-func (c *CPU) Reset() {
+func (c *cpu) Reset() {
 	for i := 0; i < Nreg; i++ {
 		c.regs[i] = 0
 	}
@@ -62,7 +62,7 @@ func (c *CPU) Reset() {
 	c.interrupt.Disable()
 }
 
-func (c *CPU) tick() *Excep {
+func (c *cpu) tick() *Excep {
 	pc := c.regs[PC]
 	inst, e := c.readWord(pc)
 	if e != nil {
@@ -93,28 +93,28 @@ const (
 )
 
 // Interrupt issues an interrupt to the core
-func (c *CPU) Interrupt(code byte) {
+func (c *cpu) Interrupt(code byte) {
 	c.interrupt.Issue(code)
 }
 
-func (c *CPU) readWord(addr uint32) (uint32, *Excep) {
+func (c *cpu) readWord(addr uint32) (uint32, *Excep) {
 	return c.virtMem.ReadWord(addr, c.ring)
 }
 
-func (c *CPU) readByte(addr uint32) (uint8, *Excep) {
+func (c *cpu) readByte(addr uint32) (uint8, *Excep) {
 	return c.virtMem.ReadByte(addr, c.ring)
 }
 
-func (c *CPU) writeWord(addr uint32, v uint32) *Excep {
+func (c *cpu) writeWord(addr uint32, v uint32) *Excep {
 	return c.virtMem.WriteWord(addr, c.ring, v)
 }
 
-func (c *CPU) writeByte(addr uint32, v uint8) *Excep {
+func (c *cpu) writeByte(addr uint32, v uint8) *Excep {
 	return c.virtMem.WriteByte(addr, c.ring, v)
 }
 
 // Ienter enters a interrupt routine.
-func (c *CPU) Ienter(code byte, arg uint32) *Excep {
+func (c *cpu) Ienter(code byte, arg uint32) *Excep {
 	ksp := c.interrupt.kernelSP()
 	base := ksp - intFrameSize
 
@@ -150,7 +150,7 @@ func (c *CPU) Ienter(code byte, arg uint32) *Excep {
 }
 
 // Syscall jumps to the system call handler and switches to ring 0.
-func (c *CPU) Syscall() *Excep {
+func (c *cpu) Syscall() *Excep {
 	c.regs[PC] = c.interrupt.syscallPC()
 	c.ring = 0
 	return nil
@@ -159,7 +159,7 @@ func (c *CPU) Syscall() *Excep {
 // Iret restores from an interrupt.
 // It restores the SP, RET, PC registers, restores the ring level,
 // clears the served interrupt bit and enables interrupt again.
-func (c *CPU) Iret() *Excep {
+func (c *cpu) Iret() *Excep {
 	if c.ring != 0 {
 		panic("iret in userland")
 	}
@@ -195,7 +195,7 @@ func (c *CPU) Iret() *Excep {
 
 // Tick executes one instruction, and increases the program counter
 // by 4 by default. If an exception is met, it will handle it.
-func (c *CPU) Tick() *Excep {
+func (c *cpu) Tick() *Excep {
 	poll, code := c.interrupt.Poll()
 	if poll {
 		return c.Ienter(code, 0)

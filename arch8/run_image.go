@@ -6,8 +6,8 @@ import (
 
 // RunImage loads and run a raw image on a single core machine
 // with 1GB physical memory until it runs into an exception.
-func RunImage(image string) error {
-	f, e := os.Open(image)
+func RunImage(path string) error {
+	f, e := os.Open(path)
 	if e != nil {
 		return e
 	}

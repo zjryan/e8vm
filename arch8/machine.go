@@ -6,32 +6,32 @@ import (
 
 // Machine is a multicore shared memory simulated arch8 machine.
 type Machine struct {
-	phyMem *PhyMemory
-	inst   Inst
-	cores  *MultiCore
+	phyMem *phyMemory
+	inst   inst
+	cores  *multiCore
 
-	devices []Device
+	devices []device
 }
 
 // NewMachine creates a machine with memory and cores.
 func NewMachine(memSize uint32, ncore int) *Machine {
 	ret := new(Machine)
-	ret.phyMem = NewPhyMemory(memSize)
-	ret.inst = new(InstArch8)
-	ret.cores = NewMultiCore(ncore, ret.phyMem, ret.inst)
+	ret.phyMem = newPhyMemory(memSize)
+	ret.inst = new(instArch8)
+	ret.cores = newMultiCore(ncore, ret.phyMem, ret.inst)
 
 	// hook-up devices
 	p := ret.phyMem.Page(pageBasicIO)
 
-	ret.AddDevice(NewTicker(ret.cores))
-	ret.AddDevice(NewSerial(p, ret.cores))
-	ret.AddDevice(NewConsole(p, ret.cores))
+	ret.addDevice(newTicker(ret.cores))
+	ret.addDevice(newSerial(p, ret.cores))
+	ret.addDevice(newConsole(p, ret.cores))
 
 	return ret
 }
 
 // AddDevice adds a devices to the machine.
-func (m *Machine) AddDevice(d Device) {
+func (m *Machine) addDevice(d device) {
 	m.devices = append(m.devices, d)
 }
 

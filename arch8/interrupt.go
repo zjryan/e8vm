@@ -1,8 +1,8 @@
 package arch8
 
 // Interrupt defines the interrupt page
-type Interrupt struct {
-	p    *Page  // the dma page for interrupt handler
+type interrupt struct {
+	p    *page  // the dma page for interrupt handler
 	base uint32 // dma offset
 }
 
@@ -21,8 +21,8 @@ const (
 )
 
 // NewInterrupt creates a interrupt on the given DMA page.
-func NewInterrupt(p *Page, core byte) *Interrupt {
-	ret := new(Interrupt)
+func newInterrupt(p *page, core byte) *interrupt {
+	ret := new(interrupt)
 	ret.p = p
 	ret.base = uint32(core) * intCtrlSize
 	if ret.base+intCtrlSize > PageSize {
@@ -32,37 +32,37 @@ func NewInterrupt(p *Page, core byte) *Interrupt {
 	return ret
 }
 
-func (in *Interrupt) readWord(off uint32) uint32 {
+func (in *interrupt) readWord(off uint32) uint32 {
 	return in.p.ReadWord(in.base + off)
 }
 
-func (in *Interrupt) readByte(off uint32) byte {
+func (in *interrupt) readByte(off uint32) byte {
 	return in.p.ReadByte(in.base + off)
 }
 
-func (in *Interrupt) writeWord(off uint32, v uint32) {
+func (in *interrupt) writeWord(off uint32, v uint32) {
 	in.p.WriteWord(in.base+off, v)
 }
 
-func (in *Interrupt) writeByte(off uint32, v byte) {
+func (in *interrupt) writeByte(off uint32, v byte) {
 	in.p.WriteByte(in.base+off, v)
 }
 
-func (in *Interrupt) kernelSP() uint32 {
+func (in *interrupt) kernelSP() uint32 {
 	return in.readWord(intKernelSP)
 }
 
-func (in *Interrupt) handlerPC() uint32 {
+func (in *interrupt) handlerPC() uint32 {
 	return in.readWord(intHandlerPC)
 }
 
-func (in *Interrupt) syscallPC() uint32 {
+func (in *interrupt) syscallPC() uint32 {
 	return in.readWord(intSyscallPC)
 }
 
 // Issue issues an interrupt. If the interrupt is already issued,
 // this has no effect.
-func (in *Interrupt) Issue(i byte) {
+func (in *interrupt) Issue(i byte) {
 	off := uint32(i/8) + intPending
 	b := in.readByte(off)
 	b |= 0x1 << (i % 8)
@@ -71,7 +71,7 @@ func (in *Interrupt) Issue(i byte) {
 
 // Clear clears an interrupt. If the interrupt is already cleared,
 // this has no effect.
-func (in *Interrupt) Clear(i byte) {
+func (in *interrupt) Clear(i byte) {
 	off := uint32(i/8) + intPending
 	b := in.readByte(off)
 	b &= ^(0x1 << (i % 8))
@@ -79,27 +79,27 @@ func (in *Interrupt) Clear(i byte) {
 }
 
 // Enable sets the interrupt enable bit in the flags.
-func (in *Interrupt) Enable() {
+func (in *interrupt) Enable() {
 	b := in.readByte(intFlags)
 	b |= 0x1
 	in.writeByte(intFlags, b)
 }
 
 // Enabled tests if interrupt is enabled
-func (in *Interrupt) Enabled() bool {
+func (in *interrupt) Enabled() bool {
 	b := in.readByte(intFlags)
 	return (b & 0x1) != 0
 }
 
 // Disable clears the interrupt enable bit in the flags.
-func (in *Interrupt) Disable() {
+func (in *interrupt) Disable() {
 	b := in.readByte(intFlags)
 	b &= ^byte(0x1)
 	in.writeByte(intFlags, b)
 }
 
 // EnableInt enables a particular interrupt by clearing the mask.
-func (in *Interrupt) EnableInt(i byte) {
+func (in *interrupt) EnableInt(i byte) {
 	off := uint32(i/8) + intMask
 	b := in.readByte(off)
 	b |= 0x1 << (i % 8)
@@ -107,7 +107,7 @@ func (in *Interrupt) EnableInt(i byte) {
 }
 
 // DisableInt disables a particular interrupt by setting the mask.
-func (in *Interrupt) DisableInt(i byte) {
+func (in *interrupt) DisableInt(i byte) {
 	off := uint32(i/8) + intMask
 	b := in.readByte(off)
 	b &= ^(0x1 << (i % 8))
@@ -115,12 +115,12 @@ func (in *Interrupt) DisableInt(i byte) {
 }
 
 // Flags returns the flags byte.
-func (in *Interrupt) Flags() byte {
+func (in *interrupt) Flags() byte {
 	return in.readByte(intFlags)
 }
 
 // Poll looks for the next pending interrupt.
-func (in *Interrupt) Poll() (bool, byte) {
+func (in *interrupt) Poll() (bool, byte) {
 	flag := in.Flags()
 	if flag&0x1 == 0 { // interrupt is disabled
 		return false, 0

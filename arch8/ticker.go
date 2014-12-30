@@ -6,8 +6,8 @@ import (
 )
 
 // Ticker is a device that generates time interrupts.
-type Ticker struct {
-	intBus   IntBus
+type ticker struct {
+	intBus   intBus
 	nextTick int32
 
 	Interval int32
@@ -17,8 +17,8 @@ type Ticker struct {
 }
 
 // NewTicker creates a new time interrupt generator.
-func NewTicker(bus IntBus) *Ticker {
-	ret := new(Ticker)
+func newTicker(bus intBus) *ticker {
+	ret := new(ticker)
 	ret.intBus = bus
 
 	ret.Interval = 1000
@@ -31,7 +31,7 @@ func NewTicker(bus IntBus) *Ticker {
 	return ret
 }
 
-func (t *Ticker) reset() {
+func (t *ticker) reset() {
 	if t.Noise < 0 {
 		panic("negative ticker noise")
 	}
@@ -54,13 +54,13 @@ func (t *Ticker) reset() {
 
 // Tick decreases the ticking counter. If the counter reaches 0,
 // it will issue interrupts to all cores and reset the counter.
-func (t *Ticker) Tick() {
+func (t *ticker) Tick() {
 	if t.nextTick < 0 {
 		panic("bug")
 	}
 
 	if t.nextTick == 0 {
-		IntAllCores(t.intBus, t.Code)
+		intAllCores(t.intBus, t.Code)
 		t.reset()
 	} else {
 		t.nextTick--

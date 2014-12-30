@@ -12,7 +12,7 @@ type Excep struct {
 }
 
 // NewExcep creates a new Exception with a particular code and message.
-func NewExcep(c byte, s string) *Excep {
+func newExcep(c byte, s string) *Excep {
 	ret := new(Excep)
 	ret.Code = c
 	ret.Err = errors.New(s)
@@ -35,22 +35,22 @@ const (
 )
 
 var (
-	errHalt        = NewExcep(ErrHalt, "halt")
-	errTimeInt     = NewExcep(ErrTimer, "time interrupt")
-	errInvalidInst = NewExcep(ErrInvalidInst, "invalid instruction")
+	errHalt        = newExcep(ErrHalt, "halt")
+	errTimeInt     = newExcep(ErrTimer, "time interrupt")
+	errInvalidInst = newExcep(ErrInvalidInst, "invalid instruction")
 
-	errOutOfRange = NewExcep(ErrOutOfRange, "out of range")
-	errMisalign   = NewExcep(ErrMisalign, "address misalign")
+	errOutOfRange = newExcep(ErrOutOfRange, "out of range")
+	errMisalign   = newExcep(ErrMisalign, "address misalign")
 )
 
 func newPageFault(va uint32) *Excep {
-	ret := NewExcep(ErrPageFault, "page fault")
+	ret := newExcep(ErrPageFault, "page fault")
 	ret.Arg = va
 	return ret
 }
 
 func newPageReadonly(va uint32) *Excep {
-	ret := NewExcep(ErrPageReadonly, "page read-only")
+	ret := newExcep(ErrPageReadonly, "page read-only")
 	ret.Arg = va
 	return ret
 }

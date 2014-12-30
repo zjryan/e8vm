@@ -5,8 +5,8 @@ import (
 )
 
 func TestInstBr(t *testing.T) {
-	m := NewPhyMemory(PageSize * 16)
-	cpu := NewCPU(m, new(InstBr), 0)
+	m := newPhyMemory(PageSize * 16)
+	cpu := newCPU(m, new(instBr), 0)
 
 	for i := 0; i < 4; i++ {
 		cpu.regs[i] = uint32(i)

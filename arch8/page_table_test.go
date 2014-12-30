@@ -17,7 +17,7 @@ func TestPageTable(t *testing.T) {
 		}
 	}
 
-	m := NewPhyMemory(4096 * PageSize) // 4 2nd level entries
+	m := newPhyMemory(4096 * PageSize) // 4 2nd level entries
 
 	p8 := m.Page(8) // page eight
 	p9 := m.Page(9) // page nine
@@ -33,7 +33,7 @@ func TestPageTable(t *testing.T) {
 		p9.WriteWord(i*4, uint32(pte2))
 	}
 
-	pt := NewPageTable(m, 0x8000)
+	pt := newPageTable(m, 0x8000)
 
 	for i := uint32(0); i < 512; i++ {
 		ret, e := pt.Translate(i*0x1000+0x341, 0)

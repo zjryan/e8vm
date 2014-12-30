@@ -17,7 +17,7 @@ func TestVirtMemory(t *testing.T) {
 		}
 	}
 
-	m := NewPhyMemory(8 * PageSize)
+	m := newPhyMemory(8 * PageSize)
 	p1 := m.Page(1)
 	p2 := m.Page(2)
 	p3 := m.Page(3)
@@ -36,7 +36,7 @@ func TestVirtMemory(t *testing.T) {
 		p3.WriteWord(4*(3-i), uint32(pte))
 	}
 
-	vm := NewVirtMemory(m)
+	vm := newVirtMemory(m)
 	vm.SetTable(PageSize)
 
 	// page 0, 1, 2, 3 is mapped to 4, 5, 6, 7

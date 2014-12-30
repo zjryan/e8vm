@@ -11,10 +11,10 @@ func TestInterrupt(t *testing.T) {
 		}
 	}
 
-	p := NewPage()
+	p := newPage()
 
 	for i := byte(0); i < 8; i++ {
-		in := NewInterrupt(p, i)
+		in := newInterrupt(p, i)
 
 		has, b := in.Poll()
 		as(!has && b == 0)
