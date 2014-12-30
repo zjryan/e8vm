@@ -59,7 +59,7 @@
 - `link8/writer.go`: Binary writer (done)
 - `link8/link.go`: Link sections together (done)
 
-### Assembler (asm8)
+## Assembler (asm8)
 
 - `asm8/token.go`: Asm8 Tokens (done)
 - `asm8/lex_comment.go`: Lexing comments (done)
