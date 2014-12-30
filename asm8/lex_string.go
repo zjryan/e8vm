@@ -79,8 +79,8 @@ func lexString(x *lex8.Lexer) *lex8.Token {
 		panic("incorrect string start")
 	}
 
+	x.Next()
 	for {
-		x.Next()
 		if x.Ended() {
 			x.Err("unexpected eof in string")
 			break
@@ -95,6 +95,8 @@ func lexString(x *lex8.Lexer) *lex8.Token {
 		} else if x.See('\\') {
 			x.Next()
 			lexEscape(x, '"')
+		} else {
+			x.Next()
 		}
 	}
 
