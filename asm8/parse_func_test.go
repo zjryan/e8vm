@@ -12,7 +12,7 @@ func pf(s string) {
 	r := strings.NewReader(s)
 	rc := ioutil.NopCloser(r)
 	p := newParser("t.s8", rc)
-	var fs []*Func
+	var fs []*funcDecl
 
 	for {
 		if p.see(lex8.EOF) {

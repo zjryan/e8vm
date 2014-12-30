@@ -4,9 +4,13 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// Func is an assembly function.
-type funcDecl struct {
-	stmts []*stmt
+type varStmt struct {
+	typ  *lex8.Token
+	toks []*lex8.Token
+}
+
+type Var struct {
+	stmts []*varStmt
 
 	kw, name             *lex8.Token
 	lbrace, rbrace, semi *lex8.Token

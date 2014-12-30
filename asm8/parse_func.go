@@ -4,7 +4,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func (f *Func) parseStmts(p *Parser) {
+func (f *funcDecl) parseStmts(p *Parser) {
 	for !(p.see(Rbrace) || p.see(lex8.EOF)) {
 		stmt := parseStmt(p)
 		if stmt != nil {
@@ -13,15 +13,15 @@ func (f *Func) parseStmts(p *Parser) {
 	}
 }
 
-func parseBareFunc(p *Parser) *Func {
-	ret := new(Func)
+func parseBareFunc(p *Parser) *funcDecl {
+	ret := new(funcDecl)
 	ret.name = &lex8.Token{Operand, "_", nil}
 	ret.parseStmts(p)
 	return ret
 }
 
-func parseFunc(p *Parser) *Func {
-	ret := new(Func)
+func parseFunc(p *Parser) *funcDecl {
+	ret := new(funcDecl)
 
 	ret.kw = p.expectKeyword("func")
 	ret.name = p.expect(Operand)

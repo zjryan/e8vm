@@ -6,7 +6,7 @@ import (
 )
 
 // buildFunc builds a function object from a function AST node.
-func buildFunc(b *Builder, f *Func) *link8.Func {
+func buildFunc(b *Builder, f *funcDecl) *link8.Func {
 	b.scope.Push()
 	defer b.scope.Pop()
 
@@ -22,7 +22,7 @@ func buildFunc(b *Builder, f *Func) *link8.Func {
 
 // declareLabels adds the labels into the scope,
 // so that later they can be queried for filling.
-func declareLabels(b *Builder, f *Func) {
+func declareLabels(b *Builder, f *funcDecl) {
 	for _, stmt := range f.stmts {
 		if !stmt.isLabel() {
 			continue
@@ -47,7 +47,7 @@ func declareLabels(b *Builder, f *Func) {
 }
 
 // setOffsets calculates the offset in function for each instruction.
-func setOffsets(b *Builder, f *Func) {
+func setOffsets(b *Builder, f *funcDecl) {
 	offset := uint32(0)
 
 	for _, s := range f.stmts {
@@ -77,7 +77,7 @@ func fillDelta(b *Builder, t *lex8.Token, inst *uint32, d uint32) {
 // fillLabels fills all the labels in the function. After the filling, all the
 // symbols left will be fillLink, fillHigh and fillLow and all branches (which
 // must use labels) will be filled.
-func fillLabels(b *Builder, f *Func) {
+func fillLabels(b *Builder, f *funcDecl) {
 	for _, s := range f.stmts {
 		if s.isLabel() {
 			continue
@@ -199,7 +199,7 @@ func linkSymbol(b *Builder, s *stmt, f *link8.Func) {
 // makeFuncObj converts a function AST node f into a function object. It
 // resolves the symbols of fillLink, fillHigh and fillLow into <pack, sym>
 // index pairs, using the symbol scope and the curPkg context in the Builder b.
-func makeFuncObj(b *Builder, f *Func) *link8.Func {
+func makeFuncObj(b *Builder, f *funcDecl) *link8.Func {
 	ret := link8.NewFunc()
 	for _, s := range f.stmts {
 		if s.isLabel() {
