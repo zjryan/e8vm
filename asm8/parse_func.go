@@ -26,7 +26,7 @@ func parseFunc(p *parser) *funcDecl {
 
 	ret.kw = p.expectKeyword("func")
 	ret.name = p.expect(Operand)
-	
+
 	if ret.name != nil {
 		name := ret.name.Lit
 		if !isIdent(name) {
