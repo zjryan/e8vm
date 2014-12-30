@@ -27,7 +27,7 @@ func LinkMain(main *Package) ([]byte, error) {
 	}
 
 	for _, v := range vars {
-		panic(v) // TODO: write data
+		writeVar(w, v.Var())
 	}
 
 	return w.bytes(), nil

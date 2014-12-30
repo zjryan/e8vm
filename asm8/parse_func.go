@@ -6,10 +6,11 @@ import (
 
 func parseFuncStmts(p *parser, f *funcDecl) {
 	for !(p.see(Rbrace) || p.see(lex8.EOF)) {
-		stmt := parseStmt(p)
+		stmt := parseFuncStmt(p)
 		if stmt != nil {
 			f.stmts = append(f.stmts, stmt)
 		}
+		p.clearErr()
 	}
 }
 

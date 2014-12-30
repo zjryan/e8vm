@@ -17,13 +17,17 @@ func parseFile(p *parser) *file {
 				ret.Funcs = append(ret.Funcs, f)
 			}
 		} else if p.seeKeyword("var") {
-			panic("todo")
+			if v := parseVar(p); v != nil {
+				ret.Vars = append(ret.Vars, v)
+			}
 		} else if p.seeKeyword("const") {
 			panic("todo")
 		} else {
 			p.err(p.t.Pos, "expect top-declaration: func, var or const")
 			return nil
 		}
+
+		p.clearErr()
 	}
 
 	return ret

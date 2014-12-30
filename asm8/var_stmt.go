@@ -6,5 +6,8 @@ import (
 
 type varStmt struct {
 	typ  *lex8.Token
-	toks []*lex8.Token
+	args []*lex8.Token
+
+	align uint32
+	data  []byte
 }

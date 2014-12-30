@@ -33,7 +33,7 @@ func instImm(addr uint32, in uint32) *Line {
 	dest := regStr((in >> 21) & 0x7)
 	src := regStr((in >> 18) & 0x7)
 	imu := in & 0xffff
-	ims := uint32(int32(imu<<16) >> 16)
+	ims := int32(imu<<16) >> 16
 
 	var s string
 	if opStr, found := opImsMap[op]; found {

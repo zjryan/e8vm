@@ -12,3 +12,7 @@ type funcStmt struct {
 
 	offset uint32
 }
+
+func (s *funcStmt) isLabel() bool {
+	return s.inst == nil && s.label != ""
+}

@@ -39,6 +39,11 @@ func (w *writer) bytes() []byte {
 	return w.buf.Bytes()
 }
 
+func writeVar(w *writer, v *Var) {
+	w.buf.Write(make([]byte, v.prePad))
+	w.buf.Write(v.buf.Bytes())
+}
+
 func writeFunc(w *writer, p *Package, f *Func) {
 	cur := 0
 	var curLink *link
@@ -77,7 +82,7 @@ func writeFunc(w *writer, p *Package, f *Func) {
 				case SymFunc:
 					v = pkg.Func(curLink.sym).addr
 				case SymVar:
-					panic("todo")
+					v = pkg.Var(curLink.sym).addr
 				default:
 					panic("bug")
 				}

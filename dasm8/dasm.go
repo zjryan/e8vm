@@ -12,12 +12,23 @@ func Dasm(bs []byte, addr uint32) []*Line {
 
 	base := addr
 
+	add := func(b []byte) {
+		inst := binary.LittleEndian.Uint32(b)
+		ret = append(ret, NewLine(addr, inst))
+		addr += 4
+	}
+
 	nline := len(bs) / 4
 	for i := 0; i < nline; i++ {
 		off := i * 4
-		inst := binary.LittleEndian.Uint32(bs[off : off+4])
-		ret = append(ret, NewLine(addr, inst))
-		addr += 4
+		add(bs[off : off+4])
+	}
+
+	// residue
+	if len(bs)%4 != 0 {
+		var buf [4]byte
+		copy(buf[:], bs[nline*4:])
+		add(buf[:])
 	}
 
 	// link the jumps

@@ -8,9 +8,8 @@ import (
 
 func layout(used []pkgSym) (funcs, vars []pkgSym, e error) {
 	// code
-	codeStart := uint32(arch8.InitPC)
-	codeEnd := codeStart
-	codeMax := uint32(0x40000000)
+	pt := uint32(arch8.InitPC)
+	codeMax := uint32(0xffffffff)
 
 	for _, ps := range used {
 		typ := ps.Type()
@@ -19,11 +18,12 @@ func layout(used []pkgSym) (funcs, vars []pkgSym, e error) {
 			funcs = append(funcs, ps)
 
 			f := ps.Func()
-			f.addr = codeEnd
-			codeEnd += f.Size()
-			if codeEnd > codeMax {
+			f.addr = pt
+			size := f.Size()
+			if size > codeMax-pt {
 				return nil, nil, fmt.Errorf("code section too large")
 			}
+			pt += size
 		case SymVar:
 			vars = append(vars, ps)
 		default:
@@ -31,13 +31,30 @@ func layout(used []pkgSym) (funcs, vars []pkgSym, e error) {
 		}
 	}
 
-	// data
+	dataMax := uint32(0xffffffff)
+
 	for _, ps := range vars {
 		if ps.Type() != SymVar {
-			continue
+			panic("bug")
 		}
 
-		panic("todo")
+		v := ps.Var()
+
+		if v.align > 1 && pt%v.align != 0 {
+			v.prePad = v.align - pt%v.align
+			pt += v.prePad
+		}
+		if v.align > 1 && pt%v.align != 0 {
+			panic("bug")
+		}
+
+		v.addr = pt
+		size := v.Size()
+		if size > dataMax-pt {
+			return nil, nil, fmt.Errorf("binary too large")
+		}
+
+		pt += size
 	}
 
 	return

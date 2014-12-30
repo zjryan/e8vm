@@ -7,10 +7,15 @@ func buildFile(b *builder, f *file) {
 	// TODO: import required packages, and add them into the symbol table
 
 	pkg := b.curPkg
-	for _, f := range f.Funcs {
-		obj := buildFunc(b, f)
-		if obj != nil {
-			pkg.DefineFunc(f.index, obj)
+	for _, fn := range f.Funcs {
+		if obj := buildFunc(b, fn); obj != nil {
+			pkg.DefineFunc(fn.index, obj)
+		}
+	}
+
+	for _, v := range f.Vars {
+		if obj := buildVar(b, v); obj != nil {
+			pkg.DefineVar(v.index, obj)
 		}
 	}
 }

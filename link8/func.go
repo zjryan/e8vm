@@ -1,5 +1,9 @@
 package link8
 
+import (
+	"math"
+)
+
 // link is a piece of linking information for an instruction
 // in a code section at a particular offset.
 // it uses the indices in the package for symbol lookup
@@ -27,9 +31,9 @@ func (f *Func) AddInst(i uint32) {
 	f.insts = append(f.insts, i)
 }
 
-// TooLarge checks if the function size is larger than 2GB.
+// TooLarge checks if the function size is larger than 4GB.
 func (f *Func) TooLarge() bool {
-	return len(f.insts)*4 >= 0x80000000
+	return len(f.insts)*4 >= math.MaxUint32
 }
 
 // Size returns the size of the function.

@@ -100,7 +100,7 @@ func (p *Package) Query(name string) (*Symbol, uint32) {
 	return p.symbols[index], index
 }
 
-// DefineFunc binds a n object to a particular index.
+// DefineFunc instantiates a function object for a particular index.
 func (p *Package) DefineFunc(index uint32, f *Func) {
 	sym := p.symbols[index]
 	if sym.Type != SymFunc {
@@ -108,6 +108,16 @@ func (p *Package) DefineFunc(index uint32, f *Func) {
 	}
 
 	p.funcs[index] = f
+}
+
+// DefineVar instantiates a variable object for a particular index.
+func (p *Package) DefineVar(index uint32, v *Var) {
+	sym := p.symbols[index]
+	if sym.Type != SymVar {
+		panic("not a var")
+	}
+
+	p.vars[index] = v
 }
 
 // Func returns the function of index.
@@ -119,5 +129,11 @@ func (p *Package) Func(index uint32) *Func {
 	return ret
 }
 
-// Var reprsents a variable object
-type Var struct{} // TODO:
+// Var returns the variable of index.
+func (p *Package) Var(index uint32) *Var {
+	ret, found := p.vars[index]
+	if !found {
+		panic("not found")
+	}
+	return ret
+}

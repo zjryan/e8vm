@@ -1,7 +1,17 @@
 package asm8
 
-func parseVarStmts(p *parser, v *varDecl) {
+import (
+	"lonnie.io/e8vm/lex8"
+)
 
+func parseVarStmts(p *parser, v *varDecl) {
+	for !(p.see(Rbrace) || p.see(lex8.EOF)) {
+		stmt := parseVarStmt(p)
+		if stmt != nil {
+			v.stmts = append(v.stmts, stmt)
+		}
+		p.clearErr()
+	}
 }
 
 func parseVar(p *parser) *varDecl {
