@@ -6,7 +6,7 @@ import (
 
 // Func is an assembly function.
 type funcDecl struct {
-	stmts []*stmt
+	stmts []*funcStmt
 
 	kw, name             *lex8.Token
 	lbrace, rbrace, semi *lex8.Token

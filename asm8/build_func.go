@@ -101,7 +101,7 @@ func fillLabels(b *builder, f *funcDecl) {
 			panic("not a label")
 		}
 
-		lab := sym.Item.(*stmt)
+		lab := sym.Item.(*funcStmt)
 		delta := uint32(int32(lab.offset-s.offset-4) >> 2)
 		fillDelta(b, t, &s.inst.inst, delta)
 	}
@@ -134,7 +134,7 @@ func init() {
 // resolveSymbol resolves the symbol in the statement,
 // returns the symbol linking object and its <sym, pkg> index pair
 // in the current package context.
-func resolveSymbol(b *builder, s *stmt) (ret *symbol, pkg, index uint32) {
+func resolveSymbol(b *builder, s *funcStmt) (ret *symbol, pkg, index uint32) {
 	t := s.symTok
 
 	if s.pack == "" {
@@ -171,7 +171,7 @@ func resolveSymbol(b *builder, s *stmt) (ret *symbol, pkg, index uint32) {
 	return
 }
 
-func linkSymbol(b *builder, s *stmt, f *link8.Func) {
+func linkSymbol(b *builder, s *funcStmt, f *link8.Func) {
 	t := s.symTok
 	if b.curPkg == nil {
 		b.err(t.Pos, "no context for resolving %q", t.Lit)

@@ -1,6 +1,6 @@
 package asm8
 
-func parseStmt(p *parser) *stmt {
+func parseStmt(p *parser) *funcStmt {
 	ops := parseOps(p)
 	if len(ops) == 0 {
 		return nil
@@ -17,12 +17,12 @@ func parseStmt(p *parser) *stmt {
 			p.err(op0.Pos, "label should take the entire line")
 			return nil
 		}
-		return &stmt{label: lead, ops: ops}
+		return &funcStmt{label: lead, ops: ops}
 	}
 
-	return &stmt{inst: parseInst(p, ops), ops: ops}
+	return &funcStmt{inst: parseInst(p, ops), ops: ops}
 }
 
-func (s *stmt) isLabel() bool {
+func (s *funcStmt) isLabel() bool {
 	return s.inst == nil && s.label != ""
 }

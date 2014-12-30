@@ -4,11 +4,6 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-type varStmt struct {
-	typ  *lex8.Token
-	toks []*lex8.Token
-}
-
 type varDecl struct {
 	stmts []*varStmt
 

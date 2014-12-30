@@ -4,7 +4,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-type stmt struct {
+type funcStmt struct {
 	*inst
 	label string
 
