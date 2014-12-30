@@ -10,8 +10,8 @@ func LinkMain(main *Package) ([]byte, error) {
 	lnk.AddPkgs(main)
 
 	funcMain, index := main.Query("main")
-	if funcMain.Type != SymFunc {
-		return nil, fmt.Errorf("main function missing in %s", main.path)
+	if funcMain == nil || funcMain.Type != SymFunc {
+		return nil, fmt.Errorf("main function missing")
 	}
 
 	used := traceUsed(lnk, main, index)

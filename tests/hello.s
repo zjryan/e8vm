@@ -15,7 +15,7 @@ func main {
     j       .loop
 
 .end
-    halt 
+    halt
 }
 
 // print the char in r1
@@ -26,10 +26,10 @@ func printChar {
     bne     r4 r0 .loop // wait for invalid
 
     sb      r1 r2
-    
+
     addi    r1 r0 1
     sb      r1 r2 1
-    
+
     mov     pc ret
 }
 

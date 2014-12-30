@@ -20,9 +20,11 @@ func parseVar(p *parser) *varDecl {
 	ret.kw = p.expectKeyword("var")
 	ret.name = p.expect(Operand)
 
-	name := ret.name.Lit
-	if !isIdent(name) {
-		p.err(ret.name.Pos, "invalid var name %q", name)
+	if ret.name != nil {
+		name := ret.name.Lit
+		if !isIdent(name) {
+			p.err(ret.name.Pos, "invalid var name %q", name)
+		}
 	}
 
 	ret.lbrace = p.expect(Lbrace)

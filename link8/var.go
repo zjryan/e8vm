@@ -47,5 +47,5 @@ func (v *Var) Size() uint32 {
 
 // TooLarge checks if the size is larger than 2GB
 func (v *Var) TooLarge() bool {
-	return v.buf.Len() > math.MaxUint32
+	return v.buf.Len() > math.MaxInt32
 }

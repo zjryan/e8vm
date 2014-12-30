@@ -33,7 +33,7 @@ func (f *Func) AddInst(i uint32) {
 
 // TooLarge checks if the function size is larger than 4GB.
 func (f *Func) TooLarge() bool {
-	return len(f.insts)*4 >= math.MaxUint32
+	return len(f.insts)*4 >= math.MaxInt32
 }
 
 // Size returns the size of the function.
