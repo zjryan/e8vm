@@ -9,7 +9,7 @@ type varStmt struct {
 	toks []*lex8.Token
 }
 
-type Var struct {
+type varDecl struct {
 	stmts []*varStmt
 
 	kw, name             *lex8.Token
