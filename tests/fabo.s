@@ -6,16 +6,16 @@ func main {
     addi    sp sp 4096 // set sp
     sw      r1 sp
     addi    sp sp 8
-    
+
     jal     fabo
     lw      r1 sp -4
     addi    sp sp -8
-    
+
     sw      r1 sp
     addi    sp sp 4
     jal     printNum
     addi    sp sp -4
-    
+
     lw      r1 sp
 
     halt
@@ -83,7 +83,7 @@ func printNum {
     sw      r1 sp 4 // save r1
     divu    r1 r1 r3
     addi    r1 r1 0x30 // convert digit to char
-    
+
     sw      r2 sp 8
     jal     printChar
     lw      r2 sp 8
@@ -107,10 +107,10 @@ func printChar {
     bne     r4 r0 .loop // wait for invalid
 
     sb      r1 r2
-    
+
     addi    r1 r0 1
     sb      r1 r2 1
-    
+
     mov     pc ret
 }
 

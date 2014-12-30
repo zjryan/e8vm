@@ -6,9 +6,11 @@ import (
 
 // Machine is a multicore shared memory simulated arch8 machine.
 type Machine struct {
-	phyMem *phyMemory
-	inst   inst
-	cores  *multiCore
+	phyMem  *phyMemory
+	inst    inst
+	cores   *multiCore
+	serial  *serial
+	console *console
 
 	devices []device
 }
@@ -23,11 +25,21 @@ func NewMachine(memSize uint32, ncore int) *Machine {
 	// hook-up devices
 	p := ret.phyMem.Page(pageBasicIO)
 
+	ret.serial = newSerial(p, ret.cores)
+	ret.console = newConsole(p, ret.cores)
+
 	ret.addDevice(newTicker(ret.cores))
-	ret.addDevice(newSerial(p, ret.cores))
-	ret.addDevice(newConsole(p, ret.cores))
+	ret.addDevice(ret.serial)
+	ret.addDevice(ret.console)
 
 	return ret
+}
+
+// SetOutput sets the output writer of the machine's serial
+// console.
+func (m *Machine) SetOutput(w io.Writer) {
+	m.serial.Output = w
+	m.console.Output = w
 }
 
 // AddDevice adds a devices to the machine.
