@@ -38,7 +38,7 @@ func Dasm(bs []byte, addr uint32) []*Line {
 		}
 
 		index := int(line.To-base) / 4
-		if index < nline {
+		if index >= 0 && index < nline {
 			line.ToLine = ret[index]
 		}
 	}
