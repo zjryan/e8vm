@@ -25,7 +25,7 @@ func buildPkgScope(b *builder, pkg *pkg) {
 	}
 }
 
-func buildPkg(b *builder, pkg *pkg) *lib {
+func buildLib(b *builder, pkg *pkg) *lib {
 	ret := newLib(pkg.Path)
 	b.curPkg = ret
 

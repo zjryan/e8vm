@@ -20,7 +20,7 @@ func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	pkg.AddFile(file)
 
 	b := newBuilder()
-	main := buildPkg(b, pkg)
+	main := buildLib(b, pkg)
 	if es := b.Errs(); es != nil {
 		return nil, es
 	}
