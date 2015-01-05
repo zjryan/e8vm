@@ -2,8 +2,8 @@ package asm8
 
 import (
 	"bytes"
-	"strconv"
 	"math"
+	"strconv"
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/lex8"
