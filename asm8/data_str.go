@@ -12,7 +12,7 @@ func parseDataStr(p *parser, args []*lex8.Token) ([]byte, uint32) {
 
 	for _, arg := range args {
 		if arg.Type != String {
-			p.err(arg.Pos, "expect string, got %s", arg.Type)
+			p.err(arg.Pos, "expect string, got %s", typeStr(arg.Type))
 			return nil, 0
 		}
 

@@ -2,8 +2,8 @@ package dasm8
 
 import (
 	"bytes"
-	"fmt"
 	"encoding/binary"
+	"fmt"
 )
 
 // Line is a disassembled line

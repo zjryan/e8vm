@@ -35,6 +35,8 @@ func parseData(p *parser, t *lex8.Token, args []*lex8.Token) ([]byte, uint32) {
 	switch t.Lit {
 	case "str":
 		return parseDataStr(p, args)
+	case "x":
+		return parseDataHex(p, args)
 	case "u32", "i32", "u8", "i8", "byte", "f32":
 		p.err(t.Pos, "data type %s not implemented", t.Lit)
 		return nil, 0
