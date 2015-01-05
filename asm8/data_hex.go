@@ -8,14 +8,11 @@ import (
 )
 
 func parseDataHex(p *parser, args []*lex8.Token) ([]byte, uint32) {
+	if !checkAllType(p, args, Operand) {
+		return nil, 0
+	}
 	buf := new(bytes.Buffer)
-
 	for _, arg := range args {
-		if arg.Type != Operand {
-			p.err(arg.Pos, "expect operand, got %s", typeStr(arg.Type))
-			return nil, 0
-		}
-
 		b, e := strconv.ParseUint(arg.Lit, 16, 8)
 		if e != nil {
 			p.err(arg.Pos, "%s", e)
