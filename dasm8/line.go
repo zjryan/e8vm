@@ -3,6 +3,7 @@ package dasm8
 import (
 	"bytes"
 	"fmt"
+	"encoding/binary"
 )
 
 // Line is a disassembled line
@@ -17,24 +18,28 @@ type Line struct {
 	ToLine *Line
 }
 
-func printables(inst uint32) string {
+func printables(bs []byte) string {
 	ret := ""
-	for i := 0; i < 4; i++ {
-		r := rune(inst & 0xff)
-		inst = inst >> 8
+	for _, b := range bs {
+		r := rune(b)
 		if r >= ' ' && r <= '~' {
-			ret = string(r) + ret
+			ret += string(r)
 		} else {
-			ret = "." + ret
+			ret += "."
 		}
 	}
 	return ret
 }
 
+var enc = binary.LittleEndian
+
 func (line *Line) String() string {
 	ret := new(bytes.Buffer)
-	fmt.Fprintf(ret, "%08x:  %08x", line.Addr, line.Inst)
-	fmt.Fprintf(ret, "   %s", printables(line.Inst))
+	var buf [4]byte
+	enc.PutUint32(buf[:], line.Inst)
+
+	fmt.Fprintf(ret, "%08x:  % 02x", line.Addr, buf[:])
+	fmt.Fprintf(ret, "   %s", printables(buf[:]))
 	fmt.Fprintf(ret, "    %s", line.Str)
 	if line.IsJump {
 		fmt.Fprintf(ret, "   // %08x", line.To)
