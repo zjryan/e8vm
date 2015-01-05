@@ -3,6 +3,7 @@ package asm8
 import (
 	"bytes"
 	"strconv"
+	"math"
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/lex8"
@@ -19,16 +20,17 @@ func nbitAlign(nbit int) uint32 {
 }
 
 const (
-	modeWord   = 0x1
-	modeSigned = 0x2
+	modeSigned = 0x1
+	modeWord   = 0x2
+	modeFloat  = 0x4
 )
 
-func parseDataInts(p *parser, args []*lex8.Token, mode int) ([]byte, uint32) {
+func parseDataNums(p *parser, args []*lex8.Token, mode int) ([]byte, uint32) {
 	if !checkAllType(p, args, Operand) {
 		return nil, 0
 	}
 
-	var i int64
+	var ui uint32
 	nbit := 8
 	if mode&modeWord != 0 {
 		nbit = 32
@@ -37,12 +39,18 @@ func parseDataInts(p *parser, args []*lex8.Token, mode int) ([]byte, uint32) {
 
 	buf := new(bytes.Buffer)
 	for _, arg := range args {
-		if mode&modeSigned != 0 {
+		if mode&modeFloat != 0 {
+			var f float64
+			f, e = strconv.ParseFloat(arg.Lit, 32)
+			ui = math.Float32bits(float32(f))
+		} else if mode&modeSigned != 0 {
+			var i int64
 			i, e = strconv.ParseInt(arg.Lit, 0, nbit)
+			ui = uint32(i)
 		} else {
-			var ui uint64
-			ui, e = strconv.ParseUint(arg.Lit, 0, nbit)
-			i = int64(ui)
+			var ui64 uint64
+			ui64, e = strconv.ParseUint(arg.Lit, 0, nbit)
+			ui = uint32(ui64)
 		}
 		if e != nil {
 			p.err(arg.Pos, "%s", e)
@@ -50,10 +58,10 @@ func parseDataInts(p *parser, args []*lex8.Token, mode int) ([]byte, uint32) {
 		}
 
 		if nbit == 8 {
-			buf.WriteByte(byte(i))
+			buf.WriteByte(byte(ui))
 		} else if nbit == 32 {
 			var bs [4]byte
-			arch8.Endian.PutUint32(bs[:], uint32(i))
+			arch8.Endian.PutUint32(bs[:], ui)
 			buf.Write(bs[:])
 		}
 	}

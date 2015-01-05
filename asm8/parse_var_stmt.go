@@ -38,16 +38,15 @@ func parseData(p *parser, t *lex8.Token, args []*lex8.Token) ([]byte, uint32) {
 	case "x":
 		return parseDataHex(p, args)
 	case "u32":
-		return parseDataInts(p, args, modeWord)
+		return parseDataNums(p, args, modeWord)
 	case "i32":
-		return parseDataInts(p, args, modeWord|modeSigned)
+		return parseDataNums(p, args, modeWord|modeSigned)
 	case "u8", "byte":
-		return parseDataInts(p, args, 0)
+		return parseDataNums(p, args, 0)
 	case "i8":
-		return parseDataInts(p, args, modeSigned)
+		return parseDataNums(p, args, modeSigned)
 	case "f32":
-		p.err(t.Pos, "data type %s not implemented", t.Lit)
-		return nil, 0
+		return parseDataNums(p, args, modeWord|modeFloat)
 	default:
 		p.err(t.Pos, "unknown data type %q", t.Lit)
 		return nil, 0
