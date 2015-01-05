@@ -5,7 +5,7 @@ var msg {
 func main {
     xor     r0 r0 r0 // clear r0
     lui     r3 msg
-    ori    r3 r3 msg
+    ori     r3 r3 msg
 
 .loop
     lb      r1 r3
