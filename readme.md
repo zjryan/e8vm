@@ -17,7 +17,8 @@ Planned Features:
 ## TODOs
 
 - Build code reading website
-- Complete vars and consts
+- Complete consts
 - Package building system
+- More tests
 - Online filesystem and online editing
 - Linking github
