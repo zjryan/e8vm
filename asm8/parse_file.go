@@ -21,7 +21,9 @@ func parseFile(p *parser) *file {
 				ret.Vars = append(ret.Vars, v)
 			}
 		} else if p.seeKeyword("const") {
-			panic("todo")
+			// TODO:
+			p.err(p.t.Pos, "const support not implemented yet")
+			p.skipErrStmt()
 		} else {
 			p.err(p.t.Pos, "expect top-declaration: func, var or const")
 			return nil

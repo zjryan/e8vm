@@ -13,7 +13,7 @@ func TestPhyMemory(t *testing.T) {
 
 	as := func(cond bool) {
 		if !cond {
-			t.Fatal()
+			t.Fatal("assertion failed")
 		}
 	}
 
