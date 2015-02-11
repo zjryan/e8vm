@@ -16,7 +16,11 @@ func parseFuncStmts(p *parser, f *funcDecl) {
 
 func parseBareFunc(p *parser) *funcDecl {
 	ret := new(funcDecl)
-	ret.name = &lex8.Token{Operand, "_", nil}
+	ret.name = &lex8.Token{
+		Type: Operand,
+		Lit:  "_",
+		Pos:  nil,
+	}
 	parseFuncStmts(p, ret)
 	return ret
 }

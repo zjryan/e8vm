@@ -40,18 +40,30 @@ func (sx *stmtLexer) Token() *lex8.Token {
 			if sx.insertSemi {
 				sx.insertSemi = false
 				sx.save = t
-				return &lex8.Token{Semi, t.Lit, t.Pos}
+				return &lex8.Token{
+					Type: Semi,
+					Lit:  t.Lit,
+					Pos:  t.Pos,
+				}
 			}
 		case Rbrace:
 			if sx.insertSemi {
 				sx.save = t
-				return &lex8.Token{Semi, t.Lit, t.Pos}
+				return &lex8.Token{
+					Type: Semi,
+					Lit:  t.Lit,
+					Pos:  t.Pos,
+				}
 			}
 			sx.insertSemi = true
 		case Endl:
 			if sx.insertSemi {
 				sx.insertSemi = false
-				return &lex8.Token{Semi, "\n", t.Pos}
+				return &lex8.Token{
+					Type: Semi,
+					Lit:  "\n",
+					Pos:  t.Pos,
+				}
 			}
 			continue // ignore this end line
 		case Comment:
