@@ -12,6 +12,7 @@ func buildPkgScope(b *builder, pkg *pkg) {
 	}
 
 	for _, file := range pkg.Files {
+		// declare functions
 		for _, fn := range file.Funcs {
 			t := fn.name
 			sym := &symbol{
@@ -29,6 +30,7 @@ func buildPkgScope(b *builder, pkg *pkg) {
 			fn.index = b.curPkg.Declare(sym) // assign link index
 		}
 
+		// declare variables
 		for _, v := range file.Vars {
 			t := v.name
 			sym := &symbol{

@@ -2,7 +2,7 @@ package asm8
 
 // Package represents a package node.
 type pkg struct {
-	Path  string
+	Path  string // package import path
 	Files []*file
 }
 
