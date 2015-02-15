@@ -9,8 +9,8 @@ import (
 // PkgBuild contains the information to build
 // a package
 type PkgBuild struct {
-	Path string
-	Files map[string]io.ReadCloser
+	Path   string
+	Files  map[string]io.ReadCloser
 	Import map[string]*Lib
 }
 
