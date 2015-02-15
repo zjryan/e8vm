@@ -4,18 +4,19 @@ import (
 	"io"
 
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/link8"
 )
 
 // PkgBuild contains the information to build
 // a package
 type PkgBuild struct {
 	Path   string
+	Import map[string]*lib
 	Files  map[string]io.ReadCloser
-	Import map[string]*Lib
 }
 
 // Build builds a package.
-func (pb *PkgBuild) Build() (*Lib, []*lex8.Error) {
+func (pb *PkgBuild) Build() (*link8.Package, []*lex8.Error) {
 	pkg := newPkg(pb.Path)
 	for f, rc := range pb.Files {
 		p := newParser(f, rc)
@@ -33,5 +34,5 @@ func (pb *PkgBuild) Build() (*Lib, []*lex8.Error) {
 		return nil, es
 	}
 
-	return ret, nil
+	return ret.Package, nil
 }

@@ -7,19 +7,19 @@ import (
 // Lib is the compiler output of a package
 // it contains the package for linking,
 // and also the symbols for importing
-type Lib struct {
+type lib struct {
 	*link8.Package
 
-	requires map[uint32]*Lib
+	requires map[uint32]*lib
 	symbols  map[string]*symbol
 }
 
 // NewPkgObj creates a new package compile object
-func newLib(p string) *Lib {
-	ret := new(Lib)
+func newLib(p string) *lib {
+	ret := new(lib)
 	ret.Package = link8.NewPackage(p)
 
-	ret.requires = make(map[uint32]*Lib)
+	ret.requires = make(map[uint32]*lib)
 	ret.symbols = make(map[string]*symbol)
 
 	id := ret.Require(ret)
@@ -30,9 +30,12 @@ func newLib(p string) *Lib {
 	return ret
 }
 
+// Link returns the link8.Package for linking.
+func (p *lib) Link() *link8.Package { return p.Package }
+
 // Require imports a package in and grants the package
 // a import index.
-func (p *Lib) Require(req *Lib) uint32 {
+func (p *lib) Require(req *lib) uint32 {
 	ret := p.Package.Require(req.Package)
 	_, found := p.requires[ret]
 	if !found {
@@ -44,7 +47,7 @@ func (p *Lib) Require(req *Lib) uint32 {
 
 // LibIndex returns the package import index, consistent with
 // the underlying link8.Package.
-func (p *Lib) LibIndex(path string) (*Lib, uint32) {
+func (p *lib) LibIndex(path string) (*lib, uint32) {
 	pkg, index := p.Package.PkgIndex(path)
 	if pkg == nil {
 		return nil, 0
@@ -63,7 +66,7 @@ func (p *Lib) LibIndex(path string) (*Lib, uint32) {
 // link8.Package, and it returns the index.  If the symbol is a constant, it
 // returns 0 after the declaration. Other types will panic. Redeclaration will
 // panic.
-func (p *Lib) Declare(s *symbol) uint32 {
+func (p *lib) Declare(s *symbol) uint32 {
 	_, found := p.symbols[s.Name]
 	if found {
 		panic("redeclare")
@@ -91,7 +94,7 @@ func (p *Lib) Declare(s *symbol) uint32 {
 // Query returns the symbol declared by name and its symbol index
 // if the symbol is a function or variable. It returns nil, 0 when
 // the symbol of name is not found.
-func (p *Lib) query(name string) (*symbol, uint32) {
+func (p *lib) query(name string) (*symbol, uint32) {
 	ret, found := p.symbols[name]
 	if !found {
 		return nil, 0

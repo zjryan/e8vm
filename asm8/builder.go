@@ -9,7 +9,7 @@ type builder struct {
 	errs  *lex8.ErrorList
 	scope *symScope
 
-	curPkg *Lib
+	curPkg *lib
 
 	hasError bool
 }

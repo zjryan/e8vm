@@ -107,7 +107,7 @@ func fillLabels(b *builder, f *funcDecl) {
 	}
 }
 
-func queryPkg(b *builder, t *lex8.Token, pack string) *Lib {
+func queryPkg(b *builder, t *lex8.Token, pack string) *lib {
 	sym := b.scope.Query(pack)
 	if sym == nil {
 		b.err(t.Pos, "package %q not found", pack)
@@ -116,7 +116,7 @@ func queryPkg(b *builder, t *lex8.Token, pack string) *Lib {
 		b.err(t.Pos, "%q is a %s, not a package", t.Lit, symStr(sym.Type))
 		return nil
 	}
-	return sym.Item.(*Lib)
+	return sym.Item.(*lib)
 }
 
 func init() {
@@ -140,7 +140,7 @@ func resolveSymbol(b *builder, s *funcStmt) (ret *symbol, pkg, index uint32) {
 	if s.pack == "" {
 		ret = b.scope.Query(s.symbol) // find the symbol in scope
 		if ret != nil {
-			var p *Lib
+			var p *lib
 			p, pkg = b.curPkg.LibIndex(ret.Package)
 			index = p.SymIndex(ret.Name)
 		}
