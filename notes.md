@@ -13,4 +13,9 @@ Here are the steps to (partially) build a program or a library.
 5. load the headers/symbols of the packages that do not need to rebuild but need to load
 6. build the packages based on its dependency order
 7. cache the headers/sybmols built, save the built object archive and headers back to persistant storage
-8. 
+
+- the assembly compiler will just take a bunch of file openers,
+  that will return the readcloser upon calling.
+  it will also take an importer.
+  an importer gives it back a readcloser (or error) upon calling for a package name
+  the assembler will save the 
