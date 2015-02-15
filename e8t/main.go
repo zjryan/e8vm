@@ -13,7 +13,7 @@ func ne(e error) {
 }
 
 func main() {
-	ret, e := fs8.AllPackages("/home/h8liu/gopath/src/lonnie.io/e8vm")
+	ret, e := fs8.AllPackages(".")
 	ne(e)
 
 	for _, p := range ret {
