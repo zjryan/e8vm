@@ -1,22 +1,24 @@
 package asm8
 
 import (
-	"os"
+	"io"
 
 	"lonnie.io/e8vm/lex8"
-	"lonnie.io/e8vm/link8"
 )
 
-// BuildPkg builds a package from a list of files.
-func BuildPkg(path string, files []string) ([]byte, []*lex8.Error) {
-	pkg := newPkg(path)
-	for _, f := range files {
-		reader, e := os.Open(f)
-		if e != nil {
-			return nil, lex8.SingleErr(e)
-		}
+// PkgBuild contains the information to build
+// a package
+type PkgBuild struct {
+	Path string
+	Files map[string]io.ReadCloser
+	Import map[string]*Lib
+}
 
-		p := newParser(f, reader)
+// Build builds a package.
+func (pb *PkgBuild) Build() (*Lib, []*lex8.Error) {
+	pkg := newPkg(pb.Path)
+	for f, rc := range pb.Files {
+		p := newParser(f, rc)
 		parsed := parseFile(p)
 		if es := p.Errs(); es != nil {
 			return nil, es
@@ -26,14 +28,9 @@ func BuildPkg(path string, files []string) ([]byte, []*lex8.Error) {
 	}
 
 	b := newBuilder()
-	lib := buildLib(b, pkg)
+	ret := buildLib(b, pkg)
 	if es := b.Errs(); es != nil {
 		return nil, es
-	}
-
-	ret, e := link8.LinkMain(lib.Package)
-	if e != nil {
-		return nil, lex8.SingleErr(e)
 	}
 
 	return ret, nil
