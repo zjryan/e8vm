@@ -42,7 +42,7 @@ func (p *Lib) Require(req *Lib) uint32 {
 	return ret
 }
 
-// PkgIndex returns the package import index, consistent with
+// LibIndex returns the package import index, consistent with
 // the underlying link8.Package.
 func (p *Lib) LibIndex(path string) (*Lib, uint32) {
 	pkg, index := p.Package.PkgIndex(path)
@@ -91,7 +91,7 @@ func (p *Lib) Declare(s *symbol) uint32 {
 // Query returns the symbol declared by name and its symbol index
 // if the symbol is a function or variable. It returns nil, 0 when
 // the symbol of name is not found.
-func (p *Lib) Query(name string) (*symbol, uint32) {
+func (p *Lib) query(name string) (*symbol, uint32) {
 	ret, found := p.symbols[name]
 	if !found {
 		return nil, 0

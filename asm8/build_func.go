@@ -152,7 +152,7 @@ func resolveSymbol(b *builder, s *funcStmt) (ret *symbol, pkg, index uint32) {
 
 		path := p.Path()
 		_, pkg = b.curPkg.LibIndex(path)
-		ret, index = p.Query(s.symbol)
+		ret, index = p.query(s.symbol)
 		if ret != nil && ret.Package != path {
 			panic("bug")
 		}
