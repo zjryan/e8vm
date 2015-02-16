@@ -31,8 +31,8 @@ func (b *Build) join(pre, p string) string {
 }
 
 func (b *Build) src(p string) string { return b.join("src", p) }
-func (b *Build) bin(p string) string { return b.join("bin", p) }
-func (b *Build) pkg(p string) string { return b.join("pkg", p) }
+func (b *Build) bin(p string) string { return b.join("bin", p+".e8") }
+func (b *Build) pkg(p string) string { return b.join("pkg", p+".e8a") }
 
 // AsmPkg creates an asm pkg build for our asm package.
 func (b *Build) prepareAsm(path string) (*asm8.PkgBuild, error) {
