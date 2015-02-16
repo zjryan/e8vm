@@ -93,12 +93,11 @@ func ExampleLexer_4() {
 }
 
 func ExampleLexer_keywords() {
-	o("func var const import")
+	o("func var const")
 	// Output:
 	// t.s8:1: kw - "func"
 	// t.s8:1: kw - "var"
 	// t.s8:1: kw - "const"
-	// t.s8:1: kw - "import"
 	// t.s8:1: eof
 }
 

@@ -7,10 +7,6 @@ import (
 func parseFile(p *parser) *file {
 	ret := new(file)
 
-	for p.seeKeyword("import") {
-		panic("todo")
-	}
-
 	for !p.see(lex8.EOF) {
 		if p.seeKeyword("func") {
 			if f := parseFunc(p); f != nil {

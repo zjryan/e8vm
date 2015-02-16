@@ -26,7 +26,7 @@ func isOperandChar(r rune) bool {
 
 func isKeyword(lit string) bool {
 	switch lit {
-	case "func", "var", "const", "import":
+	case "func", "var", "const":
 		return true
 	}
 	return false
