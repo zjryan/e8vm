@@ -106,6 +106,10 @@
 - `asm8/bare_func.go`: Build bare function (done)
 - `asm8/single_file.go`: Build single file package (done)
 
+## Building System (build8)
+
+Like the `make` system for e8vm.
+
 ## Programming Language (lang8)
 
 `todo: a c-like programming language for writing os8`
