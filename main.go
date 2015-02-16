@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	// "io/ioutil"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -52,36 +52,48 @@ func main() {
 	}
 
 	fname := args[0]
-	f, e := os.Open(fname)
-	if e != nil {
-		fmt.Fprintf(os.Stderr, "open: %s", e)
-		os.Exit(-1)
-	}
-
 	var bs []byte
-	var es []*lex8.Error
-	if strings.HasSuffix(fname, "_bare.s") {
-		bs, es = asm8.BuildBareFunc(fname, f)
-	} else {
-		bs, es = asm8.BuildSingleFile(fname, f)
-	}
-
-	if len(es) > 0 {
-		for _, e := range es {
-			fmt.Println(e)
+	if strings.HasSuffix(fname, ".s") {
+		f, e := os.Open(fname)
+		if e != nil {
+			fmt.Fprintf(os.Stderr, "open: %s", e)
+			os.Exit(-1)
 		}
-	} else {
-		if *doDasm {
-			lines := dasm8.Dasm(bs, arch8.InitPC)
-			for _, line := range lines {
-				fmt.Println(line)
-			}
+
+		var es []*lex8.Error
+		if strings.HasSuffix(fname, "_bare.s") {
+			bs, es = asm8.BuildBareFunc(fname, f)
 		} else {
-			n, e := run(bs)
-			fmt.Printf("(%d cycles)\n", n)
-			if e != nil {
+			bs, es = asm8.BuildSingleFile(fname, f)
+		}
+
+		if len(es) > 0 {
+			for _, e := range es {
 				fmt.Println(e)
 			}
+			os.Exit(-1)
+			return
+		}
+	} else {
+		var e error
+		bs, e = ioutil.ReadFile(fname)
+		if e != nil {
+			fmt.Println(e)
+			os.Exit(-1)
+			return
+		}
+	}
+
+	if *doDasm {
+		lines := dasm8.Dasm(bs, arch8.InitPC)
+		for _, line := range lines {
+			fmt.Println(line)
+		}
+	} else {
+		n, e := run(bs)
+		fmt.Printf("(%d cycles)\n", n)
+		if e != nil {
+			fmt.Println(e)
 		}
 	}
 }

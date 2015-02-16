@@ -27,7 +27,7 @@ func BuildAll(gpath string) []*lex8.Error {
 	b := NewBuild(gpath)
 	src := b.src("")
 
-	var pkgs map[string]struct{}
+	pkgs := make(map[string]struct{})
 
 	e := filepath.Walk(src, func(p string, info os.FileInfo, e error) error {
 		if e != nil {

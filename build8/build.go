@@ -14,15 +14,12 @@ import (
 // Build is a build folder for our language.
 type Build struct {
 	path string
-
-	built map[string]bool
 }
 
 // NewBuild returns a build based on a build path
 func NewBuild(path string) *Build {
 	ret := new(Build)
 	ret.path = path
-	ret.built = make(map[string]bool)
 	return ret
 }
 
@@ -48,7 +45,7 @@ func (b *Build) prepareAsm(path string) (*asm8.PkgBuild, error) {
 		return nil, e
 	}
 
-	var srcFiles map[string]io.ReadCloser
+	srcFiles := make(map[string]io.ReadCloser)
 
 	for _, file := range files {
 		if file.IsDir() {
