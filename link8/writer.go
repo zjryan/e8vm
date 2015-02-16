@@ -1,28 +1,42 @@
 package link8
 
 import (
-	"bytes"
+	"io"
 
 	"encoding/binary"
 )
 
 type writer struct {
-	buf *bytes.Buffer
+	wc io.WriteCloser
+	e  error
 }
 
-func newWriter() *writer {
+func newWriter(wc io.WriteCloser) *writer {
 	ret := new(writer)
-	ret.buf = new(bytes.Buffer)
+	ret.wc = wc
 	return ret
+}
+
+func (w *writer) Err() error {
+	return w.e
+}
+
+func (w *writer) Write(buf []byte) (int, error) {
+	if w.e != nil {
+		return 0, w.e
+	}
+
+	n, e := w.wc.Write(buf)
+	if e != nil {
+		w.e = e
+	}
+	return n, e
 }
 
 func (w *writer) writeU32(u uint32) {
 	var b [4]byte
 	binary.LittleEndian.PutUint32(b[:], u)
-	_, e := w.buf.Write(b[:])
-	if e != nil {
-		panic("buf write")
-	}
+	w.Write(b[:])
 }
 
 func (w *writer) writeBareFunc(f *Func) {
@@ -35,13 +49,15 @@ func (w *writer) writeBareFunc(f *Func) {
 	}
 }
 
-func (w *writer) bytes() []byte {
-	return w.buf.Bytes()
+func (w *writer) Close() error {
+	return w.wc.Close()
 }
 
 func writeVar(w *writer, v *Var) {
-	w.buf.Write(make([]byte, v.prePad))
-	w.buf.Write(v.buf.Bytes())
+	if v.prePad > 0 {
+		w.Write(make([]byte, v.prePad))
+	}
+	w.Write(v.buf.Bytes())
 }
 
 func writeFunc(w *writer, p *Package, f *Func) {

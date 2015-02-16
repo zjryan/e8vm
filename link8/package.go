@@ -100,6 +100,15 @@ func (p *Package) Query(name string) (*Symbol, uint32) {
 	return p.symbols[index], index
 }
 
+// HasMainFunc checks if the package has a main function.
+func (p *Package) HasFunc(name string) bool {
+	sym, _ := p.Query(name)
+	if sym == nil || sym.Type != SymFunc {
+		return false
+	}
+	return true
+}
+
 // DefineFunc instantiates a function object for a particular index.
 func (p *Package) DefineFunc(index uint32, f *Func) {
 	sym := p.symbols[index]

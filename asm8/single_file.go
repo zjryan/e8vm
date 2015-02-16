@@ -20,10 +20,11 @@ func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 		return nil, es
 	}
 
-	ret, e := link8.LinkMain(p)
+	buf := new(link8.Buf)
+	e := link8.LinkMain(p, buf)
 	if e != nil {
 		return nil, lex8.SingleErr(e)
 	}
 
-	return ret, nil
+	return buf.Bytes(), nil
 }
