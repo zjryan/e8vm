@@ -3,12 +3,17 @@ package build8
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/link8"
 )
+
+const importFile = "imports"
 
 type pkg struct {
 	home *home
@@ -16,7 +21,12 @@ type pkg struct {
 
 	src string
 
-	imports map[string]*pkgImport
+	lib *link8.Package
+}
+
+type builder interface {
+	Import(p string) (*pkg, []*lex8.Error)
+	Building(p string)
 }
 
 func newPkg(h *home, p string) (*pkg, error) {
@@ -28,9 +38,6 @@ func newPkg(h *home, p string) (*pkg, error) {
 	ret.home = h
 	ret.path = p
 	ret.src = h.src(p)
-	ret.imports = make(map[string]*pkgImport)
-
-	ret.loadImport()
 
 	return ret, nil
 }
@@ -44,22 +51,12 @@ func (p *pkg) openSrcFile(f string) io.ReadCloser {
 }
 
 func (p *pkg) loadImport() (*imports, []*lex8.Error) {
-	path := p.srcFile("imports")
+	path := p.srcFile(importFile)
 	return parseImports(path, newFile(path))
 }
 
 func (p *pkg) listSrcFiles(suffix string) ([]string, error) {
-	dir, e := os.Open(p.src)
-	if e != nil {
-		return nil, e
-	}
-
-	files, e := dir.Readdir(0)
-	if e != nil {
-		return nil, e
-	}
-
-	e = dir.Close()
+	files, e := ioutil.ReadDir(p.src)
 	if e != nil {
 		return nil, e
 	}
@@ -79,4 +76,103 @@ func (p *pkg) listSrcFiles(suffix string) ([]string, error) {
 	}
 
 	return ret, nil
+}
+
+func (p *pkg) openSrcFiles(suffix string) (map[string]io.ReadCloser, error) {
+	files, e := p.listSrcFiles(suffix)
+	if e != nil {
+		return nil, e
+	}
+
+	ret := make(map[string]io.ReadCloser)
+	for _, f := range files {
+		ret[f] = newFile(f)
+	}
+	return ret, nil
+}
+
+func (p *pkg) lastUpdate(suffix string) (*timeStamp, error) {
+	ts := new(timeStamp)
+
+	dirInfo, e := os.Stat(p.src)
+	if e != nil {
+		return nil, e
+	}
+	ts.update(dirInfo.ModTime())
+
+	files, e := ioutil.ReadDir(p.src)
+	if e != nil {
+		return nil, e
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		name := file.Name()
+		if name == importFile || strings.HasSuffix(name, suffix) {
+			ts.update(file.ModTime())
+		}
+	}
+
+	return ts, nil
+}
+
+func (p *pkg) lastBuild() (*timeStamp, error) {
+	ts := new(timeStamp)
+
+	info, e := os.Stat(p.home.pkg(p.path))
+	if !os.IsNotExist(e) {
+		return nil, e
+	}
+	ts.update(info.ModTime())
+
+	info, e = os.Stat(p.home.bin(p.path))
+	if !os.IsNotExist(e) {
+		return nil, e
+	}
+	ts.update(info.ModTime())
+
+	return ts, nil
+}
+
+func (p *pkg) build(b builder) []*lex8.Error {
+	imports, es := p.loadImport()
+	if es != nil {
+		return es
+	}
+
+	importPkgs := make(map[string]*pkg)
+
+	for as, imp := range imports.m {
+		imported, es := b.Import(imp.path)
+		if es != nil {
+			return es
+		}
+
+		importPkgs[as] = imported
+	}
+
+	b.Building(p.path)
+
+	files, e := p.openSrcFiles(".s")
+	if e != nil {
+		return lex8.SingleErr(e)
+	}
+
+	pb := asm8.PkgBuild{
+		Path:   p.path,
+		Import: nil,
+		Files:  files,
+	}
+
+	lib, es := pb.Build()
+	if es != nil {
+		return es
+	}
+
+	p.lib = lib
+
+	return nil
 }
