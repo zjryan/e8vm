@@ -26,8 +26,15 @@ func NewBuilder(homePath string) *Builder {
 func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	ret, found := b.built[p]
 	if found {
+		if ret == nil {
+			e := fmt.Errorf("package %q has circular dependency", p)
+			return nil, lex8.SingleErr(e)
+		}
 		return ret, nil
 	}
+
+	// register the package
+	b.built[p] = nil
 
 	ret, e := newPkg(b.home, p)
 	if e != nil {
@@ -38,6 +45,11 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	if es != nil {
 		return nil, es
 	}
+
+	if ret == nil {
+		panic("bug")
+	}
+	b.built[p] = ret
 
 	return ret, nil
 }
