@@ -13,13 +13,13 @@ import (
 
 // Build is a build folder for our language.
 type Build struct {
-	*ghome
+	*home
 }
 
 // NewBuild returns a build based on a build path
 func NewBuild(path string) *Build {
 	ret := new(Build)
-	ret.ghome = &ghome{path}
+	ret.home = &home{path}
 	return ret
 }
 
@@ -104,7 +104,7 @@ func (b *Build) BuildAsm(path string) (int, []*lex8.Error) {
 	// TODO: save the lib
 
 	if p.HasFunc("main") {
-		fout := newFile(b.bin(path))
+		fout := b.makeBin(path)
 		e := link8.LinkMain(p, fout)
 		if e != nil {
 			return nbuilt, lex8.SingleErr(e)
