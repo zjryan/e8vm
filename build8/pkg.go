@@ -50,6 +50,11 @@ func (p *pkg) openSrcFile(f string) io.ReadCloser {
 
 func (p *pkg) loadImport() (*imports, []*lex8.Error) {
 	path := p.srcFile(importFile)
+	_, e := os.Stat(path)
+	if os.IsNotExist(e) {
+		return nil, nil
+	}
+
 	return parseImports(path, newFile(path))
 }
 
@@ -141,15 +146,16 @@ func (p *pkg) build(b builder) []*lex8.Error {
 		return es
 	}
 
-	importPkgs := make(map[string]*pkg)
+	if imports != nil {
+		importPkgs := make(map[string]*pkg)
+		for as, imp := range imports.m {
+			imported, es := b.build(imp.path)
+			if es != nil {
+				return es
+			}
 
-	for as, imp := range imports.m {
-		imported, es := b.build(imp.path)
-		if es != nil {
-			return es
+			importPkgs[as] = imported
 		}
-
-		importPkgs[as] = imported
 	}
 
 	b.prebuild(p.path)
