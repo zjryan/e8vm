@@ -10,6 +10,8 @@ import (
 type Builder struct {
 	home  *home
 	built map[string]*pkg
+	// TODO: built should be something like an LRU cache
+	// the libraries should be load back in only when linking
 
 	Verbose bool
 }
@@ -41,7 +43,7 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 		return nil, lex8.SingleErr(e)
 	}
 
-	es := ret.build(b)
+	es := ret.build(b) // will recursively build its dependencies as well
 	if es != nil {
 		return nil, es
 	}
@@ -49,7 +51,7 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	if ret == nil {
 		panic("bug")
 	}
-	b.built[p] = ret
+	b.built[p] = ret // built library, save it here
 
 	return ret, nil
 }
