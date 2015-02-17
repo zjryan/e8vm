@@ -63,22 +63,48 @@ func (b *Build) prepareAsm(path string) (*asm8.PkgBuild, error) {
 
 	ret := &asm8.PkgBuild{
 		Path:   path,
-		Import: nil, // TODO
+		Import: nil,
 		Files:  srcFiles,
 	}
 	return ret, nil
 }
 
+// needRebuild checks if the package requires a rebuild
+func (b *Build) needRebuild(pb *asm8.PkgBuild) (bool, error) {
+	// TODO:
+	return true, nil
+}
+
 // BuildAsm builds an assembly package into a binary
-func (b *Build) BuildAsm(path string) []*lex8.Error {
+func (b *Build) BuildAsm(path string) (int, []*lex8.Error) {
 	pb, e := b.prepareAsm(path)
 	if e != nil {
-		return lex8.SingleErr(e)
+		return 0, lex8.SingleErr(e)
+	}
+
+	nbuilt := 0
+	if pb.Import != nil {
+		var es []*lex8.Error
+		for importPkg := range pb.Import {
+			nbuilt, es = b.BuildAsm(importPkg)
+			if es != nil {
+				return nbuilt, es
+			}
+			// TODO: bind the lib imported
+		}
+	}
+
+	rebuild, e := b.needRebuild(pb)
+	if e != nil {
+		return nbuilt, lex8.SingleErr(e)
+	}
+	if !rebuild {
+		return nbuilt, nil
 	}
 
 	p, es := pb.Build()
 	if es != nil {
-		return es
+		return nbuilt, es
 	}
 
 	// TODO: save the lib
@@ -87,9 +113,9 @@ func (b *Build) BuildAsm(path string) []*lex8.Error {
 		fout := newFile(b.bin(path))
 		e := link8.LinkMain(p, fout)
 		if e != nil {
-			return lex8.SingleErr(e)
+			return nbuilt, lex8.SingleErr(e)
 		}
 	}
 
-	return nil
+	return nbuilt, nil
 }

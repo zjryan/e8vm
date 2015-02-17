@@ -59,7 +59,7 @@ func BuildAll(gpath string) []*lex8.Error {
 
 	// TODO: build with dependency
 	for pkg := range pkgs {
-		es := b.BuildAsm(pkg)
+		_, es := b.BuildAsm(pkg)
 		if es != nil {
 			return es
 		}
