@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	es := build8.BuildAll(".")
+	es := build8.BuildAll(".", true)
 	if es != nil {
 		for _, e := range es {
 			fmt.Println(e)
