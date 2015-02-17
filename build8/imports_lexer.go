@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	Operand = iota
-	Endl
-	Semi
+	operand = iota
+	endl
+	semi
 )
 
 func isImportChar(r rune) bool {
@@ -33,11 +33,11 @@ func lexImports(x *lex8.Lexer) *lex8.Token {
 
 	switch r {
 	case '\n':
-		return x.MakeToken(Endl)
+		return x.MakeToken(endl)
 	case '/':
 		return lex8.LexComment(x)
 	case ';':
-		return x.MakeToken(Semi)
+		return x.MakeToken(semi)
 	}
 
 	if r >= 'a' && r <= 'z' {
@@ -48,7 +48,7 @@ func lexImports(x *lex8.Lexer) *lex8.Token {
 			}
 		}
 
-		return x.MakeToken(Operand)
+		return x.MakeToken(operand)
 	}
 
 	return x.MakeToken(lex8.Illegal)
@@ -78,23 +78,23 @@ func (ix *importsLexer) Token() *lex8.Token {
 	for {
 		t := ix.x.Token()
 		switch t.Type {
-		case Semi:
+		case semi:
 			ix.insertSemi = false
 		case lex8.EOF:
 			if ix.insertSemi {
 				ix.insertSemi = false
 				ix.save = t
 				return &lex8.Token{
-					Type: Semi,
+					Type: semi,
 					Lit:  t.Lit,
 					Pos:  t.Pos,
 				}
 			}
-		case Endl:
+		case endl:
 			if ix.insertSemi {
 				ix.insertSemi = false
 				return &lex8.Token{
-					Type: Semi,
+					Type: semi,
 					Lit:  "\n",
 					Pos:  t.Pos,
 				}

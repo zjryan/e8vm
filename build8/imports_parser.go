@@ -37,10 +37,10 @@ func (p *importsParser) err(pos *lex8.Pos, f string, args ...interface{}) {
 }
 
 func (p *importsParser) skipStmt() {
-	for !(p.see(Semi) || p.see(lex8.EOF)) {
+	for !(p.see(semi) || p.see(lex8.EOF)) {
 		p.next()
 	}
-	if p.see(Semi) {
+	if p.see(semi) {
 		p.next()
 	}
 }
@@ -69,11 +69,11 @@ func typeStr(t int) string {
 		return "eof"
 	case lex8.Comment:
 		return "comment"
-	case Operand:
+	case operand:
 		return "operand"
-	case Semi:
+	case semi:
 		return "';'"
-	case Endl:
+	case endl:
 		return "end-line"
 	case lex8.Illegal:
 		return "illegal"

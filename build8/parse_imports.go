@@ -12,7 +12,7 @@ func parseImports(f string, rc io.ReadCloser) ([]*pkgImport, []*lex8.Error) {
 	var ret []*pkgImport
 
 	for !p.see(lex8.EOF) {
-		if !p.see(Operand) {
+		if !p.see(operand) {
 			p.err(p.t.Pos, "expect operand")
 			p.skipErrStmt()
 			continue
@@ -23,12 +23,12 @@ func parseImports(f string, rc io.ReadCloser) ([]*pkgImport, []*lex8.Error) {
 		imp.path = p.t.Lit
 		p.next()
 
-		if p.see(Operand) {
+		if p.see(operand) {
 			imp.as = p.t.Lit
 			p.next()
 		}
 
-		p.expect(Semi)
+		p.expect(semi)
 		p.skipErrStmt()
 
 		ret = append(ret, imp)
