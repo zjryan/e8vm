@@ -8,20 +8,6 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func IsPkgName(s string) bool {
-	for i, r := range s {
-		if r >= '0' && r <= '9' && i > 0 {
-			continue
-		}
-		if r >= 'a' && r <= 'z' {
-			continue
-		}
-		return false
-	}
-
-	return true
-}
-
 // BuildAll packages under gpath
 func BuildAll(gpath string) []*lex8.Error {
 	b := NewBuild(gpath)
@@ -36,7 +22,7 @@ func BuildAll(gpath string) []*lex8.Error {
 
 		name := info.Name()
 		if info.IsDir() {
-			if !IsPkgName(name) {
+			if !isPkgName(name) {
 				return filepath.SkipDir
 			}
 		} else {

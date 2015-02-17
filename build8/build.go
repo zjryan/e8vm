@@ -32,7 +32,7 @@ func (b *Build) bin(p string) string { return b.join("bin", p+".e8") }
 func (b *Build) pkg(p string) string { return b.join("pkg", p+".e8a") }
 
 // AsmPkg creates an asm pkg build for our asm package.
-func (b *Build) prepareAsm(path string) (*asm8.PkgBuild, error) {
+func (b *Build) newAsmPkg(path string) (*asmPkg, error) {
 	folder := b.src(path)
 
 	f, e := os.Open(folder)
@@ -61,10 +61,10 @@ func (b *Build) prepareAsm(path string) (*asm8.PkgBuild, error) {
 		srcFiles[filename] = newFile(filename)
 	}
 
-	ret := &asm8.PkgBuild{
-		Path:   path,
-		Import: nil,
-		Files:  srcFiles,
+	ret := &asmPkg{
+		path:       path,
+		importFile: nil,
+		files:      srcFiles,
 	}
 	return ret, nil
 }
@@ -77,10 +77,12 @@ func (b *Build) needRebuild(pb *asm8.PkgBuild) (bool, error) {
 
 // BuildAsm builds an assembly package into a binary
 func (b *Build) BuildAsm(path string) (int, []*lex8.Error) {
-	pb, e := b.prepareAsm(path)
+	asm, e := b.newAsmPkg(path)
 	if e != nil {
 		return 0, lex8.SingleErr(e)
 	}
+
+	pb := asm.build()
 
 	nbuilt := 0
 	if pb.Import != nil {
