@@ -6,12 +6,6 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-const (
-	operand = iota
-	endl
-	semi
-)
-
 func isImportChar(r rune) bool {
 	if r >= 'a' && r <= 'z' {
 		return true

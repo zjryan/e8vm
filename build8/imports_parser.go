@@ -25,6 +25,7 @@ func newImportsParser(file string, r io.ReadCloser) *importsParser {
 
 func (p *importsParser) see(t int) bool { return p.t.Type == t }
 func (p *importsParser) clearErr()      { p.inErr = false }
+func (p *importsParser) hasErr() bool   { return p.inErr }
 
 func (p *importsParser) next() *lex8.Token {
 	p.t = p.x.Token()

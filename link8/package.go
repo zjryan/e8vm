@@ -100,7 +100,7 @@ func (p *Package) Query(name string) (*Symbol, uint32) {
 	return p.symbols[index], index
 }
 
-// HasMainFunc checks if the package has a main function.
+// HasFunc checks if the package has a function of a particular name.
 func (p *Package) HasFunc(name string) bool {
 	sym, _ := p.Query(name)
 	if sym == nil || sym.Type != SymFunc {

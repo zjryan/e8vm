@@ -3,42 +3,12 @@ package build8
 import (
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 	"strings"
 
 	"lonnie.io/e8vm/lex8"
 )
-
-func isPkgName(s string) bool {
-	if s == "" {
-		return false
-	}
-
-	for i, r := range s {
-		if r >= '0' && r <= '9' && i > 0 {
-			continue
-		}
-		if r >= 'a' && r <= 'z' {
-			continue
-		}
-		return false
-	}
-
-	return true
-}
-
-func isPkgPath(p string) bool {
-	if p == "" {
-		return false
-	}
-	subs := strings.Split(p, "/")
-	for _, sub := range subs {
-		if !isPkgName(sub) {
-			return false
-		}
-	}
-	return true
-}
 
 type pkg struct {
 	home *home
@@ -46,7 +16,7 @@ type pkg struct {
 
 	src string
 
-	imports map[string]*pkg
+	imports map[string]*pkgImport
 }
 
 func newPkg(h *home, p string) (*pkg, error) {
@@ -58,7 +28,7 @@ func newPkg(h *home, p string) (*pkg, error) {
 	ret.home = h
 	ret.path = p
 	ret.src = h.src(p)
-	ret.imports = make(map[string]*pkg)
+	ret.imports = make(map[string]*pkgImport)
 
 	ret.loadImport()
 
@@ -73,12 +43,40 @@ func (p *pkg) openSrcFile(f string) io.ReadCloser {
 	return newFile(p.srcFile(f))
 }
 
-func (p *pkg) loadImport() []*lex8.Error {
+func (p *pkg) loadImport() (*imports, []*lex8.Error) {
 	path := p.srcFile("imports")
-	_, es := parseImports(path, newFile(path))
-	if es != nil {
-		return es
+	return parseImports(path, newFile(path))
+}
+
+func (p *pkg) listSrcFiles(suffix string) ([]string, error) {
+	dir, e := os.Open(p.src)
+	if e != nil {
+		return nil, e
 	}
-	// p.imports = imports
-	return nil
+
+	files, e := dir.Readdir(0)
+	if e != nil {
+		return nil, e
+	}
+
+	e = dir.Close()
+	if e != nil {
+		return nil, e
+	}
+
+	var ret []string
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		name := file.Name()
+		if strings.HasSuffix(name, suffix) {
+			fullpath := p.srcFile(name)
+			ret = append(ret, fullpath)
+		}
+	}
+
+	return ret, nil
 }
