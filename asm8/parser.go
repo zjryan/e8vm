@@ -46,7 +46,7 @@ func typeStr(t int) string {
 	switch t {
 	case lex8.EOF:
 		return "eof"
-	case Comment:
+	case lex8.Comment:
 		return "comment"
 	case Keyword:
 		return "keyword"

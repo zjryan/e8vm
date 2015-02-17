@@ -1,10 +1,7 @@
-package asm8
+package lex8
 
-import (
-	"lonnie.io/e8vm/lex8"
-)
-
-func lexComment(x *lex8.Lexer) *lex8.Token {
+// LexComment lexes a c style comment
+func LexComment(x *Lexer) *Token {
 	if x.Rune() != '/' {
 		panic("incorrect comment start")
 	}
@@ -17,10 +14,10 @@ func lexComment(x *lex8.Lexer) *lex8.Token {
 		return lexBlockComment(x)
 	}
 	x.Err("illegal char %q", x.Rune())
-	return x.MakeToken(lex8.Illegal)
+	return x.MakeToken(Illegal)
 }
 
-func lexLineComment(x *lex8.Lexer) *lex8.Token {
+func lexLineComment(x *Lexer) *Token {
 	for {
 		x.Next()
 		if x.Ended() || x.Rune() == '\n' {
@@ -30,7 +27,7 @@ func lexLineComment(x *lex8.Lexer) *lex8.Token {
 	return x.MakeToken(Comment)
 }
 
-func lexBlockComment(x *lex8.Lexer) *lex8.Token {
+func lexBlockComment(x *Lexer) *Token {
 	star := false
 	for {
 		x.Next()

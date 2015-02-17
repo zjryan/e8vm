@@ -2,8 +2,7 @@ package asm8
 
 // asm8 token types.
 const (
-	Comment = iota
-	Keyword
+	Keyword = iota
 	Operand
 	String
 	Lbrace

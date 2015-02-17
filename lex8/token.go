@@ -9,6 +9,7 @@ type Token struct {
 
 // Standard token types
 const (
-	EOF     = -1
-	Illegal = -2
+	EOF = -1 - iota
+	Comment
+	Illegal
 )

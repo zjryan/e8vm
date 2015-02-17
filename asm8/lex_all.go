@@ -23,7 +23,7 @@ func lexAsm8(x *lex8.Lexer) *lex8.Token {
 		x.Next()
 		return x.MakeToken(Rbrace)
 	case '/':
-		return lexComment(x)
+		return lex8.LexComment(x)
 	case '"':
 		return lexString(x)
 	}

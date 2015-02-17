@@ -66,7 +66,7 @@ func (sx *stmtLexer) Token() *lex8.Token {
 				}
 			}
 			continue // ignore this end line
-		case Comment:
+		case lex8.Comment:
 			if !sx.ParseComment {
 				continue
 			}

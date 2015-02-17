@@ -12,7 +12,7 @@ func tstr(t int) string {
 	switch t {
 	case lex8.EOF:
 		return "eof"
-	case Comment:
+	case lex8.Comment:
 		return "cm"
 	case Keyword:
 		return "kw"

@@ -1,6 +1,6 @@
 package build8
 
-type impor struct {
+type pkgImport struct {
 	path string
 	as   string
 }
