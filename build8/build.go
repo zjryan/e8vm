@@ -13,23 +13,15 @@ import (
 
 // Build is a build folder for our language.
 type Build struct {
-	path string
+	*ghome
 }
 
 // NewBuild returns a build based on a build path
 func NewBuild(path string) *Build {
 	ret := new(Build)
-	ret.path = path
+	ret.ghome = &ghome{path}
 	return ret
 }
-
-func (b *Build) join(pre, p string) string {
-	return filepath.Join(b.path, pre, p)
-}
-
-func (b *Build) src(p string) string { return b.join("src", p) }
-func (b *Build) bin(p string) string { return b.join("bin", p+".e8") }
-func (b *Build) pkg(p string) string { return b.join("pkg", p+".e8a") }
 
 // AsmPkg creates an asm pkg build for our asm package.
 func (b *Build) newAsmPkg(path string) (*asmPkg, error) {
