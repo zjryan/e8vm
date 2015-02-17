@@ -13,6 +13,8 @@ func (h *home) sub(pre, p string) string {
 	return filepath.Join(h.path, pre, p)
 }
 
+func (h *home) srcRoot() string { return h.sub("src", "") }
+
 func (h *home) src(p string) string { return h.sub("src", p) }
 func (h *home) bin(p string) string { return h.sub("bin", p+".e8") }
 func (h *home) pkg(p string) string { return h.sub("pkg", p+".e8a") }

@@ -13,8 +13,6 @@ import (
 	"lonnie.io/e8vm/link8"
 )
 
-const importFile = "imports"
-
 type pkg struct {
 	home *home
 	path string
@@ -25,8 +23,8 @@ type pkg struct {
 }
 
 type builder interface {
-	Import(p string) (*pkg, []*lex8.Error)
-	Building(p string)
+	build(p string) (*pkg, []*lex8.Error)
+	prebuild(p string)
 }
 
 func newPkg(h *home, p string) (*pkg, error) {
@@ -111,7 +109,7 @@ func (p *pkg) lastUpdate(suffix string) (*timeStamp, error) {
 		}
 
 		name := file.Name()
-		if name == importFile || strings.HasSuffix(name, suffix) {
+		if isSrc(name) {
 			ts.update(file.ModTime())
 		}
 	}
@@ -146,7 +144,7 @@ func (p *pkg) build(b builder) []*lex8.Error {
 	importPkgs := make(map[string]*pkg)
 
 	for as, imp := range imports.m {
-		imported, es := b.Import(imp.path)
+		imported, es := b.build(imp.path)
 		if es != nil {
 			return es
 		}
@@ -154,7 +152,7 @@ func (p *pkg) build(b builder) []*lex8.Error {
 		importPkgs[as] = imported
 	}
 
-	b.Building(p.path)
+	b.prebuild(p.path)
 
 	files, e := p.openSrcFiles(".s")
 	if e != nil {
@@ -173,6 +171,14 @@ func (p *pkg) build(b builder) []*lex8.Error {
 	}
 
 	p.lib = lib
+
+	if lib.HasFunc("main") {
+		fout := p.home.makeBin(p.path)
+		e := link8.LinkMain(p.lib, fout)
+		if e != nil {
+			return lex8.SingleErr(e)
+		}
+	}
 
 	return nil
 }
