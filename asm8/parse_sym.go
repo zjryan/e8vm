@@ -21,7 +21,7 @@ func isSymbol(sym string) bool {
 }
 
 func isIdent(id string) bool {
-	if len(id) == 0 {
+	if id == "" {
 		return false
 	}
 	for i, r := range id {
