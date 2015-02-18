@@ -178,6 +178,7 @@ func linkSymbol(b *builder, s *funcStmt, f *link8.Func) {
 		return // this may happen for bare function
 	}
 
+	// TODO: this now looks for the symbol
 	sym, pkg, index := resolveSymbol(b, s)
 	if sym == nil {
 		return
