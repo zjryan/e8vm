@@ -7,7 +7,7 @@ import (
 	"lonnie.io/e8vm/link8"
 )
 
-// PkgBuild contains the information to build a package
+// PkgCompile contains the information to build a package
 type PkgBuild struct {
 	Path   string
 	Import map[string]*lib

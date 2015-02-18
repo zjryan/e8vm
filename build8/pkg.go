@@ -22,11 +22,6 @@ type pkg struct {
 	lib *link8.Package
 }
 
-type builder interface {
-	build(p string) (*pkg, []*lex8.Error)
-	prebuild(p string)
-}
-
 func newPkg(h *home, p string) (*pkg, error) {
 	if !isPkgPath(p) {
 		return nil, fmt.Errorf("invalid path: %q", p)
@@ -48,7 +43,7 @@ func (p *pkg) openSrcFile(f string) io.ReadCloser {
 	return newFile(p.srcFile(f))
 }
 
-func (p *pkg) loadImport() (*imports, []*lex8.Error) {
+func (p *pkg) loadImports() (*imports, []*lex8.Error) {
 	path := p.srcFile(importFile)
 	_, e := os.Stat(path)
 	if os.IsNotExist(e) {
@@ -140,29 +135,10 @@ func (p *pkg) lastBuild() (*timeStamp, error) {
 	return ts, nil
 }
 
-func (p *pkg) build(b builder) []*lex8.Error {
-	imports, es := p.loadImport()
-	if es != nil {
-		return es
-	}
-
-	if imports != nil {
-		importPkgs := make(map[string]*pkg)
-		for as, imp := range imports.m {
-			imported, es := b.build(imp.path)
-			if es != nil {
-				return es
-			}
-
-			importPkgs[as] = imported
-		}
-	}
-
-	b.prebuild(p.path)
-
+func (p *pkg) build(imps map[string]*pkg) (*link8.Package, []*lex8.Error) {
 	files, e := p.openSrcFiles(".s")
 	if e != nil {
-		return lex8.SingleErr(e)
+		return nil, lex8.SingleErr(e)
 	}
 
 	pb := asm8.PkgBuild{
@@ -173,18 +149,10 @@ func (p *pkg) build(b builder) []*lex8.Error {
 
 	lib, es := pb.Build()
 	if es != nil {
-		return es
+		return nil, es
 	}
 
 	p.lib = lib
 
-	if lib.HasFunc("main") {
-		fout := p.home.makeBin(p.path)
-		e := link8.LinkMain(p.lib, fout)
-		if e != nil {
-			return lex8.SingleErr(e)
-		}
-	}
-
-	return nil
+	return lib, nil
 }

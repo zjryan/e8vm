@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/link8"
 )
 
 // Builder builds a bunch of packages.
@@ -25,41 +26,80 @@ func NewBuilder(homePath string) *Builder {
 	return ret
 }
 
+func (b *Builder) buildImports(p *pkg) (map[string]*pkg, []*lex8.Error) {
+	imports, es := p.loadImports()
+	if es != nil {
+		return nil, es
+	}
+
+	ret := make(map[string]*pkg)
+	if imports != nil {
+		for as, imp := range imports.m {
+			imported, es := b.build(imp.path)
+			if es != nil {
+				return nil, es
+			}
+
+			ret[as] = imported
+		}
+	}
+
+	return ret, nil
+}
+
 func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	ret, found := b.built[p]
 	if found {
 		if ret == nil {
+			// registered but not built, must be circular
+			// dependency
 			e := fmt.Errorf("package %q has circular dependency", p)
 			return nil, lex8.SingleErr(e)
 		}
 		return ret, nil
 	}
 
-	// register the package
+	// register the package slot
 	b.built[p] = nil
 
+	// setup the package folder
 	ret, e := newPkg(b.home, p)
 	if e != nil {
 		return nil, lex8.SingleErr(e)
 	}
 
-	es := ret.build(b) // will recursively build its dependencies as well
+	// load imports
+	// will recursively call b.build if the imported lib has
+	// not been built.
+	imports, es := b.buildImports(ret)
 	if es != nil {
 		return nil, es
 	}
 
-	if ret == nil {
-		panic("bug")
-	}
-	b.built[p] = ret // built library, save it here
-
-	return ret, nil
-}
-
-func (b *Builder) prebuild(p string) {
+	// ready
 	if b.Verbose {
 		fmt.Println(p)
 	}
+
+	// go build
+	lib, es := ret.build(imports)
+	if es != nil {
+		return nil, es
+	}
+
+	// a package with main entrance, build the bin
+	if lib.HasFunc("main") {
+		fout := b.home.makeBin(p)
+		e := link8.LinkMain(lib, fout)
+		if e != nil {
+			return nil, lex8.SingleErr(e)
+		}
+	}
+
+	// built library, save it into archive
+	b.built[p] = ret
+
+	return ret, nil
 }
 
 // Build builds a package
