@@ -50,7 +50,14 @@ func (p *pkg) loadImports() (*imports, []*lex8.Error) {
 		return nil, nil
 	}
 
-	return parseImports(path, newFile(path))
+	f := newFile(path)
+	ret, es := parseImports(path, f)
+	e = f.Close()
+	if e != nil {
+		return nil, lex8.SingleErr(e)
+	}
+
+	return ret, es
 }
 
 func (p *pkg) listSrcFiles(suffix string) ([]string, error) {

@@ -15,7 +15,7 @@ type parser struct {
 	inErr bool
 }
 
-func newParser(file string, r io.ReadCloser) *parser {
+func newParser(file string, r io.Reader) *parser {
 	ret := new(parser)
 	ret.x = newStmtLexer(file, r)
 	ret.errs = lex8.NewErrList()

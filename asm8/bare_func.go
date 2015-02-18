@@ -8,8 +8,8 @@ import (
 )
 
 // BuildBareFunc builds a function body into an image.
-func BuildBareFunc(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
-	p := newParser(f, rc)
+func BuildBareFunc(f string, r io.Reader) ([]byte, []*lex8.Error) {
+	p := newParser(f, r)
 	fn := parseBareFunc(p)
 	if es := p.Errs(); es != nil {
 		return nil, es

@@ -7,8 +7,8 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseImports(f string, rc io.ReadCloser) (*imports, []*lex8.Error) {
-	p := newImportsParser(f, rc)
+func parseImports(f string, r io.Reader) (*imports, []*lex8.Error) {
+	p := newImportsParser(f, r)
 
 	ret := newImports()
 

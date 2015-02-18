@@ -17,7 +17,7 @@ type Lexer struct {
 }
 
 // NewLexer creates a new lexer.
-func NewLexer(file string, r io.ReadCloser) *Lexer {
+func NewLexer(file string, r io.Reader) *Lexer {
 	ret := new(Lexer)
 	ret.s = NewLexScanner(file, r)
 	ret.errs = NewErrList()

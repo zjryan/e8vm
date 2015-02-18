@@ -7,7 +7,7 @@ import (
 	"lonnie.io/e8vm/link8"
 )
 
-// PkgCompile contains the information to build a package
+// PkgBuild contains the information to build a package
 type PkgBuild struct {
 	Path   string
 	Import map[string]*lib
@@ -20,6 +20,10 @@ func (pb *PkgBuild) Build() (*link8.Package, []*lex8.Error) {
 	for f, rc := range pb.Files {
 		p := newParser(f, rc)
 		parsed := parseFile(p)
+		e := rc.Close()
+		if e != nil {
+			return nil, lex8.SingleErr(e)
+		}
 		if es := p.Errs(); es != nil {
 			return nil, es
 		}

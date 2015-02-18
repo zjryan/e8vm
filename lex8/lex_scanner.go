@@ -16,9 +16,9 @@ type LexScanner struct {
 }
 
 // NewLexScanner creates a new lexer.
-func NewLexScanner(file string, rc io.ReadCloser) *LexScanner {
+func NewLexScanner(file string, r io.Reader) *LexScanner {
 	ret := new(LexScanner)
-	ret.s = NewRuneScanner(file, rc)
+	ret.s = NewRuneScanner(file, r)
 	ret.errs = NewErrList()
 
 	ret.buf = new(bytes.Buffer)

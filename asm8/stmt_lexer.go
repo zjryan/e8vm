@@ -16,7 +16,7 @@ type stmtLexer struct {
 }
 
 // NewStmtLexer creates a new statement lexer.
-func newStmtLexer(file string, r io.ReadCloser) *stmtLexer {
+func newStmtLexer(file string, r io.Reader) *stmtLexer {
 	ret := new(stmtLexer)
 	ret.x = newLexer(file, r)
 

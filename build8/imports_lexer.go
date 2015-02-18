@@ -54,7 +54,7 @@ type importsLexer struct {
 	insertSemi bool
 }
 
-func newImportsLexer(file string, r io.ReadCloser) *importsLexer {
+func newImportsLexer(file string, r io.Reader) *importsLexer {
 	ret := new(importsLexer)
 	ret.x = lex8.NewLexer(file, r)
 	ret.x.LexFunc = lexImports

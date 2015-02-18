@@ -11,19 +11,19 @@ type RuneScanner struct {
 	file string
 	line int
 
-	rc io.ReadCloser
-	r  *bufio.Reader
+	r *bufio.Reader
 
 	Err  error // any error encountered
 	Rune rune  // the rune just read
+
+	closed bool
 }
 
 // NewRuneScanner creates a scanner.
-func NewRuneScanner(file string, rc io.ReadCloser) *RuneScanner {
+func NewRuneScanner(file string, r io.Reader) *RuneScanner {
 	ret := new(RuneScanner)
 	ret.file = file
-	ret.rc = rc
-	ret.r = bufio.NewReader(rc)
+	ret.r = bufio.NewReader(r)
 	ret.line = 1 // natural counting
 
 	return ret
@@ -33,15 +33,20 @@ func NewRuneScanner(file string, rc io.ReadCloser) *RuneScanner {
 // It closes the reader automatically when it reaches the end of file
 // or when an error occurs.
 func (s *RuneScanner) Scan() bool {
+	if s.closed {
+		panic("scanning on closed rune scanner")
+	}
+
 	wasEndline := s.Rune == '\n'
 
 	s.Rune, _, s.Err = s.r.ReadRune()
 
 	if s.Err != nil {
-		closeErr := s.rc.Close()
+		// closeErr := s.rc.Close()
 		if s.Err == io.EOF {
-			s.Err = closeErr
+			s.Err = nil
 		}
+		s.closed = true
 		return false
 	}
 
