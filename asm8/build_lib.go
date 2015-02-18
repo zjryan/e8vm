@@ -11,6 +11,21 @@ func buildPkgScope(b *builder, pkg *pkg) {
 		return true
 	}
 
+	for as, p := range pkg.Imports {
+		sym := &symbol{
+			as,
+			SymImport,
+			p,
+			p.Tok.Pos,
+			p.Pkg.Path(),
+		}
+		if !decl(sym) {
+			continue
+		}
+
+		b.curPkg.Require(p.Pkg)
+	}
+
 	for _, file := range pkg.Files {
 		// declare functions
 		for _, fn := range file.Funcs {

@@ -56,7 +56,8 @@ func parseSym(p *parser, t *lex8.Token) (pack, sym string) {
 	if dot >= 0 {
 		pack, sym = sym[:dot], sym[dot+1:]
 	}
-	if !lex8.IsPkgName(pack) {
+
+	if dot >= 0 && !lex8.IsPkgName(pack) {
 		p.err(t.Pos, "invalid package name: %q", pack)
 	} else if !isIdent(sym) {
 		p.err(t.Pos, "invalid symbol: %q", t.Lit)

@@ -9,9 +9,9 @@ import (
 
 // PkgBuild contains the information to build a package
 type PkgBuild struct {
-	Path   string
-	Import map[string]*lib
-	Files  map[string]io.ReadCloser
+	Path    string
+	Imports map[string]*PkgImport
+	Files   map[string]io.ReadCloser
 }
 
 // Build builds a package.
@@ -30,6 +30,8 @@ func (pb *PkgBuild) Build() (*link8.Package, []*lex8.Error) {
 
 		pkg.AddFile(parsed)
 	}
+
+	pkg.Imports = pb.Imports
 
 	b := newBuilder()
 	ret := buildLib(b, pkg)

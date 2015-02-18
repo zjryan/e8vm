@@ -2,8 +2,9 @@ package asm8
 
 // Package represents a package node.
 type pkg struct {
-	Path  string // package import path
-	Files []*file
+	Path    string // package import path
+	Files   []*file
+	Imports map[string]*PkgImport
 }
 
 // NewPackage creates an empty package node.

@@ -148,10 +148,20 @@ func (p *pkg) build(imps map[string]*pkg) (*link8.Package, []*lex8.Error) {
 		return nil, lex8.SingleErr(e)
 	}
 
+	imports := make(map[string]*asm8.PkgImport)
+	for as, imp := range imps {
+		imports[as] = &asm8.PkgImport{
+			As:    as,
+			Pkg:   imp.lib,
+			Tok:   nil,
+			AsTok: nil,
+		}
+	}
+
 	pb := asm8.PkgBuild{
-		Path:   p.path,
-		Import: nil,
-		Files:  files,
+		Path:    p.path,
+		Imports: imports,
+		Files:   files,
 	}
 
 	lib, es := pb.Build()
