@@ -1,16 +1,18 @@
 package asm8
 
-func buildPkgScope(b *builder, pkg *pkg) {
-	decl := func(sym *symbol) bool {
-		exists := b.scope.Declare(sym)
-		if exists != nil {
-			b.err(sym.Pos, "%q already declared", sym.Name)
-			b.err(exists.Pos, "  previously declared here")
-			return false
-		}
-		return true
+func declareSymbol(b *builder, sym *symbol) bool {
+	// declare in the scope
+	exists := b.scope.Declare(sym)
+	if exists != nil {
+		b.err(sym.Pos, "%q already declared", sym.Name)
+		b.err(exists.Pos, "  previously declared here")
+		return false
 	}
+	return true
+}
 
+func buildPkgScope(b *builder, pkg *pkg) {
+	// declare requires
 	for as, p := range pkg.Imports {
 		sym := &symbol{
 			as,
@@ -19,7 +21,7 @@ func buildPkgScope(b *builder, pkg *pkg) {
 			p.Tok.Pos,
 			p.Pkg.Path(),
 		}
-		if !decl(sym) {
+		if !declareSymbol(b, sym) {
 			continue
 		}
 
@@ -38,11 +40,12 @@ func buildPkgScope(b *builder, pkg *pkg) {
 				pkg.Path,
 			}
 
-			if !decl(sym) {
+			if !declareSymbol(b, sym) {
 				continue
 			}
 
-			fn.index = b.curPkg.Declare(sym) // assign link index
+			// declare in the lib
+			fn.index = b.curPkg.Declare(sym)
 		}
 
 		// declare variables
@@ -56,11 +59,12 @@ func buildPkgScope(b *builder, pkg *pkg) {
 				pkg.Path,
 			}
 
-			if !decl(sym) {
+			if !declareSymbol(b, sym) {
 				continue
 			}
 
-			v.index = b.curPkg.Declare(sym) // assign link index
+			// declare in the lib
+			v.index = b.curPkg.Declare(sym)
 		}
 	}
 }
