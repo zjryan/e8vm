@@ -44,7 +44,7 @@ func parseImports(f string, r io.Reader) (*imports, []*lex8.Error) {
 				imp.path,
 			)
 			continue
-		} else if imp.as != "" && !isPkgName(imp.as) {
+		} else if imp.as != "" && !lex8.IsPkgName(imp.as) {
 			p.err(imp.pathToken.Pos,
 				"invalid package alias: %q",
 				imp.as,

@@ -46,23 +46,6 @@ func isIdent(id string) bool {
 	return true
 }
 
-func isPackName(s string) bool {
-	for i, r := range s {
-		if r >= '0' && r <= '9' {
-			if i > 0 {
-				continue
-			}
-			return false
-		}
-
-		if r >= 'a' && r <= 'z' {
-			continue
-		}
-		return false
-	}
-	return true
-}
-
 func parseSym(p *parser, t *lex8.Token) (pack, sym string) {
 	if t.Type != Operand {
 		panic("symbol not an operand")
@@ -73,7 +56,7 @@ func parseSym(p *parser, t *lex8.Token) (pack, sym string) {
 	if dot >= 0 {
 		pack, sym = sym[:dot], sym[dot+1:]
 	}
-	if !isPackName(pack) {
+	if !lex8.IsPkgName(pack) {
 		p.err(t.Pos, "invalid package name: %q", pack)
 	} else if !isIdent(sym) {
 		p.err(t.Pos, "invalid symbol: %q", t.Lit)

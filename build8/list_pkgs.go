@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+
+	"lonnie.io/e8vm/lex8"
 )
 
 func listPkgs(h *home) ([]string, error) {
@@ -18,7 +20,7 @@ func listPkgs(h *home) ([]string, error) {
 
 		name := info.Name()
 		if info.IsDir() {
-			if !isPkgName(name) {
+			if !lex8.IsPkgName(name) {
 				return filepath.SkipDir
 			}
 		} else {
