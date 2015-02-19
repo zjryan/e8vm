@@ -27,11 +27,10 @@ func lexImports(x *lex8.Lexer) *lex8.Token {
 
 	switch r {
 	case '\n':
+		x.Next()
 		return x.MakeToken(endl)
 	case '/':
 		return lex8.LexComment(x)
-	case ';':
-		return x.MakeToken(semi)
 	}
 
 	if r >= 'a' && r <= 'z' {

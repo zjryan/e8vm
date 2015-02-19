@@ -26,25 +26,24 @@ func NewBuilder(homePath string) *Builder {
 	return ret
 }
 
-func (b *Builder) buildImports(p *pkg) (map[string]*pkg, []*lex8.Error) {
+func (b *Builder) buildImports(p *pkg) (*imports, []*lex8.Error) {
 	imports, es := p.loadImports()
 	if es != nil {
 		return nil, es
 	}
 
-	ret := make(map[string]*pkg)
 	if imports != nil {
-		for as, imp := range imports.m {
+		for _, imp := range imports.m {
 			imported, es := b.build(imp.path)
 			if es != nil {
 				return nil, es
 			}
 
-			ret[as] = imported
+			imp.lib = imported.lib
 		}
 	}
 
-	return ret, nil
+	return imports, nil
 }
 
 func (b *Builder) build(p string) (*pkg, []*lex8.Error) {

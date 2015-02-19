@@ -74,6 +74,14 @@ func buildPkgScope(b *builder, pkg *pkg) {
 	}
 }
 
+func checkUnusedImport(b *builder, pkg *pkg) {
+	for _, imp := range pkg.Imports {
+		if !imp.use {
+			b.err(imp.Tok.Pos, "package %q imported but not used", imp.As)
+		}
+	}
+}
+
 func buildLib(b *builder, pkg *pkg) *lib {
 	ret := newLib(pkg.Path)
 	b.curPkg = ret
@@ -89,6 +97,9 @@ func buildLib(b *builder, pkg *pkg) *lib {
 	for _, file := range pkg.Files {
 		buildFile(b, file)
 	}
+
+	checkUnusedImport(b, pkg)
+
 	if b.Errs() != nil {
 		return nil // error on building
 	}

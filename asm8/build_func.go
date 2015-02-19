@@ -150,7 +150,7 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 		if p != nil {
 			var sym *link8.Symbol
 			pkg = p.index
-			p.use++
+			p.use = true
 			sym, index = p.Pkg.Query(s.symbol)
 			if sym != nil {
 				// should we use a consistant

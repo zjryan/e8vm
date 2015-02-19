@@ -12,6 +12,6 @@ type PkgImport struct {
 	Tok   *lex8.Token
 	AsTok *lex8.Token
 
-	use   int
+	use   bool
 	index uint32
 }

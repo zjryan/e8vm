@@ -142,19 +142,24 @@ func (p *pkg) lastBuild() (*timeStamp, error) {
 	return ts, nil
 }
 
-func (p *pkg) build(imps map[string]*pkg) (*link8.Package, []*lex8.Error) {
+func (p *pkg) build(imps *imports) (*link8.Package, []*lex8.Error) {
 	files, e := p.openSrcFiles(".s")
 	if e != nil {
 		return nil, lex8.SingleErr(e)
 	}
 
 	imports := make(map[string]*asm8.PkgImport)
-	for as, imp := range imps {
-		imports[as] = &asm8.PkgImport{
-			As:    as,
-			Pkg:   imp.lib,
-			Tok:   nil,
-			AsTok: nil,
+	if imps != nil {
+		for as, imp := range imps.m {
+			if imp.lib == nil {
+				panic("no lib binded")
+			}
+			imports[as] = &asm8.PkgImport{
+				As:    as,
+				Pkg:   imp.lib,
+				Tok:   imp.pathToken,
+				AsTok: imp.asToken,
+			}
 		}
 	}
 
