@@ -13,5 +13,5 @@ type PkgImport struct {
 	AsTok *lex8.Token
 
 	use   int
-	index int
+	index uint32
 }

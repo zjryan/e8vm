@@ -11,9 +11,50 @@ func declareSymbol(b *builder, sym *symbol) bool {
 	return true
 }
 
+func declareFile(b *builder, pkg *pkg, file *file) {
+	// declare functions
+	for _, fn := range file.Funcs {
+		t := fn.name
+		sym := &symbol{
+			t.Lit,
+			SymFunc,
+			fn,
+			t.Pos,
+			pkg.Path,
+		}
+
+		if !declareSymbol(b, sym) {
+			continue
+		}
+
+		// declare in the lib
+		fn.index = b.curPkg.Declare(sym)
+	}
+
+	// declare variables
+	for _, v := range file.Vars {
+		t := v.name
+		sym := &symbol{
+			t.Lit,
+			SymVar,
+			v,
+			t.Pos,
+			pkg.Path,
+		}
+
+		if !declareSymbol(b, sym) {
+			continue
+		}
+
+		// declare in the lib
+		v.index = b.curPkg.Declare(sym)
+	}
+}
+
 func buildPkgScope(b *builder, pkg *pkg) {
 	// declare requires
 	for as, p := range pkg.Imports {
+		// p is the *PkgImport
 		sym := &symbol{
 			as,
 			SymImport,
@@ -25,47 +66,11 @@ func buildPkgScope(b *builder, pkg *pkg) {
 			continue
 		}
 
-		b.curPkg.Require(p.Pkg)
+		p.index = b.curPkg.Require(p.Pkg)
 	}
 
 	for _, file := range pkg.Files {
-		// declare functions
-		for _, fn := range file.Funcs {
-			t := fn.name
-			sym := &symbol{
-				t.Lit,
-				SymFunc,
-				fn,
-				t.Pos,
-				pkg.Path,
-			}
-
-			if !declareSymbol(b, sym) {
-				continue
-			}
-
-			// declare in the lib
-			fn.index = b.curPkg.Declare(sym)
-		}
-
-		// declare variables
-		for _, v := range file.Vars {
-			t := v.name
-			sym := &symbol{
-				t.Lit,
-				SymVar,
-				v,
-				t.Pos,
-				pkg.Path,
-			}
-
-			if !declareSymbol(b, sym) {
-				continue
-			}
-
-			// declare in the lib
-			v.index = b.curPkg.Declare(sym)
-		}
+		declareFile(b, pkg, file)
 	}
 }
 

@@ -107,7 +107,7 @@ func fillLabels(b *builder, f *funcDecl) {
 	}
 }
 
-func queryPkg(b *builder, t *lex8.Token, pack string) *lib {
+func queryPkg(b *builder, t *lex8.Token, pack string) *PkgImport {
 	sym := b.scope.Query(pack)
 	if sym == nil {
 		b.err(t.Pos, "package %q not found", pack)
@@ -116,7 +116,7 @@ func queryPkg(b *builder, t *lex8.Token, pack string) *lib {
 		b.err(t.Pos, "%q is a %s, not a package", t.Lit, symStr(sym.Type))
 		return nil
 	}
-	return sym.Item.(*lib)
+	return sym.Item.(*PkgImport)
 }
 
 func init() {
@@ -134,38 +134,44 @@ func init() {
 // resolveSymbol resolves the symbol in the statement,
 // returns the symbol linking object and its <sym, pkg> index pair
 // in the current package context.
-func resolveSymbol(b *builder, s *funcStmt) (ret *symbol, pkg, index uint32) {
+func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 	t := s.symTok
 
 	if s.pack == "" {
-		ret = b.scope.Query(s.symbol) // find the symbol in scope
-		if ret != nil {
+		sym := b.scope.Query(s.symbol) // find the symbol in scope
+		if sym != nil {
 			var p *link8.Package
-			p, pkg = b.curPkg.PkgIndex(ret.Package)
-			index = p.SymIndex(ret.Name)
+			p, pkg = b.curPkg.PkgIndex(sym.Package)
+			index = p.SymIndex(sym.Name)
+			typ = sym.Type
 		}
 	} else {
 		p := queryPkg(b, t, s.pack) // find the package
-		if p == nil {
-			return
-		}
-
-		path := p.Path()
-		_, pkg = b.curPkg.PkgIndex(path)
-		ret, index = p.query(s.symbol)
-		if ret != nil && ret.Package != path {
-			panic("bug")
+		if p != nil {
+			var sym *link8.Symbol
+			pkg = p.index
+			p.use++
+			sym, index = p.Pkg.Query(s.symbol)
+			if sym != nil {
+				// should we use a consistant
+				if sym.Type == link8.SymFunc {
+					typ = SymFunc
+				} else if sym.Type == link8.SymVar {
+					typ = SymVar
+				} else {
+					b.err(t.Pos, "%q is an invalid linking symbol", t.Lit)
+					return
+				}
+			}
 		}
 	}
 
-	if ret == nil {
+	if typ == SymNone {
 		b.err(t.Pos, "%q not found", t.Lit)
-		return nil, 0, 0
-	} else if ret.Type == SymConst {
-		return nil, 0, 0 // not my job to fill this
-	} else if ret.Type == SymImport || ret.Type == SymLabel {
-		b.err(t.Pos, "%s %q not a symbol", symStr(ret.Type), t.Lit)
-		return nil, 0, 0
+	} else if typ == SymConst {
+		b.err(t.Pos, "const symbol filling not implemented yet")
+	} else if typ == SymImport || typ == SymLabel {
+		b.err(t.Pos, "cannot link %s %q", symStr(typ), t.Lit)
 	}
 
 	return
@@ -179,15 +185,15 @@ func linkSymbol(b *builder, s *funcStmt, f *link8.Func) {
 	}
 
 	// TODO: this now looks for the symbol
-	sym, pkg, index := resolveSymbol(b, s)
-	if sym == nil {
+	typ, pkg, index := resolveSymbol(b, s)
+	if typ == SymNone {
 		return
 	}
 
-	if s.fill == fillLink && sym.Type != SymFunc {
-		b.err(t.Pos, "%s %q is not a function", symStr(sym.Type), t.Lit)
+	if s.fill == fillLink && typ != SymFunc {
+		b.err(t.Pos, "%s %q is not a function", symStr(typ), t.Lit)
 		return
-	} else if pkg > 0 && !isPublic(sym.Name) {
+	} else if pkg > 0 && !isPublic(s.symbol) {
 		// for imported package, check if it is public
 		b.err(t.Pos, "%q is not public", t.Lit)
 		return
