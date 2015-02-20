@@ -1,4 +1,4 @@
-// Package dagvis visualizes a DAG graph into 
+// Package dagvis visualizes a DAG graph into
 // a structured, layered planer map.
 package dagvis
 
