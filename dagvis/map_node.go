@@ -16,8 +16,10 @@ type MapNode struct {
 	CritIns  map[string]*MapNode // critical input nodes
 	CritOuts map[string]*MapNode // critical output nodes
 
-	layer int // min layer
-	nhit  int // for counting on layers
+	layer    int // min layer
+	newLayer int // new layer after pushing
+
+	nhit int // for counting on layers
 }
 
 func newMapNode(name string) *MapNode {

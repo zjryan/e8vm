@@ -7,5 +7,7 @@ func Layout(g *Graph) (*Map, error) {
 		return nil, e
 	}
 
+	pushTight(m)
+
 	return m, nil
 }

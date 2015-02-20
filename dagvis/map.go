@@ -2,6 +2,7 @@ package dagvis
 
 import (
 	"fmt"
+	"sort"
 )
 
 // Map is a visualized DAG
@@ -10,8 +11,9 @@ type Map struct {
 	Width  int
 	Nodes  map[string]*MapNode
 
-	Nedge int
-	Ncrit int
+	Nedge  int
+	Ncrit  int
+	Nlayer int
 }
 
 // newMap initializes a map
@@ -52,6 +54,8 @@ func newMap(g *Graph) (*Map, error) {
 	if e != nil {
 		return nil, e
 	}
+
+	ret.Nlayer = len(layers)
 
 	// propogate all ins/outs
 	ret.buildAlls(layers)
@@ -149,4 +153,15 @@ func (m *Map) buildCrits() {
 			m.Ncrit++
 		}
 	}
+}
+
+func (m *Map) sortedNodes() []*MapNode {
+	var ret mapNodes
+
+	for _, node := range m.Nodes {
+		ret = append(ret, node)
+	}
+
+	sort.Sort(byLayer{ret})
+	return ret
 }
