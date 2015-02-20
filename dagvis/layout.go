@@ -107,3 +107,13 @@ func Layout(g *Graph) (*Map, error) {
 
 	return m, nil
 }
+
+// LayoutJson layouts a DAG into a map in json format.
+func LayoutJson(g *Graph) ([]byte, error) {
+	m, e := Layout(g)
+	if e != nil {
+		return nil, e
+	}
+
+	return jsonMap(m), nil
+}
