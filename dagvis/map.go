@@ -50,7 +50,7 @@ func newMap(g *Graph) (*Map, error) {
 	}
 
 	// make them into layers
-	layers, e := ret.layers()
+	layers, e := ret.makeLayers()
 	if e != nil {
 		return nil, e
 	}
@@ -66,7 +66,7 @@ func newMap(g *Graph) (*Map, error) {
 	return ret, nil
 }
 
-func (m *Map) layers() ([][]*MapNode, error) {
+func (m *Map) makeLayers() ([][]*MapNode, error) {
 	var ret [][]*MapNode
 	var cur []*MapNode
 
@@ -163,5 +163,19 @@ func (m *Map) sortedNodes() []*MapNode {
 	}
 
 	sort.Sort(byLayer{ret})
+	return ret
+}
+
+func (m *Map) sortedLayers() [][]*MapNode {
+	ret := make([][]*MapNode, m.Nlayer)
+
+	for _, node := range m.Nodes {
+		ret[node.layer] = append(ret[node.layer], node)
+	}
+
+	for _, layer := range ret {
+		sort.Sort(byNcritOuts{layer})
+	}
+
 	return ret
 }
