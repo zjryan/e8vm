@@ -97,13 +97,13 @@ func layout(m *Map) {
 
 // Layout layouts a DAG into a map.
 func Layout(g *Graph) (*Map, error) {
-	m, e := newMap(g)
+	m, e := newMap(g) // build the map
 	if e != nil {
 		return nil, e
 	}
 
-	pushTight(m)
-	layout(m)
+	pushTight(m) // push it tight
+	layout(m)    // assign coordinates
 
 	return m, nil
 }
