@@ -19,16 +19,11 @@ type PkgBuild struct {
 func (pb *PkgBuild) Build() (*link8.Package, []*lex8.Error) {
 	pkg := ast.NewPkg(pb.Path)
 	for f, rc := range pb.Files {
-		p := newParser(f, rc)
-		parsed := parseFile(p)
-		e := rc.Close()
-		if e != nil {
-			return nil, lex8.SingleErr(e)
-		}
-		if es := p.Errs(); es != nil {
+		parsed, es := ParseFile(f, rc)
+		if es != nil {
 			return nil, es
 		}
-
+		
 		pkg.AddFile(parsed)
 	}
 
