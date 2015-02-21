@@ -6,11 +6,11 @@ import (
 
 // Package is the compiling object of a package. It is the linking
 // unit for programs.
-type Package struct {
+type Pkg struct {
 	path string
 
-	requires []*Package // all the packages that requires for building
-	symbols  []*Symbol  // all the symbol objects
+	requires []*Pkg    // all the packages that requires for building
+	symbols  []*Symbol // all the symbol objects
 
 	symIndex map[string]uint32 // map from symbol names to index in symNames
 	pkgIndex map[string]uint32 // map from package path to index in imports
@@ -20,8 +20,8 @@ type Package struct {
 }
 
 // NewPackage creates a new package of path p.
-func NewPackage(p string) *Package {
-	ret := new(Package)
+func NewPackage(p string) *Pkg {
+	ret := new(Pkg)
 	ret.path = p
 
 	ret.symIndex = make(map[string]uint32)
@@ -39,13 +39,13 @@ func NewPackage(p string) *Package {
 }
 
 // Name returns the package's default name.
-func (p *Package) Name() string { return path.Base(p.path) }
+func (p *Pkg) Name() string { return path.Base(p.path) }
 
 // Path returns the package's path string.
-func (p *Package) Path() string { return p.path }
+func (p *Pkg) Path() string { return p.path }
 
 // Require assigns a relative index for the required package.
-func (p *Package) Require(req *Package) uint32 {
+func (p *Pkg) Require(req *Pkg) uint32 {
 	if index, found := p.pkgIndex[req.path]; found {
 		return index
 	}
@@ -58,7 +58,7 @@ func (p *Package) Require(req *Package) uint32 {
 
 // PkgIndex returns the package imported and also its import
 // index.
-func (p *Package) PkgIndex(name string) (*Package, uint32) {
+func (p *Pkg) PkgIndex(name string) (*Pkg, uint32) {
 	index, found := p.pkgIndex[name]
 	if !found {
 		return nil, 0
@@ -69,7 +69,7 @@ func (p *Package) PkgIndex(name string) (*Package, uint32) {
 
 // SymIndex returns the index of a symbol in the package.
 // It panics when the symbol is not Declare()'d yet.
-func (p *Package) SymIndex(name string) uint32 {
+func (p *Pkg) SymIndex(name string) uint32 {
 	ret, found := p.symIndex[name]
 	if !found {
 		panic("not found")
@@ -78,7 +78,7 @@ func (p *Package) SymIndex(name string) uint32 {
 }
 
 // Declare declares a symbol and assigns a symbol index.
-func (p *Package) Declare(s *Symbol) uint32 {
+func (p *Pkg) Declare(s *Symbol) uint32 {
 	_, found := p.symIndex[s.Name]
 	if found {
 		panic("redeclaring")
@@ -91,7 +91,7 @@ func (p *Package) Declare(s *Symbol) uint32 {
 }
 
 // Query returns the symbol with the particular name.
-func (p *Package) Query(name string) (*Symbol, uint32) {
+func (p *Pkg) Query(name string) (*Symbol, uint32) {
 	index, found := p.symIndex[name]
 	if !found {
 		return nil, 0
@@ -101,7 +101,7 @@ func (p *Package) Query(name string) (*Symbol, uint32) {
 }
 
 // HasFunc checks if the package has a function of a particular name.
-func (p *Package) HasFunc(name string) bool {
+func (p *Pkg) HasFunc(name string) bool {
 	sym, _ := p.Query(name)
 	if sym == nil || sym.Type != SymFunc {
 		return false
@@ -110,7 +110,7 @@ func (p *Package) HasFunc(name string) bool {
 }
 
 // DefineFunc instantiates a function object for a particular index.
-func (p *Package) DefineFunc(index uint32, f *Func) {
+func (p *Pkg) DefineFunc(index uint32, f *Func) {
 	sym := p.symbols[index]
 	if sym.Type != SymFunc {
 		panic("not a function")
@@ -120,7 +120,7 @@ func (p *Package) DefineFunc(index uint32, f *Func) {
 }
 
 // DefineVar instantiates a variable object for a particular index.
-func (p *Package) DefineVar(index uint32, v *Var) {
+func (p *Pkg) DefineVar(index uint32, v *Var) {
 	sym := p.symbols[index]
 	if sym.Type != SymVar {
 		panic("not a var")
@@ -130,7 +130,7 @@ func (p *Package) DefineVar(index uint32, v *Var) {
 }
 
 // Func returns the function of index.
-func (p *Package) Func(index uint32) *Func {
+func (p *Pkg) Func(index uint32) *Func {
 	ret, found := p.funcs[index]
 	if !found {
 		panic("not found")
@@ -139,7 +139,7 @@ func (p *Package) Func(index uint32) *Func {
 }
 
 // Var returns the variable of index.
-func (p *Package) Var(index uint32) *Var {
+func (p *Pkg) Var(index uint32) *Var {
 	ret, found := p.vars[index]
 	if !found {
 		panic("not found")

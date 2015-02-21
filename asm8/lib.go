@@ -8,7 +8,7 @@ import (
 // it contains the package for linking,
 // and also the symbols for importing
 type lib struct {
-	*link8.Package
+	*link8.Pkg
 
 	symbols map[string]*symbol
 }
@@ -16,11 +16,11 @@ type lib struct {
 // NewPkgObj creates a new package compile object
 func newLib(p string) *lib {
 	ret := new(lib)
-	ret.Package = link8.NewPackage(p)
+	ret.Pkg = link8.NewPackage(p)
 
 	ret.symbols = make(map[string]*symbol)
 
-	id := ret.Require(ret.Package) // require itself
+	id := ret.Require(ret.Pkg) // require itself
 	if id != 0 {
 		panic("bug")
 	}
@@ -29,7 +29,7 @@ func newLib(p string) *lib {
 }
 
 // Link returns the link8.Package for linking.
-func (p *lib) Link() *link8.Package { return p.Package }
+func (p *lib) Link() *link8.Pkg { return p.Pkg }
 
 // Declare declares a symbol inside the package.  If the symbol is a function
 // or variable, it is also declared as an object file symbol in the underlying
@@ -47,12 +47,12 @@ func (p *lib) Declare(s *symbol) uint32 {
 	case SymConst:
 		return 0
 	case SymFunc:
-		return p.Package.Declare(&link8.Symbol{
+		return p.Pkg.Declare(&link8.Symbol{
 			Name: s.Name,
 			Type: link8.SymFunc,
 		})
 	case SymVar:
-		return p.Package.Declare(&link8.Symbol{
+		return p.Pkg.Declare(&link8.Symbol{
 			Name: s.Name,
 			Type: link8.SymVar,
 		})
@@ -74,7 +74,7 @@ func (p *lib) query(name string) (*symbol, uint32) {
 	case SymConst:
 		return ret, 0
 	case SymFunc, SymVar:
-		s, index := p.Package.Query(name)
+		s, index := p.Pkg.Query(name)
 		if s == nil {
 			panic("symbol missing")
 		}

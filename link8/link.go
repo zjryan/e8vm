@@ -6,7 +6,7 @@ import (
 )
 
 // LinkMain produces a image for a main() in a package.
-func LinkMain(main *Package, out io.WriteCloser) error {
+func LinkMain(main *Pkg, out io.WriteCloser) error {
 	lnk := NewLinker()
 	lnk.AddPkgs(main)
 

@@ -60,7 +60,7 @@ func writeVar(w *writer, v *Var) {
 	w.Write(v.buf.Bytes())
 }
 
-func writeFunc(w *writer, p *Package, f *Func) {
+func writeFunc(w *writer, p *Pkg, f *Func) {
 	cur := 0
 	var curLink *link
 	var curIndex int

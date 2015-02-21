@@ -11,5 +11,5 @@ type PkgImport struct {
 	Tok   *lex8.Token
 	AsTok *lex8.Token
 
-	Pkg *link8.Package
+	Pkg *link8.Pkg
 }

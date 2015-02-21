@@ -20,7 +20,7 @@ type pkg struct {
 
 	src string
 
-	lib *link8.Package
+	lib *link8.Pkg
 }
 
 func newPkg(h *home, p string) (*pkg, error) {
@@ -143,7 +143,7 @@ func (p *pkg) lastBuild() (*timeStamp, error) {
 	return ts, nil
 }
 
-func (p *pkg) build(imps *imports) (*link8.Package, []*lex8.Error) {
+func (p *pkg) build(imps *imports) (*link8.Pkg, []*lex8.Error) {
 	files, e := p.openSrcFiles(".s")
 	if e != nil {
 		return nil, lex8.SingleErr(e)
@@ -164,7 +164,7 @@ func (p *pkg) build(imps *imports) (*link8.Package, []*lex8.Error) {
 		}
 	}
 
-	pb := asm8.PkgBuild{
+	pb := asm8.Pkg{
 		Path:    p.path,
 		Imports: imports,
 		Files:   files,

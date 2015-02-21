@@ -12,5 +12,5 @@ type pkgImport struct {
 	pathToken *lex8.Token
 	asToken   *lex8.Token
 
-	lib *link8.Package
+	lib *link8.Pkg
 }

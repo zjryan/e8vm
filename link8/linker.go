@@ -2,7 +2,7 @@ package link8
 
 // Linker provides the framework to link packages together.
 type Linker struct {
-	pkgs     []*Package
+	pkgs     []*Pkg
 	pkgIndex map[string]int
 }
 
@@ -16,7 +16,7 @@ func NewLinker() *Linker {
 // AddPkg adds a package into the linker.
 // It returns the index of the package and if the package
 // is new.
-func (lnk *Linker) AddPkg(p *Package) (index int, isNew bool) {
+func (lnk *Linker) AddPkg(p *Pkg) (index int, isNew bool) {
 	path := p.path
 	index, found := lnk.pkgIndex[path]
 	if found {
@@ -31,7 +31,7 @@ func (lnk *Linker) AddPkg(p *Package) (index int, isNew bool) {
 
 // AddPkgs adds the package and recursively adds the packages
 // it requires. It returns the package index.
-func (lnk *Linker) AddPkgs(p *Package) int {
+func (lnk *Linker) AddPkgs(p *Pkg) int {
 	index, isNew := lnk.AddPkg(p)
 	if isNew {
 		for _, req := range p.requires {
@@ -52,7 +52,7 @@ func (lnk *Linker) PkgIndex(path string) int {
 }
 
 // Pkg returns the package of index i.
-func (lnk *Linker) Pkg(i int) *Package {
+func (lnk *Linker) Pkg(i int) *Pkg {
 	return lnk.pkgs[i]
 }
 

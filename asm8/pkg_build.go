@@ -10,14 +10,14 @@ import (
 )
 
 // PkgBuild contains the information to build a package
-type PkgBuild struct {
+type Pkg struct {
 	Path    string
 	Imports map[string]*ast.PkgImport
 	Files   map[string]io.ReadCloser
 }
 
 // Build builds a package.
-func (pb *PkgBuild) Build() (*link8.Package, []*lex8.Error) {
+func (pb *Pkg) Build() (*link8.Pkg, []*lex8.Error) {
 	pkg := ast.NewPkg(pb.Path)
 	for f, rc := range pb.Files {
 		parsed, es := parse.File(f, rc)
@@ -36,5 +36,5 @@ func (pb *PkgBuild) Build() (*link8.Package, []*lex8.Error) {
 		return nil, es
 	}
 
-	return ret.Package, nil
+	return ret.Pkg, nil
 }

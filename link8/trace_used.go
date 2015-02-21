@@ -18,7 +18,7 @@ func newTracer(lnk *Linker) *tracer {
 	return ret
 }
 
-func (t *tracer) hit(pkg *Package, sym uint32) bool {
+func (t *tracer) hit(pkg *Pkg, sym uint32) bool {
 	i := t.lnk.PkgIndex(pkg.path)
 	pt := &t.hits[i][sym]
 	ret := *pt
@@ -26,7 +26,7 @@ func (t *tracer) hit(pkg *Package, sym uint32) bool {
 	return ret
 }
 
-func traceUsed(lnk *Linker, p *Package, index uint32) []pkgSym {
+func traceUsed(lnk *Linker, p *Pkg, index uint32) []pkgSym {
 	t := newTracer(lnk)
 
 	cur := []pkgSym{{p, index}}
