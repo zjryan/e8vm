@@ -1,41 +1,42 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseVarStmts(p *parser, v *varDecl) {
+func parseVarStmts(p *parser, v *ast.VarDecl) {
 	for !(p.see(Rbrace) || p.see(lex8.EOF)) {
 		stmt := parseVarStmt(p)
 		if stmt != nil {
-			v.stmts = append(v.stmts, stmt)
+			v.Stmts = append(v.Stmts, stmt)
 		}
 		p.clearErr()
 	}
 }
 
-func parseVar(p *parser) *varDecl {
-	ret := new(varDecl)
+func parseVar(p *parser) *ast.VarDecl {
+	ret := new(ast.VarDecl)
 
-	ret.kw = p.expectKeyword("var")
-	ret.name = p.expect(Operand)
+	ret.Kw = p.expectKeyword("var")
+	ret.Name = p.expect(Operand)
 
-	if ret.name != nil {
-		name := ret.name.Lit
+	if ret.Name != nil {
+		name := ret.Name.Lit
 		if !isIdent(name) {
-			p.err(ret.name.Pos, "invalid var name %q", name)
+			p.err(ret.Name.Pos, "invalid var name %q", name)
 		}
 	}
 
-	ret.lbrace = p.expect(Lbrace)
+	ret.Lbrace = p.expect(Lbrace)
 	if p.skipErrStmt() {
 		return ret
 	}
 
 	parseVarStmts(p, ret)
 
-	ret.rbrace = p.expect(Rbrace)
-	ret.semi = p.expect(Semi)
+	ret.Rbrace = p.expect(Rbrace)
+	ret.Semi = p.expect(Semi)
 	p.skipErrStmt()
 
 	return ret

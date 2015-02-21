@@ -3,6 +3,7 @@ package asm8
 import (
 	"strconv"
 
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -81,17 +82,17 @@ func parseImm(p *parser, op *lex8.Token) uint32 {
 	return uint32(ret) & 0xffff
 }
 
-func makeInstImm(op, d, s, im uint32) *inst {
+func makeInstImm(op, d, s, im uint32) *ast.Inst {
 	ret := uint32(0)
 	ret |= (op & 0xff) << 24
 	ret |= (d & 0x7) << 21
 	ret |= (s & 0x7) << 18
 	ret |= (im & 0xffff)
 
-	return &inst{inst: ret}
+	return &ast.Inst{Inst: ret}
 }
 
-func parseInstImm(p *parser, ops []*lex8.Token) (*inst, bool) {
+func parseInstImm(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
@@ -158,10 +159,10 @@ func parseInstImm(p *parser, ops []*lex8.Token) (*inst, bool) {
 	}
 
 	ret := makeInstImm(op, d, s, im)
-	ret.pack = pack
-	ret.symbol = sym
-	ret.fill = fill
-	ret.symTok = symTok
+	ret.Pkg = pack
+	ret.Sym = sym
+	ret.Fill = fill
+	ret.SymTok = symTok
 
 	return ret, true
 }

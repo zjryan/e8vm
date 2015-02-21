@@ -1,6 +1,10 @@
 package asm8
 
-func buildFile(b *builder, f *file) {
+import (
+	"lonnie.io/e8vm/asm8/ast"
+)
+
+func buildFile(b *builder, f *ast.File) {
 	b.scope.Push() // file scope
 	defer b.scope.Pop()
 
@@ -9,13 +13,13 @@ func buildFile(b *builder, f *file) {
 	pkg := b.curPkg
 	for _, fn := range f.Funcs {
 		if obj := buildFunc(b, fn); obj != nil {
-			pkg.DefineFunc(fn.index, obj)
+			pkg.DefineFunc(fn.Index, obj)
 		}
 	}
 
 	for _, v := range f.Vars {
 		if obj := buildVar(b, v); obj != nil {
-			pkg.DefineVar(v.index, obj)
+			pkg.DefineVar(v.Index, obj)
 		}
 	}
 }

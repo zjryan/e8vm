@@ -1,6 +1,7 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -53,16 +54,16 @@ func parseData(p *parser, t *lex8.Token, args []*lex8.Token) ([]byte, uint32) {
 	}
 }
 
-func parseVarStmt(p *parser) *varStmt {
+func parseVarStmt(p *parser) *ast.VarStmt {
 	typ, args := parseArgs(p)
 	if typ == nil {
 		return nil
 	}
 
-	ret := new(varStmt)
-	ret.typ = typ
-	ret.args = args
-	ret.data, ret.align = parseData(p, typ, args)
+	ret := new(ast.VarStmt)
+	ret.Type = typ
+	ret.Args = args
+	ret.Data, ret.Align = parseData(p, typ, args)
 
 	return ret
 }

@@ -1,20 +1,20 @@
-package asm8
+package ast
 
 // Package represents a package node.
-type pkg struct {
+type Pkg struct {
 	Path    string // package import path
-	Files   []*file
+	Files   []*File
 	Imports map[string]*PkgImport
 }
 
 // NewPackage creates an empty package node.
-func newPkg(path string) *pkg {
-	ret := new(pkg)
+func NewPkg(path string) *Pkg {
+	ret := new(Pkg)
 	ret.Path = path
 	return ret
 }
 
 // AddFile adds a file into the package.
-func (p *pkg) AddFile(f *file) {
+func (p *Pkg) AddFile(f *File) {
 	p.Files = append(p.Files, f)
 }

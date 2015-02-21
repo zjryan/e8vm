@@ -1,6 +1,7 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -20,12 +21,12 @@ var (
 	}
 )
 
-func makeInstSys(op, reg uint32) *inst {
+func makeInstSys(op, reg uint32) *ast.Inst {
 	ret := ((op & 0xff) << 24) | ((reg & 0x7) << 21)
-	return &inst{inst: ret}
+	return &ast.Inst{Inst: ret}
 }
 
-func parseInstSys(p *parser, ops []*lex8.Token) (*inst, bool) {
+func parseInstSys(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]

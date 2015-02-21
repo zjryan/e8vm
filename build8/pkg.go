@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"lonnie.io/e8vm/asm8"
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
 )
@@ -148,13 +149,13 @@ func (p *pkg) build(imps *imports) (*link8.Package, []*lex8.Error) {
 		return nil, lex8.SingleErr(e)
 	}
 
-	imports := make(map[string]*asm8.PkgImport)
+	imports := make(map[string]*ast.PkgImport)
 	if imps != nil {
 		for as, imp := range imps.m {
 			if imp.lib == nil {
 				panic("no lib binded")
 			}
-			imports[as] = &asm8.PkgImport{
+			imports[as] = &ast.PkgImport{
 				As:    as,
 				Pkg:   imp.lib,
 				Tok:   imp.pathToken,

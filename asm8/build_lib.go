@@ -1,5 +1,9 @@
 package asm8
 
+import (
+	"lonnie.io/e8vm/asm8/ast"
+)
+
 func declareSymbol(b *builder, sym *symbol) bool {
 	// declare in the scope
 	exists := b.scope.Declare(sym)
@@ -11,10 +15,10 @@ func declareSymbol(b *builder, sym *symbol) bool {
 	return true
 }
 
-func declareFile(b *builder, pkg *pkg, file *file) {
+func declareFile(b *builder, pkg *ast.Pkg, file *ast.File) {
 	// declare functions
 	for _, fn := range file.Funcs {
-		t := fn.name
+		t := fn.Name
 		sym := &symbol{
 			t.Lit,
 			SymFunc,
@@ -28,12 +32,12 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 		}
 
 		// declare in the lib
-		fn.index = b.curPkg.Declare(sym)
+		fn.Index = b.curPkg.Declare(sym)
 	}
 
 	// declare variables
 	for _, v := range file.Vars {
-		t := v.name
+		t := v.Name
 		sym := &symbol{
 			t.Lit,
 			SymVar,
@@ -47,11 +51,11 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 		}
 
 		// declare in the lib
-		v.index = b.curPkg.Declare(sym)
+		v.Index = b.curPkg.Declare(sym)
 	}
 }
 
-func buildPkgScope(b *builder, pkg *pkg) {
+func buildPkgScope(b *builder, pkg *ast.Pkg) {
 	// declare requires
 	for as, p := range pkg.Imports {
 		// p is the *PkgImport
@@ -66,7 +70,7 @@ func buildPkgScope(b *builder, pkg *pkg) {
 			continue
 		}
 
-		p.index = b.curPkg.Require(p.Pkg)
+		p.Index = b.curPkg.Require(p.Pkg)
 	}
 
 	for _, file := range pkg.Files {
@@ -74,15 +78,15 @@ func buildPkgScope(b *builder, pkg *pkg) {
 	}
 }
 
-func checkUnusedImport(b *builder, pkg *pkg) {
+func checkUnusedImport(b *builder, pkg *ast.Pkg) {
 	for _, imp := range pkg.Imports {
-		if !imp.use {
+		if !imp.Use {
 			b.err(imp.Tok.Pos, "package %q imported but not used", imp.As)
 		}
 	}
 }
 
-func buildLib(b *builder, pkg *pkg) *lib {
+func buildLib(b *builder, pkg *ast.Pkg) *lib {
 	ret := newLib(pkg.Path)
 	b.curPkg = ret
 

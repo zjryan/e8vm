@@ -1,6 +1,7 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -12,14 +13,14 @@ var (
 	}
 )
 
-func makeInstBr(op, s1, s2 uint32) *inst {
+func makeInstBr(op, s1, s2 uint32) *ast.Inst {
 	ret := (op & 0xff) << 24
 	ret |= (s1 & 0x7) << 21
 	ret |= (s2 & 0x7) << 18
-	return &inst{inst: ret}
+	return &ast.Inst{Inst: ret}
 }
 
-func parseInstBr(p *parser, ops []*lex8.Token) (*inst, bool) {
+func parseInstBr(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
@@ -49,9 +50,9 @@ func parseInstBr(p *parser, ops []*lex8.Token) (*inst, bool) {
 	}
 
 	ret := makeInstBr(op, s1, s2)
-	ret.symbol = lab
-	ret.fill = fillLabel
-	ret.symTok = symTok
+	ret.Sym = lab
+	ret.Fill = fillLabel
+	ret.SymTok = symTok
 
 	return ret, true
 }

@@ -12,7 +12,7 @@ func pf(s string) {
 	r := strings.NewReader(s)
 	rc := ioutil.NopCloser(r)
 	p := newParser("t.s8", rc)
-	var fs []*funcDecl
+	var fs []*FuncDecl
 
 	for {
 		if p.see(lex8.EOF) {
@@ -34,9 +34,9 @@ func pf(s string) {
 		}
 	} else {
 		for _, f := range fs {
-			fmt.Printf("func %s {\n", f.name.Lit)
-			for _, stmt := range f.stmts {
-				for i, op := range stmt.ops {
+			fmt.Printf("func %s {\n", f.Name.Lit)
+			for _, stmt := range f.Stmts {
+				for i, op := range stmt.Ops {
 					if i == 0 {
 						fmt.Print("    ")
 					} else {

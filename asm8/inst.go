@@ -1,18 +1,5 @@
 package asm8
 
-import (
-	"lonnie.io/e8vm/lex8"
-)
-
-type inst struct {
-	inst   uint32
-	pack   string
-	symbol string
-	fill   int
-
-	symTok *lex8.Token
-}
-
 const (
 	fillNone = iota
 	fillLink // for jumps

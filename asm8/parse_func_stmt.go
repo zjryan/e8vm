@@ -1,6 +1,7 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -22,7 +23,7 @@ func parseOps(p *parser) (ops []*lex8.Token) {
 	return ops
 }
 
-func parseFuncStmt(p *parser) *funcStmt {
+func parseFuncStmt(p *parser) *ast.FuncStmt {
 	ops := parseOps(p)
 	if len(ops) == 0 {
 		return nil
@@ -39,8 +40,8 @@ func parseFuncStmt(p *parser) *funcStmt {
 			p.err(op0.Pos, "label should take the entire line")
 			return nil
 		}
-		return &funcStmt{label: lead, ops: ops}
+		return &ast.FuncStmt{Label: lead, Ops: ops}
 	}
 
-	return &funcStmt{inst: parseInst(p, ops), ops: ops}
+	return &ast.FuncStmt{Inst: parseInst(p, ops), Ops: ops}
 }

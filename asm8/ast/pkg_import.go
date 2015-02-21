@@ -1,4 +1,4 @@
-package asm8
+package ast
 
 import (
 	"lonnie.io/e8vm/lex8"
@@ -8,10 +8,10 @@ import (
 // PkgImport states a package import clause
 type PkgImport struct {
 	As    string
-	Pkg   *link8.Package
 	Tok   *lex8.Token
 	AsTok *lex8.Token
 
-	use   bool
-	index uint32
+	Pkg   *link8.Package
+	Use   bool
+	Index uint32
 }

@@ -1,11 +1,12 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseFile(p *parser) *file {
-	ret := new(file)
+func parseFile(p *parser) *ast.File {
+	ret := new(ast.File)
 
 	for !p.see(lex8.EOF) {
 		if p.seeKeyword("func") {

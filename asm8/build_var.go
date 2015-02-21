@@ -1,45 +1,46 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/link8"
 )
 
-func varSize(v *varDecl) int {
+func varSize(v *ast.VarDecl) int {
 	ret := 0
-	for _, stmt := range v.stmts {
-		ret += len(stmt.data)
+	for _, stmt := range v.Stmts {
+		ret += len(stmt.Data)
 	}
 
 	return ret
 }
 
-func varAlign(v *varDecl) uint32 {
-	for _, stmt := range v.stmts {
-		if stmt.align == 4 {
+func varAlign(v *ast.VarDecl) uint32 {
+	for _, stmt := range v.Stmts {
+		if stmt.Align == 4 {
 			return 4
 		}
 	}
 	return 1
 }
 
-func buildVar(b *builder, v *varDecl) *link8.Var {
+func buildVar(b *builder, v *ast.VarDecl) *link8.Var {
 	if varSize(v) == 0 {
-		b.err(v.name.Pos, "var %q has no data", v.name.Lit)
+		b.err(v.Name.Pos, "var %q has no data", v.Name.Lit)
 		return nil
 	}
 
 	ret := link8.NewVar(varAlign(v))
-	for _, stmt := range v.stmts {
+	for _, stmt := range v.Stmts {
 		n := ret.Size()
-		if stmt.align == 4 && n%4 != 0 {
+		if stmt.Align == 4 && n%4 != 0 {
 			ret.Pad(4 - n%4)
 		}
 
-		ret.Write(stmt.data)
+		ret.Write(stmt.Data)
 	}
 
 	if ret.TooLarge() {
-		b.err(v.name.Pos, "var %q too large", v.name.Lit)
+		b.err(v.Name.Pos, "var %q too large", v.Name.Lit)
 		return nil
 	}
 

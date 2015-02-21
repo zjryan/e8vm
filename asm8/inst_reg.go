@@ -3,6 +3,7 @@ package asm8
 import (
 	"strconv"
 
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -65,7 +66,7 @@ func parseShift(p *parser, op *lex8.Token) uint32 {
 	return uint32(ret)
 }
 
-func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *inst {
+func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *ast.Inst {
 	ret := uint32(0)
 	ret |= (d & 0x7) << 21
 	ret |= (s1 & 0x7) << 18
@@ -74,10 +75,10 @@ func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *inst {
 	ret |= (isFloat & 0x1) << 8
 	ret |= fn & 0xff
 
-	return &inst{inst: ret}
+	return &ast.Inst{Inst: ret}
 }
 
-func parseInstReg(p *parser, ops []*lex8.Token) (*inst, bool) {
+func parseInstReg(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
