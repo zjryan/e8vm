@@ -1,4 +1,4 @@
-package asm8
+package parse
 
 import (
 	"strconv"
@@ -117,7 +117,7 @@ func parseInstImm(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 	parseSym := func(t *lex8.Token, f func(*parser, *lex8.Token) uint32) {
 		if isSymbol(t.Lit) {
 			pack, sym = parseSym(p, t)
-			fill = fillLow
+			fill = ast.FillLow
 			symTok = t
 		} else {
 			im = f(p, t)
@@ -151,8 +151,8 @@ func parseInstImm(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 		if argCount(2) {
 			parseSym(args[1], parseImm)
 		}
-		if opName == "lui" && fill == fillLow {
-			fill = fillHigh
+		if opName == "lui" && fill == ast.FillLow {
+			fill = ast.FillHigh
 		}
 	} else {
 		return nil, false

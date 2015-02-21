@@ -1,4 +1,4 @@
-package asm8
+package parse
 
 import (
 	"lonnie.io/e8vm/asm8/ast"
@@ -51,7 +51,7 @@ func parseInstBr(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 
 	ret := makeInstBr(op, s1, s2)
 	ret.Sym = lab
-	ret.Fill = fillLabel
+	ret.Fill = ast.FillLabel
 	ret.SymTok = symTok
 
 	return ret, true

@@ -1,10 +1,11 @@
-package asm8
+package parse
 
 import (
 	"fmt"
 	"io/ioutil"
 	"strings"
 
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -12,7 +13,7 @@ func pf(s string) {
 	r := strings.NewReader(s)
 	rc := ioutil.NopCloser(r)
 	p := newParser("t.s8", rc)
-	var fs []*FuncDecl
+	var fs []*ast.FuncDecl
 
 	for {
 		if p.see(lex8.EOF) {

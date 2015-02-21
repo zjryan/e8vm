@@ -83,7 +83,7 @@ func fillLabels(b *builder, f *ast.FuncDecl) {
 		if s.IsLabel() {
 			continue
 		}
-		if s.Fill != fillLabel {
+		if s.Fill != ast.FillLabel {
 			continue
 		}
 		if s.Pkg != "" {
@@ -126,10 +126,10 @@ func init() {
 			panic("bug")
 		}
 	}
-	as(fillNone == 0 && fillLabel == 4)
-	as(fillLink == link8.FillLink)
-	as(fillHigh == link8.FillHigh)
-	as(fillLow == link8.FillLow)
+	as(ast.FillNone == 0 && ast.FillLabel == 4)
+	as(ast.FillLink == link8.FillLink)
+	as(ast.FillHigh == link8.FillHigh)
+	as(ast.FillLow == link8.FillLow)
 }
 
 // resolveSymbol resolves the symbol in the statement,
@@ -191,7 +191,7 @@ func linkSymbol(b *builder, s *ast.FuncStmt, f *link8.Func) {
 		return
 	}
 
-	if s.Fill == fillLink && typ != SymFunc {
+	if s.Fill == ast.FillLink && typ != SymFunc {
 		b.err(t.Pos, "%s %q is not a function", symStr(typ), t.Lit)
 		return
 	} else if pkg > 0 && !isPublic(s.Sym) {
@@ -215,7 +215,7 @@ func makeFuncObj(b *builder, f *ast.FuncDecl) *link8.Func {
 		}
 		ret.AddInst(s.Inst.Inst)
 
-		if !(s.Fill > fillNone && s.Fill < fillLabel) {
+		if !(s.Fill > ast.FillNone && s.Fill < ast.FillLabel) {
 			continue // only care about fillHigh, fillLow and fillLink
 		}
 

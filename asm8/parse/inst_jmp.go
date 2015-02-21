@@ -1,4 +1,4 @@
-package asm8
+package parse
 
 import (
 	"lonnie.io/e8vm/asm8/ast"
@@ -37,10 +37,10 @@ func parseInstJmp(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 		symTok = ops[1]
 		if parseLabel(p, ops[1]) {
 			sym = ops[1].Lit
-			fill = fillLabel
+			fill = ast.FillLabel
 		} else {
 			pack, sym = parseSym(p, ops[1])
-			fill = fillLink
+			fill = ast.FillLink
 		}
 	}
 

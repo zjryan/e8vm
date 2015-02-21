@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"lonnie.io/e8vm/asm8/ast"
+	"lonnie.io/e8vm/asm8/parse"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
 )
@@ -19,11 +20,11 @@ type PkgBuild struct {
 func (pb *PkgBuild) Build() (*link8.Package, []*lex8.Error) {
 	pkg := ast.NewPkg(pb.Path)
 	for f, rc := range pb.Files {
-		parsed, es := ParseFile(f, rc)
+		parsed, es := parse.File(f, rc)
 		if es != nil {
 			return nil, es
 		}
-		
+
 		pkg.AddFile(parsed)
 	}
 

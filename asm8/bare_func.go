@@ -3,15 +3,15 @@ package asm8
 import (
 	"io"
 
+	"lonnie.io/e8vm/asm8/parse"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
 )
 
 // BuildBareFunc builds a function body into an image.
-func BuildBareFunc(f string, r io.Reader) ([]byte, []*lex8.Error) {
-	p := newParser(f, r)
-	fn := parseBareFunc(p)
-	if es := p.Errs(); es != nil {
+func BuildBareFunc(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
+	fn, es := parse.BareFunc(f, rc)
+	if es != nil {
 		return nil, es
 	}
 

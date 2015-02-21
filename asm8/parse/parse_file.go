@@ -1,4 +1,4 @@
-package asm8
+package parse
 
 import (
 	"io"
@@ -35,7 +35,7 @@ func parseFile(p *parser) *ast.File {
 }
 
 // Parse parses a file into an AST.
-func ParseFile(f string, rc io.ReadCloser) (*ast.File, []*lex8.Error) {
+func File(f string, rc io.ReadCloser) (*ast.File, []*lex8.Error) {
 	p := newParser(f, rc)
 	parsed := parseFile(p)
 	e := rc.Close()

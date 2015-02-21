@@ -1,4 +1,4 @@
-package asm8
+package parse
 
 // asm8 token types.
 const (

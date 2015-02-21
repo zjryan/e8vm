@@ -1,4 +1,4 @@
-package asm8
+package parse
 
 import (
 	"strings"
