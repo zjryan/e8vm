@@ -4,7 +4,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// Func is an assembly function.
+// FuncDecl is an assembly function.
 type FuncDecl struct {
 	Stmts []*FuncStmt
 

@@ -4,6 +4,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
+// VarDecl is a variable declaration
 type VarDecl struct {
 	Stmts []*VarStmt
 
