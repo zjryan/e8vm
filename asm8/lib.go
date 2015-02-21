@@ -16,7 +16,7 @@ type lib struct {
 // NewPkgObj creates a new package compile object
 func newLib(p string) *lib {
 	ret := new(lib)
-	ret.Pkg = link8.NewPackage(p)
+	ret.Pkg = link8.NewPkg(p)
 
 	ret.symbols = make(map[string]*symbol)
 

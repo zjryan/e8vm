@@ -20,7 +20,7 @@ type Pkg struct {
 }
 
 // NewPackage creates a new package of path p.
-func NewPackage(p string) *Pkg {
+func NewPkg(p string) *Pkg {
 	ret := new(Pkg)
 	ret.path = p
 
