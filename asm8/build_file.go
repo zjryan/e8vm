@@ -13,13 +13,15 @@ func buildFile(b *builder, f *ast.File) {
 	pkg := b.curPkg
 	for _, fn := range f.Funcs {
 		if obj := buildFunc(b, fn); obj != nil {
-			pkg.DefineFunc(fn.Index, obj)
+			ind := b.getIndex(fn.Name.Lit)
+			pkg.DefineFunc(ind, obj)
 		}
 	}
 
 	for _, v := range f.Vars {
 		if obj := buildVar(b, v); obj != nil {
-			pkg.DefineVar(v.Index, obj)
+			ind := b.getIndex(v.Name.Lit)
+			pkg.DefineVar(ind, obj)
 		}
 	}
 }

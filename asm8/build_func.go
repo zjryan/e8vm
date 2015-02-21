@@ -150,8 +150,10 @@ func resolveSymbol(b *builder, s *ast.FuncStmt) (typ int, pkg, index uint32) {
 		p := queryPkg(b, t, s.Pkg) // find the package
 		if p != nil {
 			var sym *link8.Symbol
-			pkg = p.Index
-			p.Use = true
+			pkg = b.getIndex(p.As)
+
+			b.pkgUsed[p.As] = struct{}{} // mark pkg used
+
 			sym, index = p.Pkg.Query(s.Sym)
 			if sym != nil {
 				// should we use a consistant

@@ -12,12 +12,17 @@ type builder struct {
 	curPkg *lib
 
 	hasError bool
+
+	indices map[string]uint32
+	pkgUsed map[string]struct{}
 }
 
 func newBuilder() *builder {
 	ret := new(builder)
 	ret.errs = lex8.NewErrList()
 	ret.scope = newSymScope()
+	ret.indices = make(map[string]uint32)
+	ret.pkgUsed = make(map[string]struct{})
 
 	return ret
 }
@@ -34,4 +39,21 @@ func (b *builder) Errs() []*lex8.Error {
 
 func (b *builder) clearErr() {
 	b.hasError = false
+}
+
+func (b *builder) index(name string, index uint32) {
+	_, found := b.indices[name]
+	if found {
+		panic("redeclare")
+	}
+
+	b.indices[name] = index
+}
+
+func (b *builder) getIndex(name string) uint32 {
+	ret, found := b.indices[name]
+	if !found {
+		panic("not found")
+	}
+	return ret
 }

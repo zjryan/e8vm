@@ -31,8 +31,7 @@ func declareFile(b *builder, pkg *ast.Pkg, file *ast.File) {
 			continue
 		}
 
-		// declare in the lib
-		fn.Index = b.curPkg.Declare(sym)
+		b.index(t.Lit, b.curPkg.Declare(sym))
 	}
 
 	// declare variables
@@ -50,8 +49,7 @@ func declareFile(b *builder, pkg *ast.Pkg, file *ast.File) {
 			continue
 		}
 
-		// declare in the lib
-		v.Index = b.curPkg.Declare(sym)
+		b.index(t.Lit, b.curPkg.Declare(sym))
 	}
 }
 
@@ -70,7 +68,7 @@ func buildPkgScope(b *builder, pkg *ast.Pkg) {
 			continue
 		}
 
-		p.Index = b.curPkg.Require(p.Pkg)
+		b.index(as, b.curPkg.Require(p.Pkg))
 	}
 
 	for _, file := range pkg.Files {
@@ -80,7 +78,7 @@ func buildPkgScope(b *builder, pkg *ast.Pkg) {
 
 func checkUnusedImport(b *builder, pkg *ast.Pkg) {
 	for _, imp := range pkg.Imports {
-		if !imp.Use {
+		if _, used := b.pkgUsed[imp.As]; !used {
 			b.err(imp.Tok.Pos, "package %q imported but not used", imp.As)
 		}
 	}

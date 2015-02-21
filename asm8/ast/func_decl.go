@@ -10,6 +10,4 @@ type FuncDecl struct {
 
 	Kw, Name             *lex8.Token
 	Lbrace, Rbrace, Semi *lex8.Token
-
-	Index uint32 // symbol decl index
 }
