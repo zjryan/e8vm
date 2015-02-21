@@ -26,6 +26,8 @@ func (t *tracer) hit(pkg *Pkg, sym uint32) bool {
 	return ret
 }
 
+// traceUsed traces symbols/objects that are used.
+// only these objects need to be linked into the final result.
 func traceUsed(lnk *Linker, p *Pkg, index uint32) []pkgSym {
 	t := newTracer(lnk)
 
