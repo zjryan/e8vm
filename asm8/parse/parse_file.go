@@ -34,7 +34,7 @@ func parseFile(p *parser) *ast.File {
 	return ret
 }
 
-// Parse parses a file into an AST.
+// File function parses a file into an AST.
 func File(f string, rc io.ReadCloser) (*ast.File, []*lex8.Error) {
 	p := newParser(f, rc)
 	parsed := parseFile(p)

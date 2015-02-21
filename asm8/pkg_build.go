@@ -9,7 +9,7 @@ import (
 	"lonnie.io/e8vm/link8"
 )
 
-// PkgBuild contains the information to build a package
+// Pkg contains the information required to build a package
 type Pkg struct {
 	Path    string
 	Imports map[string]*ast.PkgImport

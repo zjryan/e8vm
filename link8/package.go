@@ -4,7 +4,7 @@ import (
 	"path"
 )
 
-// Package is the compiling object of a package. It is the linking
+// Pkg is the compiling object of a package. It is the linking
 // unit for programs.
 type Pkg struct {
 	path string
