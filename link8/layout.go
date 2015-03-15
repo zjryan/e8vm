@@ -3,12 +3,12 @@ package link8
 import (
 	"fmt"
 
-	"lonnie.io/e8vm/arch8"
+	"lonnie.io/e8vm/conv"
 )
 
 func layout(used []pkgSym) (funcs, vars []pkgSym, e error) {
 	// code
-	pt := uint32(arch8.InitPC)
+	pt := uint32(conv.InitPC)
 	codeMax := uint32(0xffffffff)
 
 	for _, ps := range used {
