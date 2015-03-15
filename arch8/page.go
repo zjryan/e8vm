@@ -1,7 +1,7 @@
 package arch8
 
 import (
-	"encoding/binary"
+	"lonnie.io/e8vm/conv"
 )
 
 // PageSize is the number of bytes a page contains.
@@ -31,9 +31,6 @@ func (p *page) WriteByte(offset uint32, b byte) {
 	p.Bytes[offset%PageSize] = b
 }
 
-// The machines endian.
-var Endian = binary.LittleEndian
-
 func wordOff(offset uint32) uint32 {
 	return (offset % PageSize) & ^uint32(0x3)
 }
@@ -43,7 +40,7 @@ func wordOff(offset uint32) uint32 {
 // When offset is not 4-byte aligned, it aligns down.
 func (p *page) ReadWord(offset uint32) uint32 {
 	offset = wordOff(offset)
-	return Endian.Uint32(p.Bytes[offset : offset+4])
+	return conv.Endian.Uint32(p.Bytes[offset : offset+4])
 }
 
 // WriteWord writes the word at the particular offset.
@@ -51,5 +48,5 @@ func (p *page) ReadWord(offset uint32) uint32 {
 // When offset is not 4-byte aligned, it aligns down.
 func (p *page) WriteWord(offset uint32, w uint32) {
 	offset = wordOff(offset)
-	Endian.PutUint32(p.Bytes[offset:offset+4], w)
+	conv.Endian.PutUint32(p.Bytes[offset:offset+4], w)
 }

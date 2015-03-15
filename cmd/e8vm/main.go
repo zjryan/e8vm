@@ -8,9 +8,9 @@ import (
 	"os"
 	"strings"
 
-	"lonnie.io/e8vm/conv"
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/asm8"
+	"lonnie.io/e8vm/conv"
 	"lonnie.io/e8vm/dasm8"
 	"lonnie.io/e8vm/lex8"
 )
