@@ -4,6 +4,8 @@ Goal: A book written in working code and markdown document that
 describes how computer system works, including architecture,
 assemblers, compilers, and operating systems.
 
+Read it (here)[http://8k.lonnie.io].
+
 Planned Features:
 
 - **Modularized.** File based modules. No circular dependency (not only on packages,
@@ -16,7 +18,7 @@ Planned Features:
 
 ## TODOs
 
-- Build code reading website
+- Improve code reading website
 - Complete consts
 - Package building system
 - More tests
