@@ -19,7 +19,7 @@ type Pkg struct {
 	vars  map[uint32]*Var
 }
 
-// NewPackage creates a new package of path p.
+// NewPkg creates a new package for path p.
 func NewPkg(p string) *Pkg {
 	ret := new(Pkg)
 	ret.path = p
