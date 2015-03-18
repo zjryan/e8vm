@@ -48,7 +48,7 @@ func parseFunc(p *parser) *ast.FuncDecl {
 
 	if ret.Name != nil {
 		name := ret.Name.Lit
-		if !isIdent(name) {
+		if !IsIdent(name) {
 			p.Errorf(ret.Name.Pos, "invalid func name %q", name)
 		}
 	}

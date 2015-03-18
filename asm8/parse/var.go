@@ -23,7 +23,7 @@ func parseVar(p *parser) *ast.VarDecl {
 
 	if ret.Name != nil {
 		name := ret.Name.Lit
-		if !isIdent(name) {
+		if !IsIdent(name) {
 			p.Errorf(ret.Name.Pos, "invalid var name %q", name)
 		}
 	}

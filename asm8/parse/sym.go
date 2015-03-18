@@ -6,6 +6,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
+// isSymbol just looks at the first rune and see if it is *poosibly* a symbol
 func isSymbol(sym string) bool {
 	if sym == "" {
 		return false
@@ -20,7 +21,8 @@ func isSymbol(sym string) bool {
 	return false
 }
 
-func isIdent(id string) bool {
+// IsIdent checks if a string is a valid identifier
+func IsIdent(id string) bool {
 	if id == "" {
 		return false
 	}
@@ -59,7 +61,7 @@ func parseSym(p *parser, t *lex8.Token) (pack, sym string) {
 
 	if dot >= 0 && !lex8.IsPkgName(pack) {
 		p.Errorf(t.Pos, "invalid package name: %q", pack)
-	} else if !isIdent(sym) {
+	} else if !IsIdent(sym) {
 		p.Errorf(t.Pos, "invalid symbol: %q", t.Lit)
 	}
 

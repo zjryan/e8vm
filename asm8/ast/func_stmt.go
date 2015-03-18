@@ -7,11 +7,13 @@ import (
 // FuncStmt is a statement in a assembly function.
 // It is either a instruction or a label.
 type FuncStmt struct {
+	Ops []*lex8.Token
+
+	// resolved
 	*Inst
 	Label string
 
-	Ops []*lex8.Token
-
+	// build info
 	Offset uint32
 }
 

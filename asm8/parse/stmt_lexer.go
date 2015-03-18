@@ -11,8 +11,10 @@ type stmtLexer struct {
 	x          *lex8.Lexer
 	save       *lex8.Token
 	insertSemi bool
+	comments   []*lex8.Token
 
-	ParseComment bool
+	CollectComment bool
+	ParseComment   bool
 }
 
 // NewStmtLexer creates a new statement lexer.
@@ -67,6 +69,9 @@ func (sx *stmtLexer) Token() *lex8.Token {
 			}
 			continue // ignore this end line
 		case lex8.Comment:
+			if sx.CollectComment {
+				sx.comments = append(sx.comments, t)
+			}
 			if !sx.ParseComment {
 				continue
 			}
@@ -81,4 +86,9 @@ func (sx *stmtLexer) Token() *lex8.Token {
 // Errs returns the list of lexing errors.
 func (sx *stmtLexer) Errs() []*lex8.Error {
 	return sx.x.Errs()
+}
+
+// Comments returns the list of collected comments.
+func (sx *stmtLexer) Comments() []*lex8.Token {
+	return sx.comments
 }

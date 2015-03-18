@@ -31,6 +31,7 @@ func parseFile(p *parser) *ast.File {
 		p.BailOut()
 	}
 
+	ret.Comments = p.comments()
 	return ret
 }
 
