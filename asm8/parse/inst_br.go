@@ -20,7 +20,7 @@ func makeInstBr(op, s1, s2 uint32) *ast.Inst {
 	return &ast.Inst{Inst: ret}
 }
 
-func parseInstBr(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
+func parseInstBr(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]

@@ -11,9 +11,9 @@ func buildFunc(b *builder, f *ast.FuncDecl) *link8.Func {
 	b.scope.Push()
 	defer b.scope.Pop()
 
-	b.clearErr()
+	b.BailOut()
 	declareLabels(b, f)
-	if !b.hasError {
+	if !b.InJail() {
 		setOffsets(b, f)
 		fillLabels(b, f)
 	}
@@ -40,8 +40,8 @@ func declareLabels(b *builder, f *ast.FuncDecl) {
 
 		decl := b.scope.Declare(sym)
 		if decl != nil {
-			b.err(op.Pos, "%q already declared", lab)
-			b.err(decl.Pos, "  here as a %s", symStr(decl.Type))
+			b.Errorf(op.Pos, "%q already declared", lab)
+			b.Errorf(decl.Pos, "  here as a %s", symStr(decl.Type))
 			continue
 		}
 	}
@@ -69,7 +69,7 @@ func fillDelta(b *builder, t *lex8.Token, inst *uint32, d uint32) {
 	} else {
 		// it is a branch
 		if !inBrRange(d) {
-			b.err(t.Pos, "%q is out of branch range", t.Lit)
+			b.Errorf(t.Pos, "%q is out of branch range", t.Lit)
 		}
 		*inst |= d & 0x3ffff
 	}
@@ -94,7 +94,7 @@ func fillLabels(b *builder, f *ast.FuncDecl) {
 
 		sym := b.scope.Query(s.Sym)
 		if sym == nil {
-			b.err(t.Pos, "label %q not declared", t.Lit)
+			b.Errorf(t.Pos, "label %q not declared", t.Lit)
 			continue
 		}
 
@@ -111,10 +111,10 @@ func fillLabels(b *builder, f *ast.FuncDecl) {
 func queryPkg(b *builder, t *lex8.Token, pack string) *ast.PkgImport {
 	sym := b.scope.Query(pack)
 	if sym == nil {
-		b.err(t.Pos, "package %q not found", pack)
+		b.Errorf(t.Pos, "package %q not found", pack)
 		return nil
 	} else if sym.Type != SymImport {
-		b.err(t.Pos, "%q is a %s, not a package", t.Lit, symStr(sym.Type))
+		b.Errorf(t.Pos, "%q is a %s, not a package", t.Lit, symStr(sym.Type))
 		return nil
 	}
 	return sym.Item.(*ast.PkgImport)
@@ -162,7 +162,7 @@ func resolveSymbol(b *builder, s *ast.FuncStmt) (typ int, pkg, index uint32) {
 				} else if sym.Type == link8.SymVar {
 					typ = SymVar
 				} else {
-					b.err(t.Pos, "%q is an invalid linking symbol", t.Lit)
+					b.Errorf(t.Pos, "%q is an invalid linking symbol", t.Lit)
 					return
 				}
 			}
@@ -170,11 +170,11 @@ func resolveSymbol(b *builder, s *ast.FuncStmt) (typ int, pkg, index uint32) {
 	}
 
 	if typ == SymNone {
-		b.err(t.Pos, "%q not found", t.Lit)
+		b.Errorf(t.Pos, "%q not found", t.Lit)
 	} else if typ == SymConst {
-		b.err(t.Pos, "const symbol filling not implemented yet")
+		b.Errorf(t.Pos, "const symbol filling not implemented yet")
 	} else if typ == SymImport || typ == SymLabel {
-		b.err(t.Pos, "cannot link %s %q", symStr(typ), t.Lit)
+		b.Errorf(t.Pos, "cannot link %s %q", symStr(typ), t.Lit)
 	}
 
 	return
@@ -183,7 +183,7 @@ func resolveSymbol(b *builder, s *ast.FuncStmt) (typ int, pkg, index uint32) {
 func linkSymbol(b *builder, s *ast.FuncStmt, f *link8.Func) {
 	t := s.SymTok
 	if b.curPkg == nil {
-		b.err(t.Pos, "no context for resolving %q", t.Lit)
+		b.Errorf(t.Pos, "no context for resolving %q", t.Lit)
 		return // this may happen for bare function
 	}
 
@@ -194,11 +194,11 @@ func linkSymbol(b *builder, s *ast.FuncStmt, f *link8.Func) {
 	}
 
 	if s.Fill == ast.FillLink && typ != SymFunc {
-		b.err(t.Pos, "%s %q is not a function", symStr(typ), t.Lit)
+		b.Errorf(t.Pos, "%s %q is not a function", symStr(typ), t.Lit)
 		return
 	} else if pkg > 0 && !isPublic(s.Sym) {
 		// for imported package, check if it is public
-		b.err(t.Pos, "%q is not public", t.Lit)
+		b.Errorf(t.Pos, "%q is not public", t.Lit)
 		return
 	}
 
@@ -225,7 +225,7 @@ func makeFuncObj(b *builder, f *ast.FuncDecl) *link8.Func {
 	}
 
 	if ret.TooLarge() {
-		b.err(f.Name.Pos, "too many instructions in func", f.Name.Lit)
+		b.Errorf(f.Name.Pos, "too many instructions in func", f.Name.Lit)
 	}
 
 	return ret

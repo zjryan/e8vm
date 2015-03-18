@@ -13,6 +13,6 @@ var insts = []instParse{
 	parseInstSys,
 }
 
-func parseInst(p *parser, ops []*lex8.Token) (i *ast.Inst) {
-	return instParsers(insts).parse(p, ops)
+func parseInst(log lex8.Logger, ops []*lex8.Token) (i *ast.Inst) {
+	return instParsers(insts).parse(log, ops)
 }

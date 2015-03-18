@@ -22,7 +22,7 @@ func lexEscape(x *lex8.Lexer, quote rune) bool {
 	var n int
 	var base, max uint32
 	if x.Ended() {
-		x.Err("escape not terminated")
+		x.Errorf("escape not terminated")
 		return false
 	}
 	r := x.Rune()
@@ -42,21 +42,21 @@ func lexEscape(x *lex8.Lexer, quote rune) bool {
 		x.Next()
 		n, base, max = 8, 16, unicode.MaxRune
 	default:
-		x.Err("unknown escape sequence")
+		x.Errorf("unknown escape sequence")
 		return false
 	}
 
 	var v uint32
 	for i := 0; i < n; i++ {
 		if x.Ended() {
-			x.Err("escape not terminated")
+			x.Errorf("escape not terminated")
 			return false
 		}
 
 		r := x.Rune()
 		d := uint32(digitVal(r))
 		if d >= base {
-			x.Err("illegal escape char %#U", r)
+			x.Errorf("illegal escape char %#U", r)
 			return false
 		}
 
@@ -67,7 +67,7 @@ func lexEscape(x *lex8.Lexer, quote rune) bool {
 	}
 
 	if v > max || 0xD800 <= v && v < 0xE000 {
-		x.Err("invalid unicode code point")
+		x.Errorf("invalid unicode code point")
 		return false
 	}
 
@@ -82,10 +82,10 @@ func lexString(x *lex8.Lexer) *lex8.Token {
 	x.Next()
 	for {
 		if x.Ended() {
-			x.Err("unexpected eof in string")
+			x.Errorf("unexpected eof in string")
 			break
 		} else if x.See('\n') {
-			x.Err("unexpected endl in string")
+			x.Errorf("unexpected endl in string")
 			break
 		}
 

@@ -27,7 +27,7 @@ type Lexer struct {
 func NewLexer(file string, r io.Reader) *Lexer {
 	ret := new(Lexer)
 	ret.s = NewLexScanner(file, r)
-	ret.errs = NewErrList()
+	ret.errs = NewErrorList()
 
 	ret.IsWhite = func(r rune) bool {
 		return r == ' ' || r == '\t'
@@ -99,8 +99,8 @@ func (x *Lexer) Token() *Token {
 }
 
 // Err adds an error into the error list with current postion.
-func (x *Lexer) Err(f string, args ...interface{}) {
-	x.errs.Addf(x.s.Pos(), f, args...)
+func (x *Lexer) Errorf(f string, args ...interface{}) {
+	x.errs.Errorf(x.s.Pos(), f, args...)
 }
 
 // Errs returns the lexing errors.

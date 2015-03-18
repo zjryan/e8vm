@@ -32,7 +32,7 @@ func lexAsm8(x *lex8.Lexer) *lex8.Token {
 		return lexOperand(x)
 	}
 
-	x.Err("illegal char %q", r)
+	x.Errorf("illegal char %q", r)
 	x.Next()
 	return x.MakeToken(lex8.Illegal)
 }

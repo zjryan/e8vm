@@ -13,7 +13,7 @@ func LexComment(x *Lexer) *Token {
 	} else if x.Rune() == '*' {
 		return lexBlockComment(x)
 	}
-	x.Err("illegal char %q", x.Rune())
+	x.Errorf("illegal char %q", x.Rune())
 	return x.MakeToken(Illegal)
 }
 
@@ -32,7 +32,7 @@ func lexBlockComment(x *Lexer) *Token {
 	for {
 		x.Next()
 		if x.Ended() {
-			x.Err("unexpected eof in block comment")
+			x.Errorf("unexpected eof in block comment")
 			return x.MakeToken(Comment)
 		}
 

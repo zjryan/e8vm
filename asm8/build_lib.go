@@ -8,8 +8,8 @@ func declareSymbol(b *builder, sym *symbol) bool {
 	// declare in the scope
 	exists := b.scope.Declare(sym)
 	if exists != nil {
-		b.err(sym.Pos, "%q already declared", sym.Name)
-		b.err(exists.Pos, "  previously declared here")
+		b.Errorf(sym.Pos, "%q already declared", sym.Name)
+		b.Errorf(exists.Pos, "  previously declared here")
 		return false
 	}
 	return true
@@ -79,7 +79,7 @@ func buildPkgScope(b *builder, pkg *ast.Pkg) {
 func checkUnusedImport(b *builder, pkg *ast.Pkg) {
 	for _, imp := range pkg.Imports {
 		if _, used := b.pkgUsed[imp.As]; !used {
-			b.err(imp.Tok.Pos, "package %q imported but not used", imp.As)
+			b.Errorf(imp.Tok.Pos, "package %q imported but not used", imp.As)
 		}
 	}
 }

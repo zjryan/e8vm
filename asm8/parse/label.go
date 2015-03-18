@@ -31,7 +31,7 @@ func isLabel(s string) bool {
 	return true
 }
 
-func parseLabel(p *parser, t *lex8.Token) bool {
+func parseLabel(log lex8.Logger, t *lex8.Token) bool {
 	if t.Type != Operand {
 		panic("not an operand")
 	}
@@ -42,7 +42,7 @@ func parseLabel(p *parser, t *lex8.Token) bool {
 	}
 
 	if !isLabel(lab) {
-		p.Errorf(t.Pos, "invalid label: %q", lab)
+		log.Errorf(t.Pos, "invalid label: %q", lab)
 	}
 
 	return true

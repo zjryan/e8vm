@@ -5,6 +5,11 @@ import (
 	"io"
 )
 
+// Logger is an error logging interface
+type Logger interface {
+	Errorf(p *Pos, fmt string, args ...interface{})
+}
+
 // ErrorList saves a list of error
 type ErrorList struct {
 	Errs []*Error
@@ -16,7 +21,7 @@ type ErrorList struct {
 
 // NewErrList creates a new error list with default (20) maximum
 // lines of errors.
-func NewErrList() *ErrorList {
+func NewErrorList() *ErrorList {
 	ret := new(ErrorList)
 	ret.Max = 20
 
@@ -43,8 +48,8 @@ func (lst *ErrorList) InJail() bool { return lst.inJail }
 // BailOut clears the "in jail" state.
 func (lst *ErrorList) BailOut() { lst.inJail = false }
 
-// Addf appends a new error with particular position and format.
-func (lst *ErrorList) Addf(p *Pos, f string, args ...interface{}) {
+// Errorf appends a new error with particular position and format.
+func (lst *ErrorList) Errorf(p *Pos, f string, args ...interface{}) {
 	lst.Add(&Error{p, fmt.Errorf(f, args...)})
 }
 

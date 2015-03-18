@@ -14,7 +14,7 @@ func NewParser(t Tokener, types *Types) *Parser {
 	ret := new(Parser)
 
 	ret.tokener = t
-	ret.errs = NewErrList()
+	ret.errs = NewErrorList()
 	ret.Next() // read in
 	ret.types = types
 
@@ -23,7 +23,7 @@ func NewParser(t Tokener, types *Types) *Parser {
 
 // Errorf adds a new parser error to the parser's error list at a particular position.
 func (p *Parser) Errorf(pos *Pos, f string, args ...interface{}) {
-	p.errs.Addf(pos, f, args...)
+	p.errs.Errorf(pos, f, args...)
 }
 
 // ErrorfHere adds a new parser error at the current token position

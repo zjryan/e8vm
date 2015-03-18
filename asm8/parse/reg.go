@@ -19,7 +19,7 @@ var regNameMap = map[string]uint32{
 	"pc":  7,
 }
 
-func parseReg(p *parser, op *lex8.Token) uint32 {
+func parseReg(p lex8.Logger, op *lex8.Token) uint32 {
 	if op.Type != Operand {
 		panic("not an operand")
 	}

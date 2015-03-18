@@ -14,7 +14,7 @@ func isValidSymbol(sym string) bool {
 	return true
 }
 
-func parseInstJmp(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
+func parseInstJmp(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	var op uint32

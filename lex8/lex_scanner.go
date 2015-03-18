@@ -19,7 +19,7 @@ type LexScanner struct {
 func NewLexScanner(file string, r io.Reader) *LexScanner {
 	ret := new(LexScanner)
 	ret.s = NewRuneScanner(file, r)
-	ret.errs = NewErrList()
+	ret.errs = NewErrorList()
 
 	ret.buf = new(bytes.Buffer)
 	ret.pos = ret.s.Pos()

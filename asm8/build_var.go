@@ -25,7 +25,7 @@ func varAlign(v *ast.VarDecl) uint32 {
 
 func buildVar(b *builder, v *ast.VarDecl) *link8.Var {
 	if varSize(v) == 0 {
-		b.err(v.Name.Pos, "var %q has no data", v.Name.Lit)
+		b.Errorf(v.Name.Pos, "var %q has no data", v.Name.Lit)
 		return nil
 	}
 
@@ -40,7 +40,7 @@ func buildVar(b *builder, v *ast.VarDecl) *link8.Var {
 	}
 
 	if ret.TooLarge() {
-		b.err(v.Name.Pos, "var %q too large", v.Name.Lit)
+		b.Errorf(v.Name.Pos, "var %q too large", v.Name.Lit)
 		return nil
 	}
 
