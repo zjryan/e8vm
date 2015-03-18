@@ -2,10 +2,9 @@ package arch8
 
 import (
 	"testing"
-	
+
 	"lonnie.io/e8vm/conv"
 )
-
 
 func TestInstBr(t *testing.T) {
 	const initPC = conv.InitPC

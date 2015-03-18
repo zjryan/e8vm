@@ -4,9 +4,9 @@ package lex8
 // It does NOT provide a working parser for any grammar.
 type Parser struct {
 	tokener Tokener
-	errs *ErrorList
-	types *Types
-	t *Token
+	errs    *ErrorList
+	types   *Types
+	t       *Token
 }
 
 // NewParser creates a new parser around a tokener
@@ -47,7 +47,7 @@ func (p *Parser) Accept(t int) bool {
 
 // SeeLit checks if the current token is of type t and the lit is
 // exactly lit.
-func (p *Parser) SeeLit(t int, lit string) bool { 
+func (p *Parser) SeeLit(t int, lit string) bool {
 	return p.See(t) && p.t.Lit == lit
 }
 
@@ -117,7 +117,7 @@ func (p *Parser) Expect(t int) *Token {
 }
 
 // SkipErrStmt skips tokens until it meets a token of type sep or the end of
-// file (token EOF) and returns true, but only when the parser is in error state. 
+// file (token EOF) and returns true, but only when the parser is in error state.
 // If the parser is not in error state, it returns false and nothing is skipped.
 func (p *Parser) SkipErrStmt(sep int) bool {
 	if !p.InError() {

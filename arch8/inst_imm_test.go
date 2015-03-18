@@ -3,8 +3,8 @@ package arch8
 import (
 	"testing"
 
-	"math/rand"
 	"lonnie.io/e8vm/conv"
+	"math/rand"
 )
 
 func TestInstImm(t *testing.T) {

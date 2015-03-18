@@ -12,40 +12,36 @@ func parseImports(f string, r io.Reader) (*imports, []*lex8.Error) {
 
 	ret := newImports()
 
-	for !p.see(lex8.EOF) {
-		if !p.see(operand) {
-			p.err(p.t.Pos, "expect operand")
-			p.skipErrStmt()
+	for !p.See(lex8.EOF) {
+		t := p.Expect(operand)
+		if t == nil {
+			p.SkipErrStmt(semi)
 			continue
 		}
 
 		imp := new(pkgImport)
+		imp.pathToken = t
+		imp.path = t.Lit
 
-		imp.pathToken = p.t
-		imp.path = p.t.Lit
-		p.next()
-
-		if p.see(operand) {
-			imp.asToken = p.t
-			imp.as = p.t.Lit
-			p.next()
+		if p.See(operand) {
+			t := p.Shift()
+			imp.asToken = t
+			imp.as = t.Lit
 		}
 
-		p.expect(semi)
-
-		if p.hasErr() {
-			p.skipErrStmt()
+		p.Expect(semi)
+		if p.SkipErrStmt(semi) {
 			continue
 		}
 
 		if !isPkgPath(imp.path) {
-			p.err(imp.pathToken.Pos,
+			p.Errorf(imp.pathToken.Pos,
 				"invalid package path: %q",
 				imp.path,
 			)
 			continue
 		} else if imp.as != "" && !lex8.IsPkgName(imp.as) {
-			p.err(imp.pathToken.Pos,
+			p.Errorf(imp.pathToken.Pos,
 				"invalid package alias: %q",
 				imp.as,
 			)
@@ -56,7 +52,7 @@ func parseImports(f string, r io.Reader) (*imports, []*lex8.Error) {
 			imp.as = path.Base(imp.path)
 		}
 		if _, found := ret.m[imp.as]; found {
-			p.err(imp.pathToken.Pos, "duplicate import %q", imp.as)
+			p.Errorf(imp.pathToken.Pos, "duplicate import %q", imp.as)
 			continue
 		}
 

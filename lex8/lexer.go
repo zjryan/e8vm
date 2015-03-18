@@ -17,7 +17,7 @@ type Lexer struct {
 	e    error
 	errs *ErrorList
 
-	r       rune
+	r rune
 
 	IsWhite WhiteFunc
 	LexFunc
