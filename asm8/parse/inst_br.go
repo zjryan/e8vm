@@ -42,7 +42,7 @@ func parseInstBr(p *parser, ops []*lex8.Token) (*ast.Inst, bool) {
 			if parseLabel(p, symTok) {
 				lab = symTok.Lit
 			} else {
-				p.err(symTok.Pos, "expects a label for %s", opName)
+				p.Errorf(symTok.Pos, "expects a label for %s", opName)
 			}
 		}
 	} else {

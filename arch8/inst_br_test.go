@@ -2,9 +2,14 @@ package arch8
 
 import (
 	"testing"
+	
+	"lonnie.io/e8vm/conv"
 )
 
+
 func TestInstBr(t *testing.T) {
+	const initPC = conv.InitPC
+
 	m := newPhyMemory(PageSize * 16)
 	cpu := newCPU(m, new(instBr), 0)
 
@@ -35,9 +40,9 @@ func TestInstBr(t *testing.T) {
 		}
 	}
 
-	wr(InitPC, beq(0, 0, 1))
-	wr(InitPC+4, beq(3, 3, -1))
-	wr(InitPC+8, bne(1, 2, -2))
+	wr(initPC, beq(0, 0, 1))
+	wr(initPC+4, beq(3, 3, -1))
+	wr(initPC+8, bne(1, 2, -2))
 
 	tick := func(exp uint32) {
 		e := cpu.Tick()
@@ -51,8 +56,8 @@ func TestInstBr(t *testing.T) {
 		}
 	}
 
-	tick(InitPC + 8)
-	tick(InitPC + 4)
-	tick(InitPC + 4)
-	tick(InitPC + 4)
+	tick(initPC + 8)
+	tick(initPC + 4)
+	tick(initPC + 4)
+	tick(initPC + 4)
 }

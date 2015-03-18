@@ -42,7 +42,7 @@ func parseLabel(p *parser, t *lex8.Token) bool {
 	}
 
 	if !isLabel(lab) {
-		p.err(t.Pos, "invalid label: %q", lab)
+		p.Errorf(t.Pos, "invalid label: %q", lab)
 	}
 
 	return true

@@ -10,6 +10,8 @@ type ErrorList struct {
 	Errs []*Error
 
 	Max int
+
+	inJail bool
 }
 
 // NewErrList creates a new error list with default (20) maximum
@@ -21,14 +23,25 @@ func NewErrList() *ErrorList {
 	return ret
 }
 
-// Add appends the error to the list
+// Add appends the error to the list. Change the state to "in jail".
 func (lst *ErrorList) Add(e *Error) {
+	if e == nil {
+		panic("nil error")
+	}
+
+	lst.inJail = true
 	if len(lst.Errs) >= lst.Max {
 		return
 	}
 
 	lst.Errs = append(lst.Errs, e)
 }
+
+// InJail checks if a new error has been added since created or last bail out
+func (lst *ErrorList) InJail() bool { return lst.inJail }
+
+// BailOut clears the "in jail" state.
+func (lst *ErrorList) BailOut() { lst.inJail = false }
 
 // Addf appends a new error with particular position and format.
 func (lst *ErrorList) Addf(p *Pos, f string, args ...interface{}) {

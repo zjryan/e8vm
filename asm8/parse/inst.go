@@ -16,6 +16,6 @@ func (ips instParsers) parse(p *parser, ops []*lex8.Token) *ast.Inst {
 	}
 
 	op0 := ops[0]
-	p.err(op0.Pos, "invalid asm instruction %q", op0.Lit)
+	p.Errorf(op0.Pos, "invalid asm instruction %q", op0.Lit)
 	return nil
 }

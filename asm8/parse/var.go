@@ -6,37 +6,37 @@ import (
 )
 
 func parseVarStmts(p *parser, v *ast.VarDecl) {
-	for !(p.see(Rbrace) || p.see(lex8.EOF)) {
+	for !(p.See(Rbrace) || p.See(lex8.EOF)) {
 		stmt := parseVarStmt(p)
 		if stmt != nil {
 			v.Stmts = append(v.Stmts, stmt)
 		}
-		p.clearErr()
+		p.BailOut()
 	}
 }
 
 func parseVar(p *parser) *ast.VarDecl {
 	ret := new(ast.VarDecl)
 
-	ret.Kw = p.expectKeyword("var")
-	ret.Name = p.expect(Operand)
+	ret.Kw = p.ExpectKeyword("var")
+	ret.Name = p.Expect(Operand)
 
 	if ret.Name != nil {
 		name := ret.Name.Lit
 		if !isIdent(name) {
-			p.err(ret.Name.Pos, "invalid var name %q", name)
+			p.Errorf(ret.Name.Pos, "invalid var name %q", name)
 		}
 	}
 
-	ret.Lbrace = p.expect(Lbrace)
+	ret.Lbrace = p.Expect(Lbrace)
 	if p.skipErrStmt() {
 		return ret
 	}
 
 	parseVarStmts(p, ret)
 
-	ret.Rbrace = p.expect(Rbrace)
-	ret.Semi = p.expect(Semi)
+	ret.Rbrace = p.Expect(Rbrace)
+	ret.Semi = p.Expect(Semi)
 	p.skipErrStmt()
 
 	return ret

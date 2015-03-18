@@ -7,7 +7,7 @@ import (
 func checkAllType(p *parser, args []*lex8.Token, t int) bool {
 	for _, arg := range args {
 		if arg.Type != t {
-			p.err(arg.Pos, "expect %s, got %s", typeStr(t), typeStr(arg.Type))
+			p.Errorf(arg.Pos, "expect %s, got %s", p.TypeStr(t), p.TypeStr(arg.Type))
 			return false
 		}
 	}

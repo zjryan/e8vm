@@ -54,12 +54,12 @@ var (
 func parseShift(p *parser, op *lex8.Token) uint32 {
 	ret, e := strconv.ParseUint(op.Lit, 0, 32)
 	if e != nil {
-		p.err(op.Pos, "invalid shift %q: %s", op.Lit, e)
+		p.Errorf(op.Pos, "invalid shift %q: %s", op.Lit, e)
 		return 0
 	}
 
 	if (ret & 0x1f) != ret {
-		p.err(op.Pos, "shift too large: %s", op.Lit)
+		p.Errorf(op.Pos, "shift too large: %s", op.Lit)
 		return 0
 	}
 

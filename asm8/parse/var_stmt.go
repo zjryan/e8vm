@@ -6,28 +6,28 @@ import (
 )
 
 func parseArgs(p *parser) (typ *lex8.Token, args []*lex8.Token) {
-	typ = p.expect(Operand)
+	typ = p.Expect(Operand)
 	if typ == nil {
 		p.skipErrStmt()
 		return nil, nil
 	}
 
-	for !p.acceptType(Semi) {
-		if !p.hasErr() {
-			t := p.token()
+	for !p.Accept(Semi) {
+		if !p.InError() {
+			t := p.Token()
 			if t.Type == Operand || t.Type == String {
 				args = append(args, t)
 			} else {
-				p.err(t.Pos, "expect operand or string, got %s", typeStr(t.Type))
+				p.Errorf(t.Pos, "expect operand or string, got %s", p.TypeStr(t.Type))
 			}
 		}
-		if p.see(lex8.EOF) {
+		if p.See(lex8.EOF) {
 			break
 		}
-		p.next()
+		p.Next()
 	}
 
-	p.clearErr()
+	p.BailOut()
 
 	return typ, args
 }
@@ -49,7 +49,7 @@ func parseData(p *parser, t *lex8.Token, args []*lex8.Token) ([]byte, uint32) {
 	case "f32":
 		return parseDataNums(p, args, modeWord|modeFloat)
 	default:
-		p.err(t.Pos, "unknown data type %q", t.Lit)
+		p.Errorf(t.Pos, "unknown data type %q", t.Lit)
 		return nil, 0
 	}
 }

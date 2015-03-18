@@ -53,7 +53,7 @@ func parseDataNums(p *parser, args []*lex8.Token, mode int) ([]byte, uint32) {
 			ui = uint32(ui64)
 		}
 		if e != nil {
-			p.err(arg.Pos, "%s", e)
+			p.Errorf(arg.Pos, "%s", e)
 			return nil, 0
 		}
 

@@ -6,20 +6,20 @@ import (
 )
 
 func parseOps(p *parser) (ops []*lex8.Token) {
-	for !p.acceptType(Semi) {
-		t := p.expect(Operand)
+	for !p.Accept(Semi) {
+		t := p.Expect(Operand)
 		if t != nil {
 			ops = append(ops, t)
 		} else {
 			ops = nil // error now
-			if p.see(lex8.EOF) {
+			if p.See(lex8.EOF) {
 				break
 			}
-			p.next() // proceed anyway for other stuff
+			p.Next() // proceed anyway for other stuff
 		}
 	}
 
-	p.clearErr()
+	p.BailOut()
 	return ops
 }
 
@@ -37,7 +37,7 @@ func parseFuncStmt(p *parser) *ast.FuncStmt {
 
 	if parseLabel(p, op0) {
 		if len(ops) > 1 {
-			p.err(op0.Pos, "label should take the entire line")
+			p.Errorf(op0.Pos, "label should take the entire line")
 			return nil
 		}
 		return &ast.FuncStmt{Label: lead, Ops: ops}

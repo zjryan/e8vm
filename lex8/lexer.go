@@ -4,6 +4,12 @@ import (
 	"io"
 )
 
+// LexFunc is a function type that takes a lexer and returns the next token.
+type LexFunc func(x *Lexer) *Token
+
+// WhiteFunc is a function type that checks if a rune is white space.
+type WhiteFunc func(r rune) bool
+
 // Lexer parses a file input stream into tokens.
 type Lexer struct {
 	s *LexScanner
@@ -12,8 +18,9 @@ type Lexer struct {
 	errs *ErrorList
 
 	r       rune
-	IsWhite func(r rune) bool
-	LexFunc func(x *Lexer) *Token
+
+	IsWhite WhiteFunc
+	LexFunc
 }
 
 // NewLexer creates a new lexer.

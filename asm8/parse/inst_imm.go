@@ -38,12 +38,12 @@ var (
 func parseImu(p *parser, op *lex8.Token) uint32 {
 	ret, e := strconv.ParseUint(op.Lit, 0, 32)
 	if e != nil {
-		p.err(op.Pos, "invalid unsigned immediate %q: %s", op.Lit, e)
+		p.Errorf(op.Pos, "invalid unsigned immediate %q: %s", op.Lit, e)
 		return 0
 	}
 
 	if (ret & 0xffff) != ret {
-		p.err(op.Pos, "immediate too large: %s", op.Lit)
+		p.Errorf(op.Pos, "immediate too large: %s", op.Lit)
 		return 0
 	}
 
@@ -54,12 +54,12 @@ func parseImu(p *parser, op *lex8.Token) uint32 {
 func parseIms(p *parser, op *lex8.Token) uint32 {
 	ret, e := strconv.ParseInt(op.Lit, 0, 32)
 	if e != nil {
-		p.err(op.Pos, "invalid signed immediate %q: %s", op.Lit, e)
+		p.Errorf(op.Pos, "invalid signed immediate %q: %s", op.Lit, e)
 		return 0
 	}
 
 	if ret > 0x7fff || ret < -0x8000 {
-		p.err(op.Pos, "immediate out of 16-bit range: %s", op.Lit)
+		p.Errorf(op.Pos, "immediate out of 16-bit range: %s", op.Lit)
 		return 0
 	}
 
@@ -70,12 +70,12 @@ func parseIms(p *parser, op *lex8.Token) uint32 {
 func parseImm(p *parser, op *lex8.Token) uint32 {
 	ret, e := strconv.ParseInt(op.Lit, 0, 32)
 	if e != nil {
-		p.err(op.Pos, "invalid signed immediate %q: %s", op.Lit, e)
+		p.Errorf(op.Pos, "invalid signed immediate %q: %s", op.Lit, e)
 		return 0
 	}
 
 	if ret > 0xffff || ret < -0x8000 {
-		p.err(op.Pos, "immediate out of 16-bit range: %s", op.Lit)
+		p.Errorf(op.Pos, "immediate out of 16-bit range: %s", op.Lit)
 		return 0
 	}
 

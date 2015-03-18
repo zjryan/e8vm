@@ -8,12 +8,13 @@ import (
 )
 
 func parseFuncStmts(p *parser, f *ast.FuncDecl) {
-	for !(p.see(Rbrace) || p.see(lex8.EOF)) {
+	for !(p.See(Rbrace) || p.See(lex8.EOF)) {
 		stmt := parseFuncStmt(p)
 		if stmt != nil {
 			f.Stmts = append(f.Stmts, stmt)
 		}
-		p.clearErr()
+
+		p.BailOut()
 	}
 }
 
@@ -42,25 +43,25 @@ func BareFunc(f string, rc io.ReadCloser) (*ast.FuncDecl, []*lex8.Error) {
 func parseFunc(p *parser) *ast.FuncDecl {
 	ret := new(ast.FuncDecl)
 
-	ret.Kw = p.expectKeyword("func")
-	ret.Name = p.expect(Operand)
+	ret.Kw = p.ExpectKeyword("func")
+	ret.Name = p.Expect(Operand)
 
 	if ret.Name != nil {
 		name := ret.Name.Lit
 		if !isIdent(name) {
-			p.err(ret.Name.Pos, "invalid func name %q", name)
+			p.Errorf(ret.Name.Pos, "invalid func name %q", name)
 		}
 	}
 
-	ret.Lbrace = p.expect(Lbrace)
+	ret.Lbrace = p.Expect(Lbrace)
 	if p.skipErrStmt() {
 		return ret
 	}
 
 	parseFuncStmts(p, ret)
 
-	ret.Rbrace = p.expect(Rbrace)
-	ret.Semi = p.expect(Semi)
+	ret.Rbrace = p.Expect(Rbrace)
+	ret.Semi = p.Expect(Semi)
 	p.skipErrStmt()
 
 	return ret

@@ -9,6 +9,6 @@ func argCount(p *parser, ops []*lex8.Token, n int) bool {
 		return true
 	}
 
-	p.err(ops[0].Pos, "%q needs %d arguments", ops[0].Lit, n)
+	p.Errorf(ops[0].Pos, "%q needs %d arguments", ops[0].Lit, n)
 	return false
 }

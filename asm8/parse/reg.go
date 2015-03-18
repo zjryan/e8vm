@@ -26,7 +26,7 @@ func parseReg(p *parser, op *lex8.Token) uint32 {
 
 	ret, found := regNameMap[op.Lit]
 	if !found {
-		p.err(op.Pos, "invalid register name %q", op.Lit)
+		p.Errorf(op.Pos, "invalid register name %q", op.Lit)
 		return 0
 	}
 	return ret

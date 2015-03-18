@@ -16,7 +16,7 @@ func pf(s string) {
 	var fs []*ast.FuncDecl
 
 	for {
-		if p.see(lex8.EOF) {
+		if p.See(lex8.EOF) {
 			break
 		}
 

@@ -12,13 +12,13 @@ func parseDataStr(p *parser, args []*lex8.Token) ([]byte, uint32) {
 
 	for _, arg := range args {
 		if arg.Type != String {
-			p.err(arg.Pos, "expect string, got %s", typeStr(arg.Type))
+			p.Errorf(arg.Pos, "expect string, got %s", p.TypeStr(arg.Type))
 			return nil, 0
 		}
 
 		s, e := strconv.Unquote(arg.Lit)
 		if e != nil {
-			p.err(arg.Pos, "invalid string %s", arg.Lit)
+			p.Errorf(arg.Pos, "invalid string %s", arg.Lit)
 			return nil, 0
 		}
 		buf.Write([]byte(s))
