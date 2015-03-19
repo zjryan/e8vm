@@ -10,6 +10,7 @@ import (
 type RuneScanner struct {
 	file string
 	line int
+	col  int
 
 	r *bufio.Reader
 
@@ -25,6 +26,7 @@ func NewRuneScanner(file string, r io.Reader) *RuneScanner {
 	ret.file = file
 	ret.r = bufio.NewReader(r)
 	ret.line = 1 // natural counting
+	ret.col = 1
 
 	return ret
 }
@@ -52,6 +54,9 @@ func (s *RuneScanner) Scan() bool {
 
 	if wasEndline {
 		s.line++
+		s.col = 1
+	} else {
+		s.col++
 	}
 
 	return true
@@ -59,5 +64,5 @@ func (s *RuneScanner) Scan() bool {
 
 // Pos returns the current position in the file.
 func (s *RuneScanner) Pos() *Pos {
-	return &Pos{s.file, s.line}
+	return &Pos{s.file, s.line, s.col}
 }

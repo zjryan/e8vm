@@ -4,4 +4,5 @@ package lex8
 type Pos struct {
 	File string
 	Line int
+	Col  int
 }
