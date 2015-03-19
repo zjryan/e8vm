@@ -1,103 +1,88 @@
 package printer
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"strings"
 
 	"lonnie.io/e8vm/asm8/ast"
-	"lonnie.io/e8vm/asm8/parse"
 	"lonnie.io/e8vm/lex8"
 )
 
-type printer struct {
-	out io.Writer
+const indentStr = "    "
 
-	comments []*lex8.Token
-
-	indent  int
-	lineBuf *bytes.Buffer
-	lineMid bool
-
+type Printer struct {
+	out  io.Writer
 	last *lex8.Token
 }
 
-func (p *printer) printEndl() {
-	p.lineMid = false
+func (p *Printer) nextComment(pos *lex8.Pos) *lex8.Token {
+	return nil
 }
 
-func (p *printer) puts(s string) {
-
+func isLabel(lit string) bool {
+	return len(lit) > 0 && lit[0] == '.'
 }
 
-func (p *printer) printToken(t *lex8.Token) {
-	o := func(s string) {
-		fmt.Fprint(p.lineBuf, s)
-		p.lineMid = true
-	}
-
-	switch t.Type {
-	case parse.Lbrace:
-		o("{")
-	case parse.Rbrace:
-		o("}")
-	case parse.Keyword:
-		o(t.Lit)
-	case parse.Operand:
-		o(t.Lit)
-	case lex8.Comment:
-		fmt.Fprint(p.lineBuf, t.Lit)
-		if strings.HasPrefix(t.Lit, "//") {
-			p.printEndl()
+func (p *Printer) printComment(cm *lex8.Token, indent string) {
+	lit := cm.Lit
+	if strings.HasPrefix(lit, "//") {
+		fmt.Fprintln(p.out, lit)
+	} else {
+		if !strings.HasPrefix(lit, "/*") {
+			panic("invalid comment")
 		}
 	}
 }
 
-func posBefore(p1, p2 *lex8.Pos) bool {
-	if p1.Line < p2.Line {
-		return true
-	}
-	if p1.Line == p2.Line && p1.Col < p2.Col {
-		return true
-	}
-	return false
-}
-
-func (p *printer) printComment(until *lex8.Pos) {
-	if len(p.comments) == 0 {
+func (p *Printer) printFuncStmt(s *ast.FuncStmt) {
+	ops := s.Ops
+	if len(ops) == 0 {
 		return
 	}
 
+	op0 := ops[0]
+
+	lineStart := &lex8.Pos{
+		File: op0.Pos.File,
+		Line: op0.Pos.Line,
+		Col:  0,
+	}
+
 	for {
-		c := p.comments[0]
-		if !posBefore(c.Pos, until) {
+		cm := p.nextComment(lineStart)
+		if cm == nil {
 			break
 		}
-		p.printToken(c)
+		p.printComment(cm, indentStr)
+		p.last = cm
 	}
-}
 
-func newPrinter(out io.Writer, comments []*lex8.Token) *printer {
-	ret := new(printer)
-	ret.out = out
-	ret.comments = comments
-	ret.lineBuf = new(bytes.Buffer)
+	if !isLabel(op0.Lit) {
+		fmt.Fprint(p.out, indentStr)
+	}
 
-	return ret
-}
-
-func (p *printer) Print(node interface{}) {
-	switch node := node.(type) {
-	case *ast.File:
-		for _, d := range node.Decls {
-			_ = &d
+	first := true
+	out := func(t *lex8.Token) {
+		if !first {
+			fmt.Fprint(p.out, " ")
 		}
-	}
-}
+		first = false
 
-// PrintFile prints a file in its AST form
-func PrintFile(out io.Writer, f *ast.File) {
-	p := newPrinter(out, f.Comments)
-	p.Print(f)
+		fmt.Fprint(p.out, t.Lit)
+		p.last = t
+	}
+
+	for _, op := range s.Ops {
+		for {
+			cm := p.nextComment(op.Pos)
+			if cm == nil {
+				break
+			}
+
+			out(cm)
+		}
+
+		out(op)
+	}
 }
