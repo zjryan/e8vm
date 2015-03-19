@@ -4,7 +4,8 @@ all:
 	go install -v ./...
 
 rall:
-	go build -a ./...
+	touch `find . -name "*.go"`
+	go install -v ./...
 
 fmt:
 	gofmt -s -w -l .
