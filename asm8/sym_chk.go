@@ -3,8 +3,8 @@ package asm8
 import (
 	"strings"
 
-	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/asm8/parse"
+	"lonnie.io/e8vm/lex8"
 )
 
 // IsPublic checks if a symbol name is public.
