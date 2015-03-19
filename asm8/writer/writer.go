@@ -39,7 +39,7 @@ func (w *Writer) Func(name string) {
 	w.f = new(ast.FuncDecl)
 	w.f.Name = makeTok(name, parse.Operand)
 
-	w.file.Funcs = append(w.file.Funcs, w.f)
+	w.file.Decls = append(w.file.Decls, w.f)
 }
 
 func (w *Writer) Instf(f string, args ...interface{}) {
@@ -59,14 +59,12 @@ func (w *Writer) instLine(line string) {
 
 	stmt := new(ast.FuncStmt)
 	stmt.Ops = ops
-
 	w.f.Stmts = append(w.f.Stmts, stmt)
 }
 
 func (w *Writer) Label(label string) {
 	stmt := new(ast.FuncStmt)
-	stmt.Label = label
-
+	stmt.Ops = []*lex8.Token{makeOp(label)}
 	w.f.Stmts = append(w.f.Stmts, stmt)
 }
 

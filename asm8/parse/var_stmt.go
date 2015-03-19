@@ -15,7 +15,7 @@ func parseArgs(p *parser) (typ *lex8.Token, args []*lex8.Token) {
 	for !p.Accept(Semi) {
 		if !p.InError() {
 			t := p.Token()
-			if t.Type == Operand || t.Type == String {
+			if t.Type == Operand {
 				args = append(args, t)
 			} else {
 				p.Errorf(t.Pos, "expect operand or string, got %s", p.TypeStr(t.Type))
@@ -32,28 +32,6 @@ func parseArgs(p *parser) (typ *lex8.Token, args []*lex8.Token) {
 	return typ, args
 }
 
-func parseData(p *parser, t *lex8.Token, args []*lex8.Token) ([]byte, uint32) {
-	switch t.Lit {
-	case "str":
-		return parseDataStr(p, args)
-	case "x":
-		return parseDataHex(p, args)
-	case "u32":
-		return parseDataNums(p, args, modeWord)
-	case "i32":
-		return parseDataNums(p, args, modeWord|modeSigned)
-	case "u8", "byte":
-		return parseDataNums(p, args, 0)
-	case "i8":
-		return parseDataNums(p, args, modeSigned)
-	case "f32":
-		return parseDataNums(p, args, modeWord|modeFloat)
-	default:
-		p.Errorf(t.Pos, "unknown data type %q", t.Lit)
-		return nil, 0
-	}
-}
-
 func parseVarStmt(p *parser) *ast.VarStmt {
 	typ, args := parseArgs(p)
 	if typ == nil {
@@ -63,7 +41,6 @@ func parseVarStmt(p *parser) *ast.VarStmt {
 	ret := new(ast.VarStmt)
 	ret.Type = typ
 	ret.Args = args
-	ret.Data, ret.Align = parseData(p, typ, args)
 
 	return ret
 }

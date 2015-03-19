@@ -1,7 +1,6 @@
-package parse
+package asm8
 
 import (
-	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -14,7 +13,7 @@ func isValidSymbol(sym string) bool {
 	return true
 }
 
-func parseInstJmp(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
+func resolveInstJmp(p lex8.Logger, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	var op uint32
@@ -35,21 +34,21 @@ func parseInstJmp(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 
 	if argCount(p, ops, 1) {
 		symTok = ops[1]
-		if parseLabel(p, ops[1]) {
+		if checkLabel(p, ops[1]) {
 			sym = ops[1].Lit
-			fill = ast.FillLabel
+			fill = fillLabel
 		} else {
 			pack, sym = parseSym(p, ops[1])
-			fill = ast.FillLink
+			fill = fillLink
 		}
 	}
 
-	ret := &ast.Inst{
-		Inst:   (op & 0x3) << 30,
-		Pkg:    pack,
-		Sym:    sym,
-		Fill:   fill,
-		SymTok: symTok,
-	}
+	ret := new(inst)
+	ret.inst = (op & 0x3) << 30
+	ret.pkg = pack
+	ret.sym = sym
+	ret.fill = fill
+	ret.symTok = symTok
+
 	return ret, true
 }

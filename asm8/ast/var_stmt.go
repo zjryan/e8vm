@@ -8,8 +8,4 @@ import (
 type VarStmt struct {
 	Type *lex8.Token
 	Args []*lex8.Token
-
-	// resolved
-	Align uint32
-	Data  []byte
 }

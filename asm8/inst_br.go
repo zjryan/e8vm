@@ -1,7 +1,6 @@
-package parse
+package asm8
 
 import (
-	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -13,14 +12,14 @@ var (
 	}
 )
 
-func makeInstBr(op, s1, s2 uint32) *ast.Inst {
+func makeInstBr(op, s1, s2 uint32) *inst {
 	ret := (op & 0xff) << 24
 	ret |= (s1 & 0x7) << 21
 	ret |= (s2 & 0x7) << 18
-	return &ast.Inst{Inst: ret}
+	return &inst{inst: ret}
 }
 
-func parseInstBr(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
+func resolveInstBr(p lex8.Logger, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
@@ -36,10 +35,10 @@ func parseInstBr(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 	if op, found = opBrMap[opName]; found {
 		// op reg reg label
 		if argCount(p, ops, 3) {
-			s1 = parseReg(p, args[0])
-			s2 = parseReg(p, args[1])
+			s1 = resolveReg(p, args[0])
+			s2 = resolveReg(p, args[1])
 			symTok = args[2]
-			if parseLabel(p, symTok) {
+			if checkLabel(p, symTok) {
 				lab = symTok.Lit
 			} else {
 				p.Errorf(symTok.Pos, "expects a label for %s", opName)
@@ -50,9 +49,9 @@ func parseInstBr(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 	}
 
 	ret := makeInstBr(op, s1, s2)
-	ret.Sym = lab
-	ret.Fill = ast.FillLabel
-	ret.SymTok = symTok
+	ret.sym = lab
+	ret.fill = fillLabel
+	ret.symTok = symTok
 
 	return ret, true
 }

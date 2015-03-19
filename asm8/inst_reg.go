@@ -1,9 +1,8 @@
-package parse
+package asm8
 
 import (
 	"strconv"
 
-	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -66,7 +65,7 @@ func parseShift(p lex8.Logger, op *lex8.Token) uint32 {
 	return uint32(ret)
 }
 
-func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *ast.Inst {
+func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *inst {
 	ret := uint32(0)
 	ret |= (d & 0x7) << 21
 	ret |= (s1 & 0x7) << 18
@@ -75,10 +74,10 @@ func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *ast.Inst {
 	ret |= (isFloat & 0x1) << 8
 	ret |= fn & 0xff
 
-	return &ast.Inst{Inst: ret}
+	return &inst{inst: ret}
 }
 
-func parseInstReg(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
+func resolveInstReg(log lex8.Logger, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
@@ -87,12 +86,12 @@ func parseInstReg(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 	var fn, d, s1, s2, sh, isFloat uint32
 
 	argCount := func(n int) bool {
-		if !argCount(p, ops, n) {
+		if !argCount(log, ops, n) {
 			return false
 		}
 		if n >= 2 {
-			d = parseReg(p, args[0])
-			s1 = parseReg(p, args[1])
+			d = resolveReg(log, args[0])
+			s1 = resolveReg(log, args[1])
 		}
 		return true
 	}
@@ -101,12 +100,12 @@ func parseInstReg(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 	if fn, found = opShiftMap[opName]; found {
 		// op reg reg shift
 		if argCount(3) {
-			sh = parseShift(p, args[2])
+			sh = parseShift(log, args[2])
 		}
 	} else if fn, found = opReg3Map[opName]; found {
 		// op reg reg reg
 		if argCount(3) {
-			s2 = parseReg(p, args[2])
+			s2 = resolveReg(log, args[2])
 		}
 	} else if fn, found = opReg2Map[opName]; found {
 		// op reg reg
@@ -114,7 +113,7 @@ func parseInstReg(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 	} else if fn, found = opFloatMap[opName]; found {
 		// op reg reg reg
 		if argCount(3) {
-			s2 = parseReg(p, args[2])
+			s2 = resolveReg(log, args[2])
 		}
 		isFloat = 1
 	} else {

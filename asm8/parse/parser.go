@@ -20,7 +20,6 @@ var types = func() *lex8.Types {
 
 	o(Keyword, "keyword")
 	o(Operand, "operand")
-	o(String, "string")
 	o(Lbrace, "'{'")
 	o(Rbrace, "'}'")
 	o(Semi, "';'")

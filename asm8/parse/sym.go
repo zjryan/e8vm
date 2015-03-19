@@ -6,21 +6,6 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// isSymbol just looks at the first rune and see if it is *poosibly* a symbol
-func isSymbol(sym string) bool {
-	if sym == "" {
-		return false
-	}
-	r := sym[0]
-	if r >= 'a' && r <= 'z' {
-		return true
-	}
-	if r >= 'A' && r <= 'Z' {
-		return true
-	}
-	return false
-}
-
 // IsIdent checks if a string is a valid identifier
 func IsIdent(id string) bool {
 	if id == "" {

@@ -1,4 +1,4 @@
-package parse
+package asm8
 
 import (
 	"bytes"
@@ -7,10 +7,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseDataHex(p *parser, args []*lex8.Token) ([]byte, uint32) {
-	if !checkAllType(p, args, Operand) {
-		return nil, 0
-	}
+func parseDataHex(p lex8.Logger, args []*lex8.Token) ([]byte, uint32) {
 	buf := new(bytes.Buffer)
 	for _, arg := range args {
 		b, e := strconv.ParseUint(arg.Lit, 16, 8)

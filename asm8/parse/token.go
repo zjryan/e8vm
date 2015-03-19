@@ -4,7 +4,6 @@ package parse
 const (
 	Keyword = iota
 	Operand
-	String
 	Lbrace
 	Rbrace
 	Endl

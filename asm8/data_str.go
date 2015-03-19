@@ -1,4 +1,4 @@
-package parse
+package asm8
 
 import (
 	"bytes"
@@ -7,12 +7,12 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseDataStr(p *parser, args []*lex8.Token) ([]byte, uint32) {
+func parseDataStr(p lex8.Logger, args []*lex8.Token) ([]byte, uint32) {
 	buf := new(bytes.Buffer)
 
 	for _, arg := range args {
-		if arg.Type != String {
-			p.Errorf(arg.Pos, "expect string, got %s", p.TypeStr(arg.Type))
+		if arg.Lit[0] != '"' {
+			p.Errorf(arg.Pos, "expect string for string data")
 			return nil, 0
 		}
 

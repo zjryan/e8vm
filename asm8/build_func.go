@@ -7,7 +7,7 @@ import (
 )
 
 // buildFunc builds a function object from a function AST node.
-func buildFunc(b *builder, f *ast.FuncDecl) *link8.Func {
+func buildFunc(b *builder, f *funcDecl) *link8.Func {
 	b.scope.Push()
 	defer b.scope.Pop()
 
@@ -23,13 +23,13 @@ func buildFunc(b *builder, f *ast.FuncDecl) *link8.Func {
 
 // declareLabels adds the labels into the scope,
 // so that later they can be queried for filling.
-func declareLabels(b *builder, f *ast.FuncDecl) {
-	for _, stmt := range f.Stmts {
-		if !stmt.IsLabel() {
+func declareLabels(b *builder, f *funcDecl) {
+	for _, stmt := range f.stmts {
+		if !stmt.isLabel() {
 			continue
 		}
 
-		lab := stmt.Label
+		lab := stmt.label
 		op := stmt.Ops[0]
 		sym := &symbol{
 			Name: lab,
@@ -48,12 +48,12 @@ func declareLabels(b *builder, f *ast.FuncDecl) {
 }
 
 // setOffsets calculates the offset in function for each instruction.
-func setOffsets(b *builder, f *ast.FuncDecl) {
+func setOffsets(b *builder, f *funcDecl) {
 	offset := uint32(0)
 
-	for _, s := range f.Stmts {
-		s.Offset = offset
-		if s.IsLabel() {
+	for _, s := range f.stmts {
+		s.offset = offset
+		if s.isLabel() {
 			continue
 		}
 
@@ -78,21 +78,21 @@ func fillDelta(b *builder, t *lex8.Token, inst *uint32, d uint32) {
 // fillLabels fills all the labels in the function. After the filling, all the
 // symbols left will be fillLink, fillHigh and fillLow and all branches (which
 // must use labels) will be filled.
-func fillLabels(b *builder, f *ast.FuncDecl) {
-	for _, s := range f.Stmts {
-		if s.IsLabel() {
+func fillLabels(b *builder, f *funcDecl) {
+	for _, s := range f.stmts {
+		if s.isLabel() {
 			continue
 		}
-		if s.Fill != ast.FillLabel {
+		if s.fill != fillLabel {
 			continue
 		}
-		if s.Pkg != "" {
+		if s.pkg != "" {
 			panic("fill label with pack symbol")
 		}
 
-		t := s.SymTok
+		t := s.symTok
 
-		sym := b.scope.Query(s.Sym)
+		sym := b.scope.Query(s.sym)
 		if sym == nil {
 			b.Errorf(t.Pos, "label %q not declared", t.Lit)
 			continue
@@ -102,9 +102,9 @@ func fillLabels(b *builder, f *ast.FuncDecl) {
 			panic("not a label")
 		}
 
-		lab := sym.Item.(*ast.FuncStmt)
-		delta := uint32(int32(lab.Offset-s.Offset-4) >> 2)
-		fillDelta(b, t, &s.Inst.Inst, delta)
+		lab := sym.Item.(*funcStmt)
+		delta := uint32(int32(lab.offset-s.offset-4) >> 2)
+		fillDelta(b, t, &s.inst.inst, delta)
 	}
 }
 
@@ -126,20 +126,20 @@ func init() {
 			panic("bug")
 		}
 	}
-	as(ast.FillNone == 0 && ast.FillLabel == 4)
-	as(ast.FillLink == link8.FillLink)
-	as(ast.FillHigh == link8.FillHigh)
-	as(ast.FillLow == link8.FillLow)
+	as(fillNone == 0 && fillLabel == 4)
+	as(fillLink == link8.FillLink)
+	as(fillHigh == link8.FillHigh)
+	as(fillLow == link8.FillLow)
 }
 
 // resolveSymbol resolves the symbol in the statement,
 // returns the symbol linking object and its <sym, pkg> index pair
 // in the current package context.
-func resolveSymbol(b *builder, s *ast.FuncStmt) (typ int, pkg, index uint32) {
-	t := s.SymTok
+func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
+	t := s.symTok
 
-	if s.Pkg == "" {
-		sym := b.scope.Query(s.Sym) // find the symbol in scope
+	if s.pkg == "" {
+		sym := b.scope.Query(s.sym) // find the symbol in scope
 		if sym != nil {
 			var p *link8.Pkg
 			p, pkg = b.curPkg.PkgIndex(sym.Package)
@@ -147,14 +147,14 @@ func resolveSymbol(b *builder, s *ast.FuncStmt) (typ int, pkg, index uint32) {
 			typ = sym.Type
 		}
 	} else {
-		p := queryPkg(b, t, s.Pkg) // find the package
+		p := queryPkg(b, t, s.pkg) // find the package
 		if p != nil {
 			var sym *link8.Symbol
 			pkg = b.getIndex(p.As)
 
 			b.pkgUsed[p.As] = struct{}{} // mark pkg used
 
-			sym, index = p.Pkg.Query(s.Sym)
+			sym, index = p.Pkg.Query(s.sym)
 			if sym != nil {
 				// should we use a consistant
 				if sym.Type == link8.SymFunc {
@@ -180,8 +180,8 @@ func resolveSymbol(b *builder, s *ast.FuncStmt) (typ int, pkg, index uint32) {
 	return
 }
 
-func linkSymbol(b *builder, s *ast.FuncStmt, f *link8.Func) {
-	t := s.SymTok
+func linkSymbol(b *builder, s *funcStmt, f *link8.Func) {
+	t := s.symTok
 	if b.curPkg == nil {
 		b.Errorf(t.Pos, "no context for resolving %q", t.Lit)
 		return // this may happen for bare function
@@ -193,31 +193,31 @@ func linkSymbol(b *builder, s *ast.FuncStmt, f *link8.Func) {
 		return
 	}
 
-	if s.Fill == ast.FillLink && typ != SymFunc {
+	if s.fill == fillLink && typ != SymFunc {
 		b.Errorf(t.Pos, "%s %q is not a function", symStr(typ), t.Lit)
 		return
-	} else if pkg > 0 && !isPublic(s.Sym) {
+	} else if pkg > 0 && !isPublic(s.sym) {
 		// for imported package, check if it is public
 		b.Errorf(t.Pos, "%q is not public", t.Lit)
 		return
 	}
 
 	// save the link
-	f.AddLink(s.Fill, pkg, index)
+	f.AddLink(s.fill, pkg, index)
 }
 
 // makeFuncObj converts a function AST node f into a function object. It
 // resolves the symbols of fillLink, fillHigh and fillLow into <pack, sym>
 // index pairs, using the symbol scope and the curPkg context in the Builder b.
-func makeFuncObj(b *builder, f *ast.FuncDecl) *link8.Func {
+func makeFuncObj(b *builder, f *funcDecl) *link8.Func {
 	ret := link8.NewFunc()
-	for _, s := range f.Stmts {
-		if s.IsLabel() {
+	for _, s := range f.stmts {
+		if s.isLabel() {
 			continue // skip labels
 		}
-		ret.AddInst(s.Inst.Inst)
+		ret.AddInst(s.inst.inst)
 
-		if !(s.Fill > ast.FillNone && s.Fill < ast.FillLabel) {
+		if !(s.fill > fillNone && s.fill < fillLabel) {
 			continue // only care about fillHigh, fillLow and fillLink
 		}
 

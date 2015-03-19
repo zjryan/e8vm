@@ -13,11 +13,11 @@ func parseFile(p *parser) *ast.File {
 	for !p.See(lex8.EOF) {
 		if p.SeeKeyword("func") {
 			if f := parseFunc(p); f != nil {
-				ret.Funcs = append(ret.Funcs, f)
+				ret.Decls = append(ret.Decls, f)
 			}
 		} else if p.SeeKeyword("var") {
 			if v := parseVar(p); v != nil {
-				ret.Vars = append(ret.Vars, v)
+				ret.Decls = append(ret.Decls, v)
 			}
 		} else if p.SeeKeyword("const") {
 			// TODO:

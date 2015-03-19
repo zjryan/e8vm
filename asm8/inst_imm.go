@@ -1,9 +1,8 @@
-package parse
+package asm8
 
 import (
 	"strconv"
 
-	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -82,17 +81,17 @@ func parseImm(p lex8.Logger, op *lex8.Token) uint32 {
 	return uint32(ret) & 0xffff
 }
 
-func makeInstImm(op, d, s, im uint32) *ast.Inst {
+func makeInstImm(op, d, s, im uint32) *inst {
 	ret := uint32(0)
 	ret |= (op & 0xff) << 24
 	ret |= (d & 0x7) << 21
 	ret |= (s & 0x7) << 18
 	ret |= (im & 0xffff)
 
-	return &ast.Inst{Inst: ret}
+	return &inst{inst: ret}
 }
 
-func parseInstImm(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
+func resolveInstImm(p lex8.Logger, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
@@ -109,15 +108,15 @@ func parseInstImm(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 			return false
 		}
 		if n >= 1 {
-			d = parseReg(p, args[0])
+			d = resolveReg(p, args[0])
 		}
 		return true
 	}
 
 	parseSym := func(t *lex8.Token, f func(lex8.Logger, *lex8.Token) uint32) {
-		if isSymbol(t.Lit) {
+		if mightBeSymbol(t.Lit) {
 			pack, sym = parseSym(p, t)
-			fill = ast.FillLow
+			fill = fillLow
 			symTok = t
 		} else {
 			im = f(p, t)
@@ -128,22 +127,22 @@ func parseInstImm(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 	if op, found = opImsMap[opName]; found {
 		// op reg reg imm(signed)
 		if argCount(3) {
-			s = parseReg(p, args[1])
+			s = resolveReg(p, args[1])
 			parseSym(args[2], parseIms)
 		}
 	} else if op, found = opMemMap[opName]; found {
 		if len(args) == 2 {
 			// mem op can omit the offset if it is 0
-			d = parseReg(p, args[0])
-			s = parseReg(p, args[1])
+			d = resolveReg(p, args[0])
+			s = resolveReg(p, args[1])
 		} else if argCount(3) {
-			s = parseReg(p, args[1])
+			s = resolveReg(p, args[1])
 			parseSym(args[2], parseIms)
 		}
 	} else if op, found = opImuMap[opName]; found {
 		// op reg reg imm(unsigned)
 		if argCount(3) {
-			s = parseReg(p, args[1])
+			s = resolveReg(p, args[1])
 			parseSym(args[2], parseImu)
 		}
 	} else if op, found = opImmMap[opName]; found {
@@ -151,18 +150,18 @@ func parseInstImm(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 		if argCount(2) {
 			parseSym(args[1], parseImm)
 		}
-		if opName == "lui" && fill == ast.FillLow {
-			fill = ast.FillHigh
+		if opName == "lui" && fill == fillLow {
+			fill = fillHigh
 		}
 	} else {
 		return nil, false
 	}
 
 	ret := makeInstImm(op, d, s, im)
-	ret.Pkg = pack
-	ret.Sym = sym
-	ret.Fill = fill
-	ret.SymTok = symTok
+	ret.pkg = pack
+	ret.sym = sym
+	ret.fill = fill
+	ret.symTok = symTok
 
 	return ret, true
 }

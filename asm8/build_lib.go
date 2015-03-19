@@ -1,9 +1,5 @@
 package asm8
 
-import (
-	"lonnie.io/e8vm/asm8/ast"
-)
-
 func declareSymbol(b *builder, sym *symbol) bool {
 	// declare in the scope
 	exists := b.scope.Declare(sym)
@@ -15,9 +11,9 @@ func declareSymbol(b *builder, sym *symbol) bool {
 	return true
 }
 
-func declareFile(b *builder, pkg *ast.Pkg, file *ast.File) {
+func declareFile(b *builder, pkg *pkg, file *file) {
 	// declare functions
-	for _, fn := range file.Funcs {
+	for _, fn := range file.funcs {
 		t := fn.Name
 		sym := &symbol{
 			t.Lit,
@@ -35,7 +31,7 @@ func declareFile(b *builder, pkg *ast.Pkg, file *ast.File) {
 	}
 
 	// declare variables
-	for _, v := range file.Vars {
+	for _, v := range file.vars {
 		t := v.Name
 		sym := &symbol{
 			t.Lit,
@@ -53,7 +49,7 @@ func declareFile(b *builder, pkg *ast.Pkg, file *ast.File) {
 	}
 }
 
-func buildPkgScope(b *builder, pkg *ast.Pkg) {
+func buildPkgScope(b *builder, pkg *pkg) {
 	// declare requires
 	for as, p := range pkg.Imports {
 		// p is the *PkgImport
@@ -71,12 +67,12 @@ func buildPkgScope(b *builder, pkg *ast.Pkg) {
 		b.index(as, b.curPkg.Require(p.Pkg))
 	}
 
-	for _, file := range pkg.Files {
+	for _, file := range pkg.files {
 		declareFile(b, pkg, file)
 	}
 }
 
-func checkUnusedImport(b *builder, pkg *ast.Pkg) {
+func checkUnusedImport(b *builder, pkg *pkg) {
 	for _, imp := range pkg.Imports {
 		if _, used := b.pkgUsed[imp.As]; !used {
 			b.Errorf(imp.Tok.Pos, "package %q imported but not used", imp.As)
@@ -84,7 +80,7 @@ func checkUnusedImport(b *builder, pkg *ast.Pkg) {
 	}
 }
 
-func buildLib(b *builder, pkg *ast.Pkg) *lib {
+func buildLib(b *builder, pkg *pkg) *lib {
 	ret := newLib(pkg.Path)
 	b.curPkg = ret
 
@@ -96,7 +92,7 @@ func buildLib(b *builder, pkg *ast.Pkg) *lib {
 		return nil // error on declaring, so just return
 	}
 
-	for _, file := range pkg.Files {
+	for _, file := range pkg.files {
 		buildFile(b, file)
 	}
 

@@ -15,8 +15,14 @@ func BuildBareFunc(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 		return nil, es
 	}
 
+	elist := lex8.NewErrorList()
+	r := resolveFunc(elist, fn)
+	if elist.Errs != nil {
+		return nil, elist.Errs
+	}
+
 	b := newBuilder()
-	fobj := buildFunc(b, fn)
+	fobj := buildFunc(b, r)
 	if es := b.Errs(); es != nil {
 		return nil, es
 	}

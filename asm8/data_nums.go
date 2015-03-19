@@ -1,4 +1,4 @@
-package parse
+package asm8
 
 import (
 	"bytes"
@@ -25,11 +25,7 @@ const (
 	modeFloat  = 0x4
 )
 
-func parseDataNums(p *parser, args []*lex8.Token, mode int) ([]byte, uint32) {
-	if !checkAllType(p, args, Operand) {
-		return nil, 0
-	}
-
+func parseDataNums(p lex8.Logger, args []*lex8.Token, mode int) ([]byte, uint32) {
 	var ui uint32
 	nbit := 8
 	if mode&modeWord != 0 {

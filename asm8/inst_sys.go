@@ -1,7 +1,6 @@
-package parse
+package asm8
 
 import (
-	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -21,12 +20,12 @@ var (
 	}
 )
 
-func makeInstSys(op, reg uint32) *ast.Inst {
+func makeInstSys(op, reg uint32) *inst {
 	ret := ((op & 0xff) << 24) | ((reg & 0x7) << 21)
-	return &ast.Inst{Inst: ret}
+	return &inst{inst: ret}
 }
 
-func parseInstSys(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
+func resolveInstSys(p lex8.Logger, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
 	args := ops[1:]
@@ -38,7 +37,7 @@ func parseInstSys(p lex8.Logger, ops []*lex8.Token) (*ast.Inst, bool) {
 		}
 
 		if n >= 1 {
-			reg = parseReg(p, args[0])
+			reg = resolveReg(p, args[0])
 		}
 		return true
 	}
