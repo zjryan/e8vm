@@ -30,22 +30,4 @@ func parseFuncStmt(p *parser) *ast.FuncStmt {
 	}
 
 	return &ast.FuncStmt{Ops: ops}
-
-	/*
-		op0 := ops[0]
-		lead := op0.Lit
-		if lead == "" {
-			panic("empty operand")
-		}
-
-		if parseLabel(p, op0) {
-			if len(ops) > 1 {
-				p.Errorf(op0.Pos, "label should take the entire line")
-				return nil
-			}
-			return &ast.FuncStmt{Label: lead, Ops: ops}
-		}
-
-		return &ast.FuncStmt{Inst: parseInst(p, ops), Ops: ops}
-	*/
 }

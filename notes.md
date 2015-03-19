@@ -20,3 +20,12 @@ the code segments also has linking places.
 the linker only cares about the bottom layer and last layer
 
 imported package only looks at the second layer
+
+how about this:
+- imports are global
+- imports can only happen on files that does not depend on other files
+- in the package
+- common practice would be for a single file or a small project with
+- only one or two files,
+- actually import graph building is a library that the builder will
+- call first for all files
