@@ -18,8 +18,6 @@ func tstr(t int) string {
 		return "kw"
 	case Operand:
 		return "op"
-	case String:
-		return "str"
 	case Lbrace:
 		return "lb"
 	case Rbrace:
@@ -113,7 +111,7 @@ func ExampleLexer_comments() {
 func ExampleLexer_string() {
 	o(`"some string \"\\ here"`)
 	// Output
-	// t.s8:1: str - "\"some string \\\"\\\\ here\""
+	// t.s8:1: op - "\"some string \\\"\\\\ here\""
 	// t.s8:1: eof
 }
 

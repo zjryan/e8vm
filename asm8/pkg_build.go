@@ -16,10 +16,6 @@ type Pkg struct {
 	Files   map[string]io.ReadCloser
 }
 
-func resolvePkg(log lex8.Logger, p *ast.Pkg) *pkg {
-	panic("todo")
-}
-
 // Build builds a package.
 func (pb *Pkg) Build() (*link8.Pkg, []*lex8.Error) {
 	pkg := ast.NewPkg(pb.Path)

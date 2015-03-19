@@ -98,11 +98,13 @@ func ExampleFunc_4() {
 	// t.s8:2: expect '{', got operand
 }
 
+// TODO: move these to asm8
+/*
 func ExampleFunc_5() {
 	pf(`
 	func main {
 		a "something" "key"
-		j .lab 
+		j .lab
 	}
 	`)
 	// Output:
@@ -120,3 +122,5 @@ func ExampleFunc_7() {
 	// Output:
 	// t.s8:1: invalid label: ".lab:inv"
 }
+
+*/

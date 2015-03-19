@@ -10,6 +10,8 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
+// Writer provides API calls to build ASTs.
+// It will be used by the compiler to build assemblies.
 type Writer struct {
 	out io.Writer
 
@@ -42,10 +44,12 @@ func (w *Writer) Func(name string) {
 	w.file.Decls = append(w.file.Decls, w.f)
 }
 
+// Instf appends an intruction into the current function like fmt.Printf().
 func (w *Writer) Instf(f string, args ...interface{}) {
 	w.instLine(fmt.Sprintf(f, args...))
 }
 
+// Inst appendsd an instrution into the current function like fmt.Print().
 func (w *Writer) Inst(args ...interface{}) {
 	w.instLine(fmt.Sprint(args...))
 }
@@ -68,11 +72,11 @@ func (w *Writer) Label(label string) {
 	w.f.Stmts = append(w.f.Stmts, stmt)
 }
 
-// Var
+// Var adds a new variable section into the file
 func (w *Writer) Var(name string) {
 }
 
-// Str adds a string
+// Str adds a new string data statement into the current var section
 func (w *Writer) Str(strs ...string) {
 
 }
