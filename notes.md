@@ -1,31 +1,15 @@
 # todo
 
-- build a github hook that visualizes the code
-- asm importing
+- new import semantics, clean up import structure
 
-# library layer
+- let lexer/parser also save a token array
+- formatter: rearrange token position
+- printer: print the file back with the rearranged token position
 
-a library has three layers.
+- build/make system, track timestamp
 
-the bottom layer is the linking layer, it has a symbol table of variables
-and functions (or small data segments and small code segments), data segments
-has alignments
+## importing
 
-the upper layer is the header layer, it has the table of available functions,
-variables, types and constants.
-
-the last layer has the actual data bytes for the data segments and code segments.
-the code segments also has linking places.
-
-the linker only cares about the bottom layer and last layer
-
-imported package only looks at the second layer
-
-how about this:
-- imports are global
-- imports can only happen on files that does not depend on other files
-- in the package
-- common practice would be for a single file or a small project with
-- only one or two files,
-- actually import graph building is a library that the builder will
-- call first for all files
+- only one file can have the import header
+- this file will be automatically imported in all the other files in the directory, so it must not rely on any other file in the directory to make
+sure there is no circular dependency

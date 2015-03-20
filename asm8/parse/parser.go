@@ -46,7 +46,3 @@ func (p *parser) ExpectKeyword(kw string) *lex8.Token {
 func (p *parser) skipErrStmt() bool {
 	return p.SkipErrStmt(Semi)
 }
-
-func (p *parser) comments() []*lex8.Token {
-	return p.x.Comments()
-}

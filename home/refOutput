@@ -1,0 +1,16 @@
+e8vm bin/asm/fabo.e8
+610
+(30288 cycles)
+halt
+e8vm bin/asm/hello.e8
+Hello, world!
+(174 cycles)
+halt
+e8vm bin/asm/hellohex.e8
+Hello
+(78 cycles)
+halt
+e8vm bin/asm/helloint.e8
+Hello
+(78 cycles)
+halt
