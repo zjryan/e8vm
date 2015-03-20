@@ -5,6 +5,7 @@ import (
 	"math"
 	"strconv"
 
+	"lonnie.io/e8vm/asm8/parse"
 	"lonnie.io/e8vm/conv"
 	"lonnie.io/e8vm/lex8"
 )
@@ -26,6 +27,10 @@ const (
 )
 
 func parseDataNums(p lex8.Logger, args []*lex8.Token, mode int) ([]byte, uint32) {
+	if !checkTypeAll(p, args, parse.Operand) {
+		return nil, 0
+	}
+
 	var ui uint32
 	nbit := 8
 	if mode&modeWord != 0 {

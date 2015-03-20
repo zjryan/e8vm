@@ -60,8 +60,6 @@ func p(s string) {
 	fmt.Println(s)
 }
 
-
-
 func ExampleLexer_1() {
 	o("\n")
 	// Output:

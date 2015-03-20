@@ -4,10 +4,15 @@ import (
 	"bytes"
 	"strconv"
 
+	"lonnie.io/e8vm/asm8/parse"
 	"lonnie.io/e8vm/lex8"
 )
 
 func parseDataStr(p lex8.Logger, args []*lex8.Token) ([]byte, uint32) {
+	if !checkTypeAll(p, args, parse.String) {
+		return nil, 0
+	}
+
 	buf := new(bytes.Buffer)
 
 	for _, arg := range args {
