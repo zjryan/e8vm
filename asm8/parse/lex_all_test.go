@@ -56,6 +56,12 @@ func o(s string) {
 	}
 }
 
+func p(s string) {
+	fmt.Println(s)
+}
+
+
+
 func ExampleLexer_1() {
 	o("\n")
 	// Output:
@@ -93,38 +99,39 @@ func ExampleLexer_4() {
 }
 
 func ExampleLexer_keywords() {
-	o("func var const")
+	o("func var const import")
 	// Output:
 	// t.s8:1: kw - "func"
 	// t.s8:1: kw - "var"
 	// t.s8:1: kw - "const"
+	// t.s8:1: kw - "import"
 	// t.s8:1: eof
 }
 
 func ExampleLexer_string() {
-	o(`"some string \"\\ here"`)
-	// Output
+	o("\"some string \\\"\\\\ here\"")
+	// Output:
 	// t.s8:1: str - "\"some string \\\"\\\\ here\""
 	// t.s8:1: eof
 }
 
 func ExampleLexer_badstr1() {
 	o(`"some string`)
-	// Output
+	// Output:
 	// t.s8:1: unexpected eof in string
 	// 1 error(s)
 }
 
 func ExampleLexer_badstr2() {
-	o(`"some string\n"`)
-	// Output
+	o("\"some string\n")
+	// Output:
 	// t.s8:1: unexpected endl in string
 	// 1 error(s)
 }
 
 func ExampleLexer_badcomment() {
 	o(`/*some comment`)
-	// Output
+	// Output:
 	// t.s8:1: unexpected eof in block comment
 	// 1 error(s)
 }

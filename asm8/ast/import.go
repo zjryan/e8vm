@@ -14,5 +14,5 @@ type ImportDecl struct {
 // ImportStmt is an import statement
 type ImportStmt struct {
 	Path *lex8.Token
-	As *lex8.Token
+	As   *lex8.Token
 }

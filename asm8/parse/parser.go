@@ -12,7 +12,6 @@ type parser struct {
 	*lex8.Parser
 }
 
-
 func newParser(f string, r io.Reader) (*parser, *lex8.Recorder) {
 	ret := new(parser)
 
