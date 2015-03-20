@@ -1,9 +1,9 @@
 # todo
 
 - new import semantics, clean up import structure
+- printer: print the file back with their token position
 
 - formatter: rearrange token position
-- printer: print the file back with the rearranged token position
 
 - build/make system, track timestamp
 

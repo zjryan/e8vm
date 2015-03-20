@@ -100,5 +100,5 @@ func lexString(x *lex8.Lexer) *lex8.Token {
 		}
 	}
 
-	return x.MakeToken(Operand)
+	return x.MakeToken(String)
 }

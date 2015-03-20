@@ -15,7 +15,7 @@ func parseArgs(p *parser) (typ *lex8.Token, args []*lex8.Token) {
 	for !p.Accept(Semi) {
 		if !p.InError() {
 			t := p.Token()
-			if t.Type == Operand {
+			if t.Type == Operand || t.Type == String {
 				args = append(args, t)
 			} else {
 				p.Errorf(t.Pos, "expect operand or string, got %s", p.TypeStr(t.Type))

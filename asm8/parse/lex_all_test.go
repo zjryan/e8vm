@@ -18,6 +18,8 @@ func tstr(t int) string {
 		return "kw"
 	case Operand:
 		return "op"
+	case String:
+		return "str"
 	case Lbrace:
 		return "lb"
 	case Rbrace:
@@ -99,19 +101,10 @@ func ExampleLexer_keywords() {
 	// t.s8:1: eof
 }
 
-func ExampleLexer_comments() {
-	o("// line comment \n /* block comment */")
-	// Output:
-	// t.s8:1: cm - "// line comment "
-	// t.s8:1: endl
-	// t.s8:2: cm - "/* block comment */"
-	// t.s8:2: eof
-}
-
 func ExampleLexer_string() {
 	o(`"some string \"\\ here"`)
 	// Output
-	// t.s8:1: op - "\"some string \\\"\\\\ here\""
+	// t.s8:1: str - "\"some string \\\"\\\\ here\""
 	// t.s8:1: eof
 }
 
@@ -134,4 +127,13 @@ func ExampleLexer_badcomment() {
 	// Output
 	// t.s8:1: unexpected eof in block comment
 	// 1 error(s)
+}
+
+func ExampleLexer_comments() {
+	o("// line comment \n /* block comment */")
+	// Output:
+	// t.s8:1: cm - "// line comment "
+	// t.s8:1: endl
+	// t.s8:2: cm - "/* block comment */"
+	// t.s8:2: eof
 }

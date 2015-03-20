@@ -12,21 +12,6 @@ type parser struct {
 	*lex8.Parser
 }
 
-var types = func() *lex8.Types {
-	ret := lex8.NewTypes()
-	o := func(t int, name string) {
-		ret.Register(t, name)
-	}
-
-	o(Keyword, "keyword")
-	o(Operand, "operand")
-	o(Lbrace, "'{'")
-	o(Rbrace, "'}'")
-	o(Semi, "';'")
-	o(Endl, "end-line")
-
-	return ret
-}()
 
 func newParser(f string, r io.Reader) (*parser, *lex8.Recorder) {
 	ret := new(parser)
@@ -42,7 +27,7 @@ func newParser(f string, r io.Reader) (*parser, *lex8.Recorder) {
 	x = lex8.NewCommentRemover(x)
 	ret.x = x
 
-	ret.Parser = lex8.NewParser(ret.x, types)
+	ret.Parser = lex8.NewParser(ret.x, Types)
 	return ret, recorder
 }
 
