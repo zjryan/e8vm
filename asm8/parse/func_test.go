@@ -12,7 +12,7 @@ import (
 func pf(s string) {
 	r := strings.NewReader(s)
 	rc := ioutil.NopCloser(r)
-	p := newParser("t.s8", rc)
+	p, _ := newParser("t.s8", rc)
 	var fs []*ast.FuncDecl
 
 	for {

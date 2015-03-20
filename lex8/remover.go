@@ -7,13 +7,14 @@ type Remover struct {
 }
 
 // NewRemover creates a new remover that removes token of type t
-func NewRemover(t int) *Remover {
-	if t == EOF {
+func NewRemover(t Tokener, typ int) *Remover {
+	if typ == EOF {
 		panic("cannot remove EOF")
 	}
 
 	ret := new(Remover)
-	ret.t = t
+	ret.Tokener = t
+	ret.t = typ
 
 	return ret
 }
@@ -22,9 +23,14 @@ func NewRemover(t int) *Remover {
 // token that is not the particular type.
 func (r *Remover) Token() *Token {
 	for {
-		ret := r.Token()
+		ret := r.Tokener.Token()
 		if ret.Type != r.t {
 			return ret
 		}
 	}
+}
+
+// NewCommentRemover creates a new remover that removes token
+func NewCommentRemover(t Tokener) *Remover {
+	return NewRemover(t, Comment)
 }

@@ -1,24 +1,21 @@
 package parse
 
 import (
-	"io"
-
 	"lonnie.io/e8vm/lex8"
 )
 
 // StmtLexer replaces end-lines with semicolons
 type semiInserter struct {
-	x          *lex8.Lexer
+	x          lex8.Tokener
 	save       *lex8.Token
 	insertSemi bool
-
-	ParseComment bool
 }
 
-// NewStmtLexer creates a new statement lexer.
-func newStmtLexer(file string, r io.Reader) *semiInserter {
+// newSemiInserter creates a new statement lexer that inserts
+// semicolons into a token stream.
+func newSemiInserter(x lex8.Tokener) *semiInserter {
 	ret := new(semiInserter)
-	ret.x = newLexer(file, r)
+	ret.x = x
 
 	return ret
 }
@@ -67,9 +64,7 @@ func (sx *semiInserter) Token() *lex8.Token {
 			}
 			continue // ignore this end line
 		case lex8.Comment:
-			if !sx.ParseComment {
-				continue
-			}
+			// do nothing
 		default:
 			sx.insertSemi = true
 		}

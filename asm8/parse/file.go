@@ -34,9 +34,15 @@ func parseFile(p *parser) *ast.File {
 	return ret
 }
 
-// File function parses a file into an AST.
-func File(f string, rc io.ReadCloser) (*ast.File, []*lex8.Error) {
-	p := newParser(f, rc)
+// Result is a file parsing result
+type Result struct {
+	File   *ast.File
+	Tokens []*lex8.Token
+}
+
+// FileResult returns a parsing result.
+func FileResult(f string, rc io.ReadCloser) (*Result, []*lex8.Error) {
+	p, rec := newParser(f, rc)
 	parsed := parseFile(p)
 	e := rc.Close()
 
@@ -46,5 +52,19 @@ func File(f string, rc io.ReadCloser) (*ast.File, []*lex8.Error) {
 	if es := p.Errs(); es != nil {
 		return nil, es
 	}
-	return parsed, nil
+
+	res := &Result{
+		File:   parsed,
+		Tokens: rec.Tokens(),
+	}
+	return res, nil
+}
+
+// File function parses a file into an AST.
+func File(f string, rc io.ReadCloser) (*ast.File, []*lex8.Error) {
+	res, es := FileResult(f, rc)
+	if es != nil {
+		return nil, es
+	}
+	return res.File, es
 }

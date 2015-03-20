@@ -98,7 +98,7 @@ func (x *Lexer) Token() *Token {
 	return x.LexFunc(x)
 }
 
-// Err adds an error into the error list with current postion.
+// Errorf adds an error into the error list with current postion.
 func (x *Lexer) Errorf(f string, args ...interface{}) {
 	x.errs.Errorf(x.s.Pos(), f, args...)
 }

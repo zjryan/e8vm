@@ -19,7 +19,7 @@ type ErrorList struct {
 	inJail bool
 }
 
-// NewErrList creates a new error list with default (20) maximum
+// NewErrorList creates a new error list with default (20) maximum
 // lines of errors.
 func NewErrorList() *ErrorList {
 	ret := new(ErrorList)

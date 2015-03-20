@@ -8,7 +8,7 @@ import (
 
 // Parser parses a file input stream into top-level syntax blocks.
 type parser struct {
-	x *semiInserter
+	x lex8.Tokener
 	*lex8.Parser
 }
 
@@ -28,11 +28,22 @@ var types = func() *lex8.Types {
 	return ret
 }()
 
-func newParser(file string, r io.Reader) *parser {
+func newParser(f string, r io.Reader) (*parser, *lex8.Recorder) {
 	ret := new(parser)
-	ret.x = newStmtLexer(file, r)
+
+	var x lex8.Tokener
+	var recorder *lex8.Recorder
+
+	x = newLexer(f, r)
+	x = newSemiInserter(x)
+
+	recorder = lex8.NewRecorder(x)
+	x = recorder
+	x = lex8.NewCommentRemover(x)
+	ret.x = x
+
 	ret.Parser = lex8.NewParser(ret.x, types)
-	return ret
+	return ret, recorder
 }
 
 func (p *parser) SeeKeyword(kw string) bool {

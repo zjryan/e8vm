@@ -31,7 +31,7 @@ func parseBareFunc(p *parser) *ast.FuncDecl {
 
 // BareFunc parses a file as a bare function.
 func BareFunc(f string, rc io.ReadCloser) (*ast.FuncDecl, []*lex8.Error) {
-	p := newParser(f, rc)
+	p, _ := newParser(f, rc)
 	fn := parseBareFunc(p)
 	if es := p.Errs(); es != nil {
 		return nil, es
