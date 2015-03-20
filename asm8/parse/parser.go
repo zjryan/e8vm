@@ -8,7 +8,7 @@ import (
 
 // Parser parses a file input stream into top-level syntax blocks.
 type parser struct {
-	x *stmtLexer
+	x *semiInserter
 	*lex8.Parser
 }
 
