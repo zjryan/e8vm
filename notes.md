@@ -2,7 +2,6 @@
 
 - new import semantics, clean up import structure
 
-- let lexer/parser also save a token array
 - formatter: rearrange token position
 - printer: print the file back with the rearranged token position
 

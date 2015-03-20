@@ -11,14 +11,18 @@ import (
 
 // Pkg contains the information required to build a package
 type Pkg struct {
-	Path    string
+	Path  string
+	Files map[string]io.ReadCloser
+
 	Imports map[string]*ast.PkgImport
-	Files   map[string]io.ReadCloser
 }
 
 // Build builds a package.
 func (pb *Pkg) Build() (*link8.Pkg, []*lex8.Error) {
 	pkg := ast.NewPkg(pb.Path)
+	pkg.Imports = pb.Imports
+
+	// parse
 	for f, rc := range pb.Files {
 		parsed, es := parse.File(f, rc)
 		if es != nil {
@@ -28,14 +32,14 @@ func (pb *Pkg) Build() (*link8.Pkg, []*lex8.Error) {
 		pkg.AddFile(parsed)
 	}
 
-	pkg.Imports = pb.Imports
-
+	// resolve pass: resolve statements, forget the decl order
 	elist := lex8.NewErrorList()
 	rpkg := resolvePkg(elist, pkg)
 	if elist.Errs != nil {
 		return nil, elist.Errs
 	}
 
+	// build pass: ready to link
 	b := newBuilder()
 	ret := buildLib(b, rpkg)
 	if es := b.Errs(); es != nil {
