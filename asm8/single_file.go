@@ -9,19 +9,14 @@ import (
 
 // BuildSingleFile builds a package named "main" from a single file.
 func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
-	b := &Pkg{
-		Path:    "main",
-		Imports: nil,
-		Files:   map[string]io.ReadCloser{f: rc},
-	}
-
-	p, es := b.Build()
+	files := map[string]io.ReadCloser{f: rc}
+	lib, es := Lang.Compile(files, nil)
 	if es != nil {
 		return nil, es
 	}
 
 	buf := new(link8.Buf)
-	e := link8.LinkMain(p, buf)
+	e := link8.LinkMain(lib.Lib(), buf)
 	if e != nil {
 		return nil, lex8.SingleErr(e)
 	}

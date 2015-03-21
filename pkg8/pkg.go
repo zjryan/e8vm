@@ -18,6 +18,7 @@ type Importer interface {
 	Import(path string) Linkable
 }
 
+// Files is just a map from file names to file read/closers.
 type Files map[string]io.ReadCloser
 
 // Lang is a language compiler

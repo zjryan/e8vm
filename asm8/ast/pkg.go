@@ -2,9 +2,8 @@ package ast
 
 // Pkg represents a package node.
 type Pkg struct {
-	Path    string // package import path
-	Files   []*File
-	Imports map[string]*PkgImport
+	Path  string // package import path
+	Files []*File
 }
 
 // NewPkg creates an empty package node.

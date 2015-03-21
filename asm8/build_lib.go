@@ -51,21 +51,23 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 
 func buildPkgScope(b *builder, pkg *pkg) {
 	// declare requires
-	for as, p := range pkg.Imports {
-		// p is the *PkgImport
-		sym := &symbol{
-			as,
-			SymImport,
-			p,
-			p.Tok.Pos,
-			p.Pkg.Path(),
-		}
-		if !declareSymbol(b, sym) {
-			continue
-		}
+	/*
+		for as, p := range pkg.Imports {
+			// p is the *PkgImport
+			sym := &symbol{
+				as,
+				SymImport,
+				p,
+				p.Tok.Pos,
+				p.Pkg.Path(),
+			}
+			if !declareSymbol(b, sym) {
+				continue
+			}
 
-		b.index(as, b.curPkg.Require(p.Pkg))
-	}
+			b.index(as, b.curPkg.Require(p.Pkg))
+		}
+	*/
 
 	for _, file := range pkg.files {
 		declareFile(b, pkg, file)
@@ -73,11 +75,13 @@ func buildPkgScope(b *builder, pkg *pkg) {
 }
 
 func checkUnusedImport(b *builder, pkg *pkg) {
-	for _, imp := range pkg.Imports {
-		if _, used := b.pkgUsed[imp.As]; !used {
-			b.Errorf(imp.Tok.Pos, "package %q imported but not used", imp.As)
+	/*
+		for _, imp := range pkg.Imports {
+			if _, used := b.pkgUsed[imp.As]; !used {
+				b.Errorf(imp.Tok.Pos, "package %q imported but not used", imp.As)
+			}
 		}
-	}
+	*/
 }
 
 func buildLib(b *builder, pkg *pkg) *lib {

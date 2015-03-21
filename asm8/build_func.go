@@ -1,7 +1,6 @@
 package asm8
 
 import (
-	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
 )
@@ -108,7 +107,7 @@ func fillLabels(b *builder, f *funcDecl) {
 	}
 }
 
-func queryPkg(b *builder, t *lex8.Token, pack string) *ast.PkgImport {
+func queryPkg(b *builder, t *lex8.Token, pack string) *importStmt {
 	sym := b.scope.Query(pack)
 	if sym == nil {
 		b.Errorf(t.Pos, "package %q not found", pack)
@@ -117,7 +116,7 @@ func queryPkg(b *builder, t *lex8.Token, pack string) *ast.PkgImport {
 		b.Errorf(t.Pos, "%q is a %s, not a package", t.Lit, symStr(sym.Type))
 		return nil
 	}
-	return sym.Item.(*ast.PkgImport)
+	return sym.Item.(*importStmt)
 }
 
 func init() {
@@ -150,11 +149,11 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 		p := queryPkg(b, t, s.pkg) // find the package
 		if p != nil {
 			var sym *link8.Symbol
-			pkg = b.getIndex(p.As)
+			pkg = b.getIndex(p.as)
 
-			b.pkgUsed[p.As] = struct{}{} // mark pkg used
+			b.pkgUsed[p.as] = struct{}{} // mark pkg used
 
-			sym, index = p.Pkg.Query(s.sym)
+			sym, index = p.lib.Query(s.sym)
 			if sym != nil {
 				// should we use a consistant
 				if sym.Type == link8.SymFunc {
