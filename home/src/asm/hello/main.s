@@ -1,3 +1,7 @@
+import {
+    "asm/fmt"
+}
+
 var msg {
     str     "Hello, world!\n\x00"
 }

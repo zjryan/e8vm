@@ -1,3 +1,7 @@
+import {
+    "asm/fmt" fmt2
+}
+
 var data {
     x 48 65 6c 6c 6f 0a 00
 }

@@ -8,18 +8,14 @@ import (
 func parseOps(p *parser) (ops []*lex8.Token) {
 	for !p.Accept(Semi) {
 		t := p.Expect(Operand)
-		if t != nil {
-			ops = append(ops, t)
-		} else {
-			ops = nil // error now
-			if p.See(lex8.EOF) {
-				break
-			}
-			p.Next() // proceed anyway for other stuff
+		if t == nil {
+			p.skipErrStmt()
+			return nil
 		}
+
+		ops = append(ops, t)
 	}
 
-	p.BailOut()
 	return ops
 }
 

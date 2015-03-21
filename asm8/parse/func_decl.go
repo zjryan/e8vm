@@ -13,8 +13,6 @@ func parseFuncStmts(p *parser, f *ast.FuncDecl) {
 		if stmt != nil {
 			f.Stmts = append(f.Stmts, stmt)
 		}
-
-		p.BailOut()
 	}
 }
 
@@ -54,7 +52,7 @@ func parseFunc(p *parser) *ast.FuncDecl {
 	}
 
 	ret.Lbrace = p.Expect(Lbrace)
-	if p.skipErrStmt() {
+	if p.skipErrStmt() { // header broken
 		return ret
 	}
 

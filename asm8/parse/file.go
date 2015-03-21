@@ -10,6 +10,12 @@ import (
 func parseFile(p *parser) *ast.File {
 	ret := new(ast.File)
 
+	if p.SeeKeyword("import") {
+		if imp := parseImports(p); imp != nil {
+			ret.Imports = imp
+		}
+	}
+
 	for !p.See(lex8.EOF) {
 		if p.SeeKeyword("func") {
 			if f := parseFunc(p); f != nil {

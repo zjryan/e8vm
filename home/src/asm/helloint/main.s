@@ -1,3 +1,7 @@
+import {
+    "asm/fmt"
+}
+
 var data {
     u32 0x6c6c6548 0x0a6f
 }

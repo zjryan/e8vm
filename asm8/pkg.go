@@ -9,16 +9,8 @@ import (
 type pkg struct {
 	*ast.Pkg
 
-	// imports []*importPkg
 	files []*file
 }
-
-/*
-type importPkg struct {
-	as  string
-	pkg *link8.Pkg
-}
-*/
 
 func resolvePkg(log lex8.Logger, p *ast.Pkg) *pkg {
 	ret := new(pkg)
