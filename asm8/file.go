@@ -28,3 +28,12 @@ func resolveFile(log lex8.Logger, f *ast.File) *file {
 
 	return ret
 }
+
+func resolveFiles(log lex8.Logger, files []*ast.File) []*file {
+	ret := make([]*file, 0, len(files))
+
+	for _, f := range files {
+		ret = append(ret, resolveFile(log, f))
+	}
+	return ret
+}

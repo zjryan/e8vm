@@ -91,7 +91,7 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	}
 
 	// compile now
-	built, es := lang.Compile(ret.srcFiles(), b)
+	built, es := lang.Compile(p, ret.srcFiles(), b)
 	if es != nil {
 		return nil, es
 	}

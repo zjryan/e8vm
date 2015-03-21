@@ -10,7 +10,7 @@ import (
 // BuildSingleFile builds a package named "main" from a single file.
 func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	files := map[string]io.ReadCloser{f: rc}
-	lib, es := Lang.Compile(files, nil)
+	lib, es := Lang.Compile("_", files, nil)
 	if es != nil {
 		return nil, es
 	}

@@ -2,6 +2,7 @@ package asm8
 
 import (
 	"io"
+	"path"
 	"strings"
 
 	"lonnie.io/e8vm/lex8"
@@ -15,19 +16,16 @@ func (lang) IsSrc(filename string) bool {
 }
 
 func (lang) ListImport(src pkg8.Files) ([]string, []*lex8.Error) {
-	if len(src) == 1 {
-		panic("todo")
+	for f, rc := range src {
+		if path.Base(f) == "import.s" || len(src) == 1 {
+			return listImport(f, rc)
+		}
 	}
-
-	imp := src["import.s"]
-	if imp == nil {
-		return nil, nil
-	}
-
-	panic("todo")
+	return nil, nil
 }
 
 func (lang) Compile(
+	path string,
 	src pkg8.Files,
 	importer pkg8.Importer,
 ) (

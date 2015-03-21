@@ -20,7 +20,7 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 			SymFunc,
 			fn,
 			t.Pos,
-			pkg.Path,
+			pkg.path,
 		}
 
 		if !declareSymbol(b, sym) {
@@ -38,7 +38,7 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 			SymVar,
 			v,
 			t.Pos,
-			pkg.Path,
+			pkg.path,
 		}
 
 		if !declareSymbol(b, sym) {
@@ -85,7 +85,7 @@ func checkUnusedImport(b *builder, pkg *pkg) {
 }
 
 func buildLib(b *builder, pkg *pkg) *lib {
-	ret := newLib(pkg.Path)
+	ret := newLib(pkg.path)
 	b.curPkg = ret
 
 	b.scope.Push()

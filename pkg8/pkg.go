@@ -25,6 +25,6 @@ type Files map[string]io.ReadCloser
 type Lang interface {
 	IsSrc(filename string) bool
 	ListImport(src Files) ([]string, []*lex8.Error)
-	Compile(src Files, importer Importer) (Linkable, []*lex8.Error)
+	Compile(p string, src Files, imp Importer) (Linkable, []*lex8.Error)
 	Load(r io.Reader) error
 }
