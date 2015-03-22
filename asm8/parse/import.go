@@ -35,7 +35,7 @@ func parseImports(p *parser) *ast.ImportDecl {
 
 	for !p.See(Rbrace) && !p.See(lex8.EOF) {
 		imp := parseImportStmt(p)
-		if imp == nil {
+		if imp != nil {
 			ret.Stmts = append(ret.Stmts, imp)
 		}
 	}

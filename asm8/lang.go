@@ -26,7 +26,7 @@ func (lang) ListImport(src pkg8.Files) ([]string, []*lex8.Error) {
 }
 
 func (lang) Compile(
-	path string,
+	p string,
 	src pkg8.Files,
 	importer pkg8.Importer,
 ) (
@@ -34,7 +34,7 @@ func (lang) Compile(
 	[]*lex8.Error,
 ) {
 	pkg := new(pkg)
-	pkg.path = path
+	pkg.path = p
 
 	errs := lex8.NewErrorList()
 
@@ -45,11 +45,42 @@ func (lang) Compile(
 		}
 
 		file := resolveFile(errs, astFile)
+		pkg.files = append(pkg.files, file)
+
+		if len(src) == 1 || path.Base(f) == "import.s" {
+			if pkg.imports != nil {
+				errs.Errorf(file.imports.Kw.Pos,
+					"double valid import stmt, maybe two import.s?",
+				)
+			}
+			pkg.imports = file.imports
+		} else if file.imports != nil {
+			errs.Errorf(file.imports.Kw.Pos,
+				"invalid import outside import.s in a multi-file package",
+			)
+		}
+	}
+
+	if len(errs.Errs) != 0 {
+		return nil, errs.Errs
+	}
+
+	if pkg.imports != nil {
+		for _, stmt := range pkg.imports.stmts {
+			stmt.linkable = importer.Import(stmt.path)
+			if stmt.linkable == nil {
+				errs.Errorf(stmt.Path.Pos,
+					"import %s is missing by the importer",
+					stmt.path,
+				)
+			} else {
+				stmt.lib = stmt.linkable.Lib()
+			}
+		}
+
 		if len(errs.Errs) != 0 {
 			return nil, errs.Errs
 		}
-
-		pkg.files = append(pkg.files, file)
 	}
 
 	b := newBuilder()
