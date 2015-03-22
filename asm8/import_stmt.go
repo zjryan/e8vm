@@ -26,7 +26,7 @@ func resolveImportStmt(log lex8.Logger, imp *ast.ImportStmt) *importStmt {
 
 	s, e := strconv.Unquote(imp.Path.Lit)
 	if e != nil {
-		log.Errorf(imp.Path.Pos, "invalid string %s", 
+		log.Errorf(imp.Path.Pos, "invalid string %s",
 			imp.Path.Lit)
 		return nil
 	}
