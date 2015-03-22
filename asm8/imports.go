@@ -17,12 +17,11 @@ func listImport(f string, rc io.ReadCloser) ([]string, []*lex8.Error) {
 		return nil, nil
 	}
 
-	errs := lex8.NewErrorList()
-	imp := resolveImportDecl(errs, astFile.Imports)
-	if len(errs.Errs) != 0 {
-		return nil, errs.Errs
+	res := newResolver()
+	imp := resolveImportDecl(res, astFile.Imports)
+	if es := res.Errs(); es != nil {
+		return nil, es
 	}
 
 	return imp.Paths(), nil
-
 }

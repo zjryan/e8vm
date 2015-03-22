@@ -109,5 +109,5 @@ func (x *Lexer) Errs() []*Error {
 		return []*Error{{Err: x.e}}
 	}
 
-	return x.errs.Errs
+	return x.errs.Errs()
 }

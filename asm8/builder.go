@@ -27,7 +27,7 @@ func newBuilder() *builder {
 
 // Errs returns the building errors.
 func (b *builder) Errs() []*lex8.Error {
-	return b.ErrorList.Errs
+	return b.ErrorList.Errs()
 }
 
 func (b *builder) index(name string, index uint32) {

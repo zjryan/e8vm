@@ -12,7 +12,7 @@ type Logger interface {
 
 // ErrorList saves a list of error
 type ErrorList struct {
-	Errs []*Error
+	errs []*Error
 
 	Max int
 
@@ -35,11 +35,11 @@ func (lst *ErrorList) Add(e *Error) {
 	}
 
 	lst.inJail = true
-	if len(lst.Errs) >= lst.Max {
+	if len(lst.errs) >= lst.Max {
 		return
 	}
 
-	lst.Errs = append(lst.Errs, e)
+	lst.errs = append(lst.errs, e)
 }
 
 // InJail checks if a new error has been added since created or last bail out
@@ -55,7 +55,7 @@ func (lst *ErrorList) Errorf(p *Pos, f string, args ...interface{}) {
 
 // Print prints to the writer (maximume lst.MaxPrint errors).
 func (lst *ErrorList) Print(w io.Writer) error {
-	for _, e := range lst.Errs {
+	for _, e := range lst.errs {
 		_, pe := fmt.Fprintln(w, e)
 		if pe != nil {
 			return pe
@@ -68,4 +68,13 @@ func (lst *ErrorList) Print(w io.Writer) error {
 // SingleErr returns an error array with one error.
 func SingleErr(e error) []*Error {
 	return []*Error{{Err: e}}
+}
+
+// Errs retunrs the errors in the list
+func (lst *ErrorList) Errs() []*Error {
+	ret := lst.errs
+	if len(ret) == 0 {
+		return nil
+	}
+	return ret
 }

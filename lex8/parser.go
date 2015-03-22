@@ -142,5 +142,5 @@ func (p *Parser) Errs() []*Error {
 	if ret != nil {
 		return ret
 	}
-	return p.errs.Errs
+	return p.errs.Errs()
 }
