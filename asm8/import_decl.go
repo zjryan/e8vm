@@ -16,6 +16,7 @@ type importDecl struct {
 
 func resolveImportDecl(log lex8.Logger, imp *ast.ImportDecl) *importDecl {
 	ret := new(importDecl)
+	ret.ImportDecl = imp
 	ret.stmts = make(map[string]*importStmt)
 	ret.paths = make(map[string]struct{})
 
