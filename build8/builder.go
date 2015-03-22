@@ -12,8 +12,9 @@ import (
 
 // Builder builds a bunch of packages.
 type Builder struct {
-	home  *home
-	built map[string]*pkg
+	home *home
+	pkgs map[string]*pkg
+
 	// TODO: built should be something like an LRU cache
 	// the libraries should be load back in only when linking
 
@@ -25,57 +26,69 @@ type Builder struct {
 func NewBuilder(homePath string) *Builder {
 	ret := new(Builder)
 	ret.home = &home{path: homePath}
-	ret.built = make(map[string]*pkg)
-
-	// ret.AddLang(asm8.Lang)
+	ret.pkgs = make(map[string]*pkg)
 
 	return ret
 }
 
 // AddLang registers a langauge into the building system
-func (b *Builder) AddLang(lang Lang) {
-	b.lang = lang
-}
+func (b *Builder) AddLang(lang Lang)     { b.lang = lang }
+func (b *Builder) getLang(p string) Lang { return b.lang }
 
-func (b *Builder) getLang(p string) Lang {
-	// TODO:
-	return b.lang
-}
+func (b *Builder) prepare(p string) (*pkg, []*lex8.Error) {
+	saved := b.pkgs[p]
+	if saved != nil {
+		return saved, nil // already prepared
+	}
 
-func (b *Builder) find(p string) (*pkg, bool) {
-	ret, found := b.built[p]
-	return ret, found
-}
+	lang := b.getLang(p)
+	pkg := newPkg(b.home, p, lang)
+	b.pkgs[p] = pkg
 
-func (b *Builder) register(p string)       { b.built[p] = nil }
-func (b *Builder) save(p string, pkg *pkg) { b.built[p] = pkg }
+	if pkg.err != nil {
+		return pkg, nil
+	}
+
+	es := lang.Import(pkg)
+	if es != nil {
+		return pkg, es
+	}
+
+	for _, imp := range pkg.imports {
+		impPkg, es := b.prepare(imp.Path)
+		if es != nil {
+			return pkg, es
+		}
+
+		if impPkg.err != nil {
+			return pkg, []*lex8.Error{{
+				Pos: imp.Pos,
+				Err: impPkg.err,
+			}}
+		}
+	}
+
+	return pkg, nil
+}
 
 func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
-	// TODO: check if p is a valid path
-
-	saved, found := b.find(p)
-	if found && saved == nil {
-		e := fmt.Errorf("package %s has circular dependency", p)
-		return nil, lex8.SingleErr(e)
-	} else if found {
-		return saved, nil // already built
+	ret := b.pkgs[p]
+	if ret == nil {
+		panic("build without prepare")
 	}
 
-	b.register(p)
-
-	// get the language
-	lang := b.getLang(p)
-
-	// setup the package folder
-	ret, e := newPkg(b.home, p, lang)
-	if e != nil {
-		return nil, lex8.SingleErr(e)
+	// already compiled
+	if ret.compiled != nil {
+		return ret, nil
 	}
 
-	es := lang.Import(ret)
-	if es != nil {
-		return nil, es
+	if ret.buildStarted {
+		e := fmt.Errorf("package %q circular depends itself", p)
+		return ret, lex8.SingleErr(e)
 	}
+
+	ret.buildStarted = true
+	lang := ret.lang
 
 	for _, imp := range ret.imports {
 		built, es := b.build(imp.Path)
@@ -91,7 +104,7 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	}
 
 	// compile now
-	es = lang.Compile(ret)
+	es := lang.Compile(ret)
 	if es != nil {
 		return nil, es
 	}
@@ -106,15 +119,17 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 		}
 	}
 
-	// save it into archive
-	b.save(p, ret)
-
 	return ret, nil
 }
 
 // Build builds a package
 func (b *Builder) Build(p string) []*lex8.Error {
-	_, es := b.build(p)
+	_, es := b.prepare(p)
+	if es != nil {
+		return es
+	}
+
+	_, es = b.build(p)
 	return es
 }
 

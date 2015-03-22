@@ -2,7 +2,6 @@ package build8
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -16,9 +15,11 @@ type pkg struct {
 	path string
 	src  string
 
-	lang    Lang
-	files   []string
-	imports map[string]*Import
+	lang         Lang
+	files        []string
+	imports      map[string]*Import
+	err          error // an error package, required but not exists
+	buildStarted bool
 
 	compiled Linkable
 	lib      *link8.Pkg
@@ -26,35 +27,38 @@ type pkg struct {
 
 var _ Pkg = new(pkg)
 
-func newPkg(h *home, p string, lang Lang) (*pkg, error) {
+func newPkg(h *home, p string, lang Lang) *pkg {
+	ret := new(pkg)
+
 	if !isPkgPath(p) {
-		return nil, fmt.Errorf("invalid path: %q", p)
+		ret.err = fmt.Errorf("invalid path: %q", p)
+		return ret
 	}
 
-	ret := new(pkg)
 	ret.home = h
 	ret.path = p
 	ret.lang = lang
 	ret.src = h.src(p)
 
 	var e error
-	ret.files, e = ret.listSrcFiles()
+	ret.files, e = listSrcFiles(ret.src, lang)
 	if e != nil {
-		return nil, e
+		ret.err = e
+		return ret
+	}
+	if len(ret.files) == 0 {
+		ret.err = fmt.Errorf("empty package: %q", p)
+		return ret
 	}
 
 	ret.imports = make(map[string]*Import)
-
-	return ret, nil
+	return ret
 }
 
-func (p *pkg) srcFile(f string) string { return filepath.Join(p.src, f) }
-func (p *pkg) openSrcFile(f string) io.ReadCloser {
-	return newFile(p.srcFile(f))
-}
+func (p *pkg) srcFilePath(f string) string { return filepath.Join(p.src, f) }
 
-func (p *pkg) listSrcFiles() ([]string, error) {
-	files, e := ioutil.ReadDir(p.src)
+func listSrcFiles(dir string, lang Lang) ([]string, error) {
+	files, e := ioutil.ReadDir(dir)
 	if e != nil {
 		return nil, e
 	}
@@ -67,7 +71,7 @@ func (p *pkg) listSrcFiles() ([]string, error) {
 		}
 
 		name := file.Name()
-		if p.lang.IsSrc(name) {
+		if lang.IsSrc(name) {
 			ret = append(ret, name)
 		}
 	}
@@ -82,7 +86,7 @@ func (p *pkg) Src() map[string]*File {
 	ret := make(map[string]*File)
 
 	for _, f := range p.files {
-		path := p.srcFile(f)
+		path := p.srcFilePath(f)
 		file := &File{
 			Name:       f,
 			Path:       path,
