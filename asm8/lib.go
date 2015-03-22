@@ -1,6 +1,8 @@
 package asm8
 
 import (
+	"io"
+
 	"lonnie.io/e8vm/link8"
 )
 
@@ -82,4 +84,14 @@ func (p *lib) query(name string) (*symbol, uint32) {
 	default:
 		panic("bug")
 	}
+}
+
+// Lib retunrs the linkable lib.
+func (p *lib) Lib() *link8.Pkg {
+	return p.Pkg
+}
+
+// Save marshalls the library out.
+func (p *lib) Save(w io.Writer) error {
+	panic("todo")
 }
