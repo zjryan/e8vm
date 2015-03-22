@@ -97,4 +97,5 @@ func (lang) Load(r io.Reader) error {
 	panic("todo")
 }
 
+// Lang is the assembly language, defined for the building system
 var Lang pkg8.Lang = lang{}
