@@ -29,11 +29,13 @@ func (lang) Compile(
 ) (
 	pkg8.Linkable, []*lex8.Error,
 ) {
+	// resolve pass, will also parse the files
 	pkg, es := resolvePkg(p, src)
 	if es != nil {
 		return nil, es
 	}
 
+	// import
 	errs := lex8.NewErrorList()
 	if pkg.imports != nil {
 		for _, stmt := range pkg.imports.stmts {
@@ -53,6 +55,7 @@ func (lang) Compile(
 		}
 	}
 
+	// library building
 	b := newBuilder()
 	lib := buildLib(b, pkg)
 	if es := b.Errs(); es != nil {
