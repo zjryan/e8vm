@@ -68,7 +68,7 @@ func (p *pkg) listSrcFiles() ([]string, error) {
 
 		name := file.Name()
 		if p.lang.IsSrc(name) {
-			ret = append(ret, p.srcFile(name))
+			ret = append(ret, name)
 		}
 	}
 

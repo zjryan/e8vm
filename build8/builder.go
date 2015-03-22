@@ -51,6 +51,8 @@ func (b *Builder) register(p string)       { b.built[p] = nil }
 func (b *Builder) save(p string, pkg *pkg) { b.built[p] = pkg }
 
 func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
+	// TODO: check if p is a valid path
+
 	saved, found := b.find(p)
 	if found && saved == nil {
 		e := fmt.Errorf("package %s has circular dependency", p)
@@ -75,15 +77,13 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 		return nil, es
 	}
 
-	/*
-		// build import first
-		for _, imp := range imports {
-			_, es = b.build(imp)
-			if es != nil {
-				return nil, es
-			}
+	for _, imp := range ret.imports {
+		built, es := b.build(imp.Path)
+		if es != nil {
+			return nil, es
 		}
-	*/
+		imp.Pkg = built
+	}
 
 	// ready to build this one
 	if b.Verbose {
