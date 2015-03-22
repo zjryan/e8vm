@@ -6,10 +6,8 @@ import (
 	"path/filepath"
 	"sort"
 
-	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
-	"lonnie.io/e8vm/pkg8"
 )
 
 // Builder builds a bunch of packages.
@@ -19,7 +17,7 @@ type Builder struct {
 	// TODO: built should be something like an LRU cache
 	// the libraries should be load back in only when linking
 
-	lang    pkg8.Lang
+	lang    Lang
 	Verbose bool
 }
 
@@ -29,17 +27,17 @@ func NewBuilder(homePath string) *Builder {
 	ret.home = &home{path: homePath}
 	ret.built = make(map[string]*pkg)
 
-	ret.AddLang(asm8.Lang)
+	// ret.AddLang(asm8.Lang)
 
 	return ret
 }
 
 // AddLang registers a langauge into the building system
-func (b *Builder) AddLang(lang pkg8.Lang) {
+func (b *Builder) AddLang(lang Lang) {
 	b.lang = lang
 }
 
-func (b *Builder) getLang(p string) pkg8.Lang {
+func (b *Builder) getLang(p string) Lang {
 	// TODO:
 	return b.lang
 }
@@ -72,18 +70,20 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 		return nil, lex8.SingleErr(e)
 	}
 
-	imports, es := lang.ListImport(ret.srcFiles())
+	es := lang.Import(ret)
 	if es != nil {
 		return nil, es
 	}
 
-	// build import first
-	for _, imp := range imports {
-		_, es = b.build(imp)
-		if es != nil {
-			return nil, es
+	/*
+		// build import first
+		for _, imp := range imports {
+			_, es = b.build(imp)
+			if es != nil {
+				return nil, es
+			}
 		}
-	}
+	*/
 
 	// ready to build this one
 	if b.Verbose {
@@ -91,13 +91,12 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	}
 
 	// compile now
-	built, es := lang.Compile(p, ret.srcFiles(), b)
+	es = lang.Compile(ret)
 	if es != nil {
 		return nil, es
 	}
-	ret.built = built
 
-	lib := built.Lib() // the linkable lib
+	lib := ret.Compiled().Lib() // the linkable lib
 	// a package with main entrance, build the bin
 	if lib.HasFunc("main") {
 		fout := b.home.makeBin(p)
@@ -107,20 +106,10 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 		}
 	}
 
-	// built library, save it into archive
-	ret.lib = lib
+	// save it into archive
 	b.save(p, ret)
 
 	return ret, nil
-}
-
-// Import imports a built linkable lib
-func (b *Builder) Import(p string) pkg8.Linkable {
-	saved, _ := b.find(p)
-	if saved == nil {
-		return nil
-	}
-	return saved.built
 }
 
 // Build builds a package

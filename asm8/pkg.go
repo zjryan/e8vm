@@ -1,11 +1,9 @@
 package asm8
 
 import (
-	"path"
-
 	"lonnie.io/e8vm/asm8/parse"
+	"lonnie.io/e8vm/build8"
 	"lonnie.io/e8vm/lex8"
-	"lonnie.io/e8vm/pkg8"
 )
 
 type pkg struct {
@@ -15,14 +13,14 @@ type pkg struct {
 	imports *importDecl
 }
 
-func resolvePkg(p string, src pkg8.Files) (*pkg, []*lex8.Error) {
+func resolvePkg(p string, src map[string]*build8.File) (*pkg, []*lex8.Error) {
 	res := newResolver()
 	ret := new(pkg)
 	ret.path = p
 
-	for f, rc := range src {
+	for name, f := range src {
 		// parse the file first
-		astFile, es := parse.File(f, rc)
+		astFile, es := parse.File(f.Path, f)
 		if es != nil {
 			return nil, es
 		}
@@ -32,7 +30,7 @@ func resolvePkg(p string, src pkg8.Files) (*pkg, []*lex8.Error) {
 		ret.files = append(ret.files, file)
 
 		// import policy
-		if len(src) == 1 || path.Base(f) == "import.s" {
+		if len(src) == 1 || name == "import.s" {
 			if ret.imports != nil {
 				res.Errorf(file.imports.Kw.Pos,
 					"double valid import stmt; two import.s?",

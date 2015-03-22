@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
-	"lonnie.io/e8vm/pkg8"
 )
 
 type pkg struct {
@@ -16,14 +16,17 @@ type pkg struct {
 	path string
 	src  string
 
-	lang  pkg8.Lang
-	files []string
+	lang    Lang
+	files   []string
+	imports map[string]*Import
 
-	built pkg8.Linkable
-	lib   *link8.Pkg
+	compiled Linkable
+	lib      *link8.Pkg
 }
 
-func newPkg(h *home, p string, lang pkg8.Lang) (*pkg, error) {
+var _ Pkg = new(pkg)
+
+func newPkg(h *home, p string, lang Lang) (*pkg, error) {
 	if !isPkgPath(p) {
 		return nil, fmt.Errorf("invalid path: %q", p)
 	}
@@ -39,6 +42,8 @@ func newPkg(h *home, p string, lang pkg8.Lang) (*pkg, error) {
 	if e != nil {
 		return nil, e
 	}
+
+	ret.imports = make(map[string]*Import)
 
 	return ret, nil
 }
@@ -70,12 +75,39 @@ func (p *pkg) listSrcFiles() ([]string, error) {
 	return ret, nil
 }
 
-func (p *pkg) srcFiles() pkg8.Files {
-	ret := make(map[string]io.ReadCloser)
+func (p *pkg) Path() string { return p.path }
+
+// Src returns the map of the source files
+func (p *pkg) Src() map[string]*File {
+	ret := make(map[string]*File)
+
 	for _, f := range p.files {
-		ret[f] = newFile(f)
+		path := p.srcFile(f)
+		file := &File{
+			Name:       f,
+			Path:       path,
+			ReadCloser: newFile(path),
+		}
+
+		ret[f] = file
 	}
-	return pkg8.Files(ret)
+	return ret
+}
+
+func (p *pkg) AddImport(name, path string, pos *lex8.Pos) {
+	p.imports[name] = &Import{Path: path, Pos: pos}
+}
+
+func (p *pkg) Imports() map[string]*Import {
+	return p.imports
+}
+
+func (p *pkg) SetCompiled(lib Linkable) {
+	p.compiled = lib
+}
+
+func (p *pkg) Compiled() Linkable {
+	return p.compiled
 }
 
 func (p *pkg) lastUpdate(suffix string) (*timeStamp, error) {

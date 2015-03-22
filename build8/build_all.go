@@ -5,8 +5,9 @@ import (
 )
 
 // BuildAll packages under the home path
-func BuildAll(homePath string, verbose bool) []*lex8.Error {
+func BuildAll(homePath string, verbose bool, lang Lang) []*lex8.Error {
 	b := NewBuilder(homePath)
+	b.AddLang(lang)
 	b.Verbose = verbose
 
 	pkgs, e := b.ListPkgs()

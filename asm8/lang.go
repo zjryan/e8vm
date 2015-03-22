@@ -1,12 +1,10 @@
 package asm8
 
 import (
-	"io"
-	"path"
 	"strings"
 
+	"lonnie.io/e8vm/build8"
 	"lonnie.io/e8vm/lex8"
-	"lonnie.io/e8vm/pkg8"
 )
 
 type lang struct{}
@@ -15,43 +13,49 @@ func (lang) IsSrc(filename string) bool {
 	return strings.HasSuffix(filename, ".s")
 }
 
-func (lang) ListImport(src pkg8.Files) ([]string, []*lex8.Error) {
-	for f, rc := range src {
-		if len(src) == 1 || path.Base(f) == "import.s" {
-			return listImport(f, rc)
+func (lang) Import(pkg build8.Pkg) []*lex8.Error {
+	src := pkg.Src()
+
+	if len(src) == 1 {
+		for _, f := range src {
+			return listImport(f.Path, f, pkg)
 		}
 	}
-	return nil, nil
+
+	f := src["import.s"]
+	if f == nil {
+		return nil
+	}
+	return listImport(f.Path, f, pkg)
 }
 
-func (lang) Compile(
-	p string, src pkg8.Files, importer pkg8.Importer,
-) (
-	pkg8.Linkable, []*lex8.Error,
-) {
+func (lang) Compile(p build8.Pkg) []*lex8.Error {
 	// resolve pass, will also parse the files
-	pkg, es := resolvePkg(p, src)
+	pkg, es := resolvePkg(p.Path(), p.Src())
 	if es != nil {
-		return nil, es
+		return es
 	}
 
+	imports := p.Imports()
 	// import
 	errs := lex8.NewErrorList()
 	if pkg.imports != nil {
 		for _, stmt := range pkg.imports.stmts {
-			stmt.linkable = importer.Import(stmt.path)
-			if stmt.linkable == nil {
-				errs.Errorf(stmt.Path.Pos,
-					"import %s is missing by the importer",
-					stmt.path,
-				)
-			} else {
-				stmt.lib = stmt.linkable.Lib()
+			imp := imports[stmt.as]
+			if imp == nil {
+				errs.Errorf(stmt.Path.Pos, "import missing")
 			}
+
+			stmt.linkable = imp.Pkg.Compiled()
+			if stmt.linkable == nil {
+				panic("import missing")
+			}
+
+			stmt.lib = stmt.linkable.Lib()
 		}
 
 		if es := errs.Errs(); es != nil {
-			return nil, es
+			return es
 		}
 	}
 
@@ -59,15 +63,12 @@ func (lang) Compile(
 	b := newBuilder()
 	lib := buildLib(b, pkg)
 	if es := b.Errs(); es != nil {
-		return nil, es
+		return es
 	}
 
-	return lib, nil
-}
-
-func (lang) Load(r io.Reader) error {
-	panic("todo")
+	p.SetCompiled(lib)
+	return nil
 }
 
 // Lang is the assembly language, defined for the building system
-var Lang pkg8.Lang = lang{}
+var Lang build8.Lang = lang{}

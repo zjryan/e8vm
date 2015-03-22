@@ -1,8 +1,6 @@
 package asm8
 
 import (
-	"sort"
-
 	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/lex8"
 )
@@ -33,15 +31,5 @@ func resolveImportDecl(log lex8.Logger, imp *ast.ImportDecl) *importDecl {
 		ret.paths[r.path] = struct{}{}
 	}
 
-	return ret
-}
-
-func (imp *importDecl) Paths() []string {
-	ret := make([]string, 0, len(imp.paths))
-	for path := range imp.paths {
-		ret = append(ret, path)
-	}
-
-	sort.Strings(ret)
 	return ret
 }

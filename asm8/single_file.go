@@ -3,20 +3,22 @@ package asm8
 import (
 	"io"
 
+	"lonnie.io/e8vm/build8"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
 )
 
 // BuildSingleFile builds a package named "main" from a single file.
 func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
-	files := map[string]io.ReadCloser{f: rc}
-	lib, es := Lang.Compile("_", files, nil)
+	pkg := build8.NewSimplePkg(f, rc)
+
+	es := Lang.Compile(pkg)
 	if es != nil {
 		return nil, es
 	}
 
 	buf := new(link8.Buf)
-	e := link8.LinkMain(lib.Lib(), buf)
+	e := link8.LinkMain(pkg.Compiled().Lib(), buf)
 	if e != nil {
 		return nil, lex8.SingleErr(e)
 	}

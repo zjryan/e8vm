@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"lonnie.io/e8vm/asm8/ast"
+	"lonnie.io/e8vm/build8"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
-	"lonnie.io/e8vm/pkg8"
 )
 
 type importStmt struct {
@@ -16,7 +16,7 @@ type importStmt struct {
 	as   string
 	path string
 
-	linkable pkg8.Linkable
+	linkable build8.Linkable
 	lib      *link8.Pkg
 }
 
