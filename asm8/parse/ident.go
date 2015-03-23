@@ -7,12 +7,11 @@ func IsIdent(id string) bool {
 	}
 	for i, r := range id {
 		if r >= '0' && r <= '9' {
-			if i > 0 {
-				continue
+			if i == 0 {
+				return false
 			}
-			return false
+			continue
 		}
-
 		if r >= 'a' && r <= 'z' {
 			continue
 		}
