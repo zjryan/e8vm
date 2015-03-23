@@ -11,3 +11,9 @@ type File struct {
 	Decls    []interface{}
 	Comments []*lex8.Token
 }
+
+// a listing of possible declarations
+var decls = []interface{} {
+	new(FuncDecl),
+	new(VarDecl),
+}
