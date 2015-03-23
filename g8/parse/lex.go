@@ -24,6 +24,8 @@ func lexC8(x *lex8.Lexer) *lex8.Token {
 
 	if isDigit(r) {
 		return lexNumber(x)
+	} else if isLetter(r) {
+		return lexIdent(x)
 	}
 
 	// always make progress at this point

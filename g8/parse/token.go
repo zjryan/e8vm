@@ -30,6 +30,7 @@ var Types = func() *lex8.Types {
 	o(Char, "char")
 	o(String, "string")
 	o(Operator, "operator")
+	o(Endl, "endl")
 
 	return ret
 }()

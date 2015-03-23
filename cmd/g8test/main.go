@@ -40,6 +40,6 @@ func main() {
 	}
 
 	for _, t := range toks {
-		fmt.Println(t)
+		fmt.Printf("%s: %s %q\n", t.Pos, parse.TypeStr(t.Type), t.Lit)
 	}
 }
