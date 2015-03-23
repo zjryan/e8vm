@@ -7,9 +7,30 @@ import (
 // Expr is a general expression in the language
 type Expr interface{}
 
-// BinaryOp is an binary operation
-type BinaryOp struct {
-	E1 Expr
+// OpExpr is a binary or unary operation that uses an operator
+type OpExpr struct {
+	A  Expr
 	Op *lex8.Token
-	E2 Expr
+	B  Expr
+}
+
+// ParenExpr is an expression in a pair of parenthesis
+type ParenExpr struct {
+	Lparen *lex8.Token
+	Rparen *lex8.Token
+	Expr
+}
+
+// ExprList is a list of expressions
+type ExprList struct {
+	Exprs  []Expr
+	Commas []*lex8.Token
+}
+
+// CallExpr is a function call expression
+type CallExpr struct {
+	Func   Expr
+	Lparen *lex8.Token
+	Rparen *lex8.Token
+	Args   *ExprList
 }
