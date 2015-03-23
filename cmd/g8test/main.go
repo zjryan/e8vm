@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"lonnie.io/e8vm/g8/parse"
+	"lonnie.io/e8vm/lex8"
 )
 
 func exit(e error) {
@@ -16,7 +17,18 @@ func exit(e error) {
 	os.Exit(-1)
 }
 
+func printErrs(es []*lex8.Error) {
+	if es != nil {
+		for _, e := range es {
+			fmt.Println(e)
+		}
+		exit(nil)
+	}
+}
+
 func main() {
+	doTokens := flag.Bool("toks", false, "parse tokens")
+	doExpr := flag.Bool("expr", true, "parse as an expression")
 	flag.Parse()
 
 	args := flag.Args()
@@ -31,15 +43,15 @@ func main() {
 		exit(e)
 	}
 
-	toks, es := parse.Tokens(fname, fin)
-	if es != nil {
-		for _, e := range es {
-			fmt.Println(e)
+	if *doTokens {
+		toks, es := parse.Tokens(fname, fin)
+		printErrs(es)
+		for _, t := range toks {
+			fmt.Printf("%s: %s %q\n", t.Pos, parse.TypeStr(t.Type), t.Lit)
 		}
-		exit(nil)
-	}
-
-	for _, t := range toks {
-		fmt.Printf("%s: %s %q\n", t.Pos, parse.TypeStr(t.Type), t.Lit)
+	} else if *doExpr {
+		expr, es := parse.Expr(fname, fin)
+		printErrs(es)
+		fmt.Println(parse.PrintExpr(expr))
 	}
 }

@@ -43,6 +43,8 @@ func (p *parser) SeeOp(ops ...string) bool {
 func (p *parser) typeStr(t *lex8.Token) string {
 	if t.Type == Operator {
 		return fmt.Sprintf("'%s'", t.Lit)
+	} else if t.Type == Semi {
+		return "';'"
 	}
 	return TypeStr(t.Type)
 }
@@ -50,7 +52,7 @@ func (p *parser) typeStr(t *lex8.Token) string {
 func (p *parser) ExpectOp(op string) *lex8.Token {
 	t := p.Token()
 	if t.Type != Operator || t.Lit != op {
-		p.ErrorfHere("expect '%s', got %s", t.Lit, p.typeStr(t))
+		p.ErrorfHere("expect '%s', got %s", op, p.typeStr(t))
 		return nil
 	}
 
