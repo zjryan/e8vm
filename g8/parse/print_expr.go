@@ -58,7 +58,11 @@ func (p *printer) printExpr(expr ast.Expr) {
 			p.Print(e)
 		}
 	case *ast.CallExpr:
-		p.Print(expr.Func, "(", expr.Args, ")")
+		if expr.Args != nil {
+			p.Print(expr.Func, "(", expr.Args, ")")
+		} else {
+			p.Print(expr.Func, "()")
+		}
 	default:
 		panic("unknown expression type")
 	}

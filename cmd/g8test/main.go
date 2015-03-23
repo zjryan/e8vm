@@ -50,8 +50,11 @@ func main() {
 			fmt.Printf("%s: %s %q\n", t.Pos, parse.TypeStr(t.Type), t.Lit)
 		}
 	} else if *doExpr {
-		expr, es := parse.Expr(fname, fin)
+		exprs, es := parse.Exprs(fname, fin)
 		printErrs(es)
-		fmt.Println(parse.PrintExpr(expr))
+		for i, expr := range exprs {
+			fmt.Printf("%d> ", i+1)
+			fmt.Println(parse.PrintExpr(expr))
+		}
 	}
 }

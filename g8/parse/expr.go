@@ -127,11 +127,22 @@ func parseExpr(p *parser) ast.Expr {
 }
 
 // Expr parses a bare expression and returns the ast node.
-func Expr(f string, rc io.ReadCloser) (ast.Expr, []*lex8.Error) {
+func Exprs(f string, rc io.ReadCloser) ([]ast.Expr, []*lex8.Error) {
+	var ret []ast.Expr
+
 	p, _ := newParser(f, rc)
-	ret := parseExpr(p)
+	for !p.See(lex8.EOF) {
+		expr := parseExpr(p)
+		ret = append(ret, expr)
+		p.Expect(Semi)
+		if p.InError() {
+			p.SkipErrStmt(Semi)
+		}
+	}
+
 	if es := p.Errs(); es != nil {
 		return nil, es
 	}
+
 	return ret, nil
 }

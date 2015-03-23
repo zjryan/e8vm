@@ -1,1 +1,1 @@
-print(a, b, c+d, e+f+g)
+print(a, b, c+d, e+f+g); x()
