@@ -1,4 +1,5 @@
-a /= .33 /* something */
-b := 4
-print(a + b)
-_print
+func main() {
+	var a = 3
+	var b = 4
+	print(a + b)
+}
