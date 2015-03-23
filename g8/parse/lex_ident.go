@@ -17,18 +17,6 @@ func isLetter(r rune) bool {
 	return false
 }
 
-func isKeyword(lit string) bool {
-	switch lit {
-	case "func", "var", "const", "import", "type",
-		"if", "else", "for",
-		"break", "continue", "return",
-		"switch", "case", "default", "fallthrough",
-		"range", "struct", "interface", "goto":
-		return true
-	}
-	return false
-}
-
 func lexIdent(x *lex8.Lexer) *lex8.Token {
 	r := x.Rune()
 	if !isLetter(r) {
