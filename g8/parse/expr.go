@@ -3,7 +3,7 @@ package parse
 import (
 	"io"
 
-	"lonnie.io/e8vm/c8/ast"
+	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/lex8"
 )
 
