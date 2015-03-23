@@ -26,3 +26,15 @@ func (r *Recorder) Token() *Token {
 
 // Tokens returns the slice of recorded tokens.
 func (r *Recorder) Tokens() []*Token { return r.tokens }
+
+// TokenAll returns all the tokens fetched out of a tokener.
+func TokenAll(t Tokener) []*Token {
+	rec := NewRecorder(t)
+	for {
+		tok := rec.Token()
+		if tok.Type == EOF {
+			break
+		}
+	}
+	return rec.Tokens()
+}

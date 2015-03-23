@@ -47,21 +47,9 @@ func newLexer(file string, r io.Reader) *lex8.Lexer {
 // Tokens parses a file in a token array
 func Tokens(f string, r io.Reader) ([]*lex8.Token, []*lex8.Error) {
 	x := newLexer(f, r)
-
-	var ret []*lex8.Token
-
-	for {
-		t := x.Token()
-		ret = append(ret, t)
-		if t.Type == lex8.EOF {
-			break
-		}
+	toks := lex8.TokenAll(x)
+	if es := x.Errs(); es != nil {
+		return nil, es
 	}
-
-	errs := x.Errs()
-	if errs != nil {
-		return nil, errs
-	}
-
-	return ret, nil
+	return toks, nil
 }
