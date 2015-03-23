@@ -18,17 +18,20 @@ func exit(e error) {
 }
 
 func printErrs(es []*lex8.Error) {
-	if es != nil {
-		for _, e := range es {
-			fmt.Println(e)
-		}
-		exit(nil)
+	if len(es) == 0 {
+		return
 	}
+
+	for _, e := range es {
+		fmt.Println(e)
+	}
+	exit(nil)
 }
 
 func main() {
 	doTokens := flag.Bool("toks", false, "parse tokens")
-	doExpr := flag.Bool("expr", true, "parse as an expression")
+	doExpr := flag.Bool("expr", false, "parse as expressions")
+	doStmt := flag.Bool("stmt", true, "parse as statements")
 	flag.Parse()
 
 	args := flag.Args()
@@ -56,5 +59,9 @@ func main() {
 			fmt.Printf("%d> ", i+1)
 			fmt.Println(parse.PrintExpr(expr))
 		}
+	} else if *doStmt {
+		stmts, es := parse.Stmts(fname, fin)
+		printErrs(es)
+		fmt.Print(parse.PrintStmts(stmts))
 	}
 }

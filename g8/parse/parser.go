@@ -49,6 +49,22 @@ func (p *parser) typeStr(t *lex8.Token) string {
 	return TypeStr(t.Type)
 }
 
+func (p *parser) AcceptSemi() *lex8.Token {
+	if p.InError() {
+		return nil
+	}
+
+	t := p.Token()
+	if t.Type == Operator && (t.Lit == "}" || t.Lit == ")") {
+		return t // fake semicolon by operator
+	}
+
+	if t.Type != Semi {
+		return nil
+	}
+	return p.Shift()
+}
+
 func (p *parser) ExpectSemi() *lex8.Token {
 	if p.InError() {
 		return nil

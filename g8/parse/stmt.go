@@ -1,6 +1,8 @@
 package parse
 
 import (
+	"io"
+
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/lex8"
 )
@@ -83,6 +85,10 @@ func parseStmt(p *parser) ast.Stmt {
 
 	if p.SeeOp("{") {
 		return parseBlockClosed(p)
+	} else if p.See(Semi) {
+		ret := new(ast.EmptyStmt)
+		ret.Semi = p.Shift()
+		return ret
 	}
 
 	exprs := parseExprList(p)
@@ -102,14 +108,38 @@ func parseStmt(p *parser) ast.Stmt {
 		ret.Right = parseExprList(p)
 		ret.Semi = p.ExpectSemi()
 		return ret
-	} else if p.See(Semi) {
-		// empty statement
-		ret := new(ast.EmptyStmt)
-		ret.Semi = p.Shift()
+	} else if semi := p.AcceptSemi(); semi != nil {
+		ret := new(ast.ExprStmt)
+		ret.Expr = exprs
+		ret.Semi = semi
 		return ret
 	}
 
 	p.ErrorfHere("invalid statement")
 	p.skipErrStmt()
 	return nil
+}
+
+// Stmts parses a file input stream as a list of statements,
+// like a bare function body.
+func Stmts(f string, rc io.ReadCloser) ([]ast.Stmt, []*lex8.Error) {
+	var ret []ast.Stmt
+
+	p, _ := newParser(f, rc)
+	for !p.See(lex8.EOF) {
+		stmt := parseStmt(p)
+		if stmt != nil {
+			ret = append(ret, stmt)
+		}
+
+		if p.InError() {
+			p.skipErrStmt()
+		}
+	}
+
+	if es := p.Errs(); es != nil {
+		return nil, es
+	}
+
+	return ret, nil
 }

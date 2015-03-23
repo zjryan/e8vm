@@ -159,7 +159,9 @@ func Exprs(f string, rc io.ReadCloser) ([]ast.Expr, []*lex8.Error) {
 	p, _ := newParser(f, rc)
 	for !p.See(lex8.EOF) {
 		expr := parseExpr(p)
-		ret = append(ret, expr)
+		if expr != nil {
+			ret = append(ret, expr)
+		}
 
 		p.ExpectSemi()
 		if p.InError() {

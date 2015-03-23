@@ -1,67 +1,41 @@
 package parse
 
 import (
-	"bytes"
-	"fmt"
-
 	"lonnie.io/e8vm/g8/ast"
 )
 
-type printer struct {
-	buf *bytes.Buffer
-	e   error
-}
-
-func newPrinter() *printer {
-	ret := new(printer)
-	ret.buf = new(bytes.Buffer)
-	return ret
-}
-
-func (p *printer) printStr(s string) {
-	if p.e != nil {
-		return
-	}
-	_, e := fmt.Fprint(p.buf, s)
-	p.e = e
-}
-
-func (p *printer) Print(args ...interface{}) {
-	for _, arg := range args {
-		p.printExpr(arg)
+func printExprs(p *printer, exprs ...interface{}) {
+	for _, expr := range exprs {
+		printExpr(p, expr)
 	}
 }
 
-func (p *printer) Error() error { return p.e }
-
-func (p *printer) String() string { return p.buf.String() }
-
-func (p *printer) printExpr(expr ast.Expr) {
+func printExpr(p *printer, expr ast.Expr) {
 	switch expr := expr.(type) {
 	case string:
 		p.printStr(expr)
 	case *ast.Operand:
-		p.Print(expr.Token.Lit)
+		printExprs(p, expr.Token.Lit)
 	case *ast.OpExpr:
 		if expr.A == nil {
-			p.Print("(", expr.Op.Lit, expr.B, ")")
+			printExprs(p, "(", expr.Op.Lit, expr.B, ")")
 		} else {
-			p.Print("(", expr.A, expr.Op.Lit, expr.B, ")")
+			printExprs(p, "(", expr.A, expr.Op.Lit, expr.B, ")")
 		}
 	case *ast.ParenExpr:
-		p.Print("(", expr.Expr, ")")
+		printExprs(p, "(", expr.Expr, ")")
 	case *ast.ExprList:
 		for i, e := range expr.Exprs {
 			if i != 0 {
-				p.Print(",")
+				printExprs(p, ",")
 			}
-			p.Print(e)
+			printExprs(p, e)
 		}
 	case *ast.CallExpr:
 		if expr.Args != nil {
-			p.Print(expr.Func, "(", expr.Args, ")")
+			printExprs(p, expr.Func, "(", expr.Args, ")")
 		} else {
-			p.Print(expr.Func, "()")
+			printExprs(p, expr.Func, "()")
 		}
 	default:
 		panic("unknown expression type")
@@ -71,6 +45,6 @@ func (p *printer) printExpr(expr ast.Expr) {
 // PrintExpr prints an expression
 func PrintExpr(expr ast.Expr) string {
 	p := newPrinter()
-	p.printExpr(expr)
+	printExpr(p, expr)
 	return p.String()
 }
