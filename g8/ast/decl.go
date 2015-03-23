@@ -4,9 +4,11 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// Decl: var, function, struct or interface
+// Decl is a general declaration,
+// could be var, function, struct or interface
 type Decl interface{}
 
+// IdentList is a list of identifiers
 type IdentList struct {
 	Idents []*lex8.Token
 	Commas []*lex8.Token
