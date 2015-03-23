@@ -1,12 +1,10 @@
 package lex8
 
-// LexComment lexes a c style comment
+// LexComment lexes a c style comment.
 func LexComment(x *Lexer) *Token {
-	if x.Rune() != '/' {
-		panic("incorrect comment start")
+	if x.Buffered() != "/" {
+		panic("needs to buffer a '/' for lex comment")
 	}
-
-	x.Next()
 
 	if x.Rune() == '/' {
 		return lexLineComment(x)

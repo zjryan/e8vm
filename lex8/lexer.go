@@ -74,6 +74,12 @@ func (x *Lexer) SkipWhite() {
 	x.Discard()
 }
 
+// Buffered returns the current buffered string
+// in the scanner
+func (x *Lexer) Buffered() string {
+	return x.s.Buffered()
+}
+
 // MakeToken accepts the runes in the scanning buffer
 // and returns it as a token of type t.
 func (x *Lexer) MakeToken(t int) *Token {

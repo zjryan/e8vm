@@ -60,6 +60,12 @@ func (s *LexScanner) Accept() (string, *Pos) {
 	return ret, pos
 }
 
+// Buffered returns the current buffered string in the
+// scanner
+func (s *LexScanner) Buffered() string {
+	return s.buf.String()
+}
+
 // Pos returns the position of the buffer start.
 func (s *LexScanner) Pos() *Pos {
 	return s.pos
