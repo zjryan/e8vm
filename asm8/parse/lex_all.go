@@ -25,7 +25,7 @@ func lexAsm8(x *lex8.Lexer) *lex8.Token {
 	case '/':
 		return lex8.LexComment(x)
 	case '"':
-		return lexString(x)
+		return lex8.LexString(x, String)
 	}
 
 	if isOperandChar(r) {

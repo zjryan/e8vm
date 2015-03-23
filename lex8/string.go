@@ -1,9 +1,7 @@
-package parse
+package lex8
 
 import (
 	"unicode"
-
-	"lonnie.io/e8vm/lex8"
 )
 
 func digitVal(r rune) int {
@@ -18,7 +16,7 @@ func digitVal(r rune) int {
 	return 16
 }
 
-func lexEscape(x *lex8.Lexer, quote rune) bool {
+func lexEscape(x *Lexer, quote rune) bool {
 	var n int
 	var base, max uint32
 	if x.Ended() {
@@ -74,7 +72,8 @@ func lexEscape(x *lex8.Lexer, quote rune) bool {
 	return true
 }
 
-func lexString(x *lex8.Lexer) *lex8.Token {
+// LexString parses a string token with type t.
+func LexString(x *Lexer, t int) *Token {
 	if !x.See('"') {
 		panic("incorrect string start")
 	}
@@ -100,5 +99,5 @@ func lexString(x *lex8.Lexer) *lex8.Token {
 		}
 	}
 
-	return x.MakeToken(String)
+	return x.MakeToken(t)
 }
