@@ -32,7 +32,7 @@ var Types = func() *lex8.Types {
 	o(String, "string")
 	o(Operator, "operator")
 	o(Semi, "semicolon")
-	o(Endl, "endl")
+	o(Endl, "end-line")
 
 	return ret
 }()
