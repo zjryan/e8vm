@@ -15,7 +15,7 @@ const (
 	Semi
 )
 
-// Types is the types register for token type names.
+// Types provides a type name querier
 var Types = func() *lex8.Types {
 	ret := lex8.NewTypes()
 	o := func(t int, name string) {
@@ -34,6 +34,4 @@ var Types = func() *lex8.Types {
 }()
 
 // TypeStr returns the name of a token type.
-func TypeStr(t int) string {
-	return Types.Name(t)
-}
+func TypeStr(t int) string { return Types.Name(t) }
