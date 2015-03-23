@@ -8,6 +8,8 @@ import (
 )
 
 // Expr parses a bare expression and returns the ast node.
-func Expr(f string, rc io.Reader) (ast.Expr, []*lex8.Error) {
+func Expr(f string, rc io.ReadCloser) (ast.Expr, []*lex8.Error) {
+	// p, _ := newParser(f, rc)
+	defer rc.Close()
 	panic("todo")
 }

@@ -45,13 +45,3 @@ func newLexer(file string, r io.Reader) *lex8.Lexer {
 	ret.LexFunc = lexC8
 	return ret
 }
-
-// Tokens parses a file into a token array
-func Tokens(f string, r io.Reader) ([]*lex8.Token, []*lex8.Error) {
-	x := newLexer(f, r)
-	toks := lex8.TokenAll(x)
-	if errs := x.Errs(); errs != nil {
-		return nil, errs
-	}
-	return toks, nil
-}

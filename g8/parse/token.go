@@ -13,6 +13,7 @@ const (
 	Char
 	String
 	Operator
+	Semi
 	Endl
 )
 
@@ -30,6 +31,7 @@ var Types = func() *lex8.Types {
 	o(Char, "char")
 	o(String, "string")
 	o(Operator, "operator")
+	o(Semi, "semicolon")
 	o(Endl, "endl")
 
 	return ret

@@ -6,30 +6,27 @@ import (
 
 func lexOperator(x *lex8.Lexer, r rune) *lex8.Token {
 	switch r {
-	case '{', '}', '(', ')', '[', ']', ',', ';':
-		return x.MakeToken(Operator)
+	case ';':
+		return x.MakeToken(Semi)
+	case '{', '}', '(', ')', '[', ']', ',':
+		/* do nothing */
 	case '/':
 		r2 := x.Rune()
 		if r2 == '/' || r2 == '*' {
 			return lex8.LexComment(x)
 		} else if r2 == '=' {
 			x.Next()
-			return x.MakeToken(Operator)
-		} else {
-			return x.MakeToken(Operator)
 		}
 	case '+', '-', '&', '|':
 		r2 := x.Rune()
 		if r2 == r || r2 == '=' {
 			x.Next()
 		}
-		return x.MakeToken(Operator)
 	case '*', '%', '^', '=', '!', ':':
 		r2 := x.Rune()
 		if r2 == '=' {
 			x.Next()
 		}
-		return x.MakeToken(Operator)
 	case '.':
 		r2 := x.Rune()
 		if r2 == '.' {
@@ -41,7 +38,6 @@ func lexOperator(x *lex8.Lexer, r rune) *lex8.Token {
 			}
 			x.Next()
 		}
-		return x.MakeToken(Operator)
 	case '>', '<':
 		r2 := x.Rune()
 		if r2 == r {
@@ -53,8 +49,9 @@ func lexOperator(x *lex8.Lexer, r rune) *lex8.Token {
 		} else if r2 == '=' {
 			x.Next()
 		}
-		return x.MakeToken(Operator)
+	default:
+		return nil
 	}
 
-	return nil
+	return x.MakeToken(Operator)
 }

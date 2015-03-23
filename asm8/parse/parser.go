@@ -15,19 +15,12 @@ type parser struct {
 func newParser(f string, r io.Reader) (*parser, *lex8.Recorder) {
 	ret := new(parser)
 
-	var x lex8.Tokener
-	var recorder *lex8.Recorder
-
-	x = newLexer(f, r)
+	var x lex8.Tokener = newLexer(f, r)
 	x = newSemiInserter(x)
-
-	recorder = lex8.NewRecorder(x)
-	x = recorder
-	x = lex8.NewCommentRemover(x)
-	ret.x = x
-
+	rec := lex8.NewRecorder(x)
+	ret.x = lex8.NewCommentRemover(rec)
 	ret.Parser = lex8.NewParser(ret.x, Types)
-	return ret, recorder
+	return ret, rec
 }
 
 func (p *parser) SeeKeyword(kw string) bool {

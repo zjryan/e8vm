@@ -20,6 +20,10 @@ func newSemiInserter(x lex8.Tokener) *semiInserter {
 	return ret
 }
 
+func makeSemi(p *lex8.Pos, lit string) *lex8.Token {
+	return &lex8.Token{Pos: p, Lit: lit, Type: Semi}
+}
+
 // Token returns the next token of lexing
 func (sx *semiInserter) Token() *lex8.Token {
 	if sx.save != nil {
@@ -31,36 +35,25 @@ func (sx *semiInserter) Token() *lex8.Token {
 	for {
 		t := sx.x.Token()
 		switch t.Type {
-		case Lbrace, Semi:
+		case Semi:
 			sx.insertSemi = false
+		case Operator:
+			switch t.Lit {
+			case "}", "]", ")", "++", "--":
+				sx.insertSemi = true
+			default:
+				sx.insertSemi = false
+			}
 		case lex8.EOF:
 			if sx.insertSemi {
 				sx.insertSemi = false
 				sx.save = t
-				return &lex8.Token{
-					Type: Semi,
-					Lit:  t.Lit,
-					Pos:  t.Pos,
-				}
+				return makeSemi(t.Pos, "")
 			}
-		case Rbrace:
-			if sx.insertSemi {
-				sx.save = t
-				return &lex8.Token{
-					Type: Semi,
-					Lit:  ";",
-					Pos:  t.Pos,
-				}
-			}
-			sx.insertSemi = true
 		case Endl:
 			if sx.insertSemi {
 				sx.insertSemi = false
-				return &lex8.Token{
-					Type: Semi,
-					Lit:  "\n",
-					Pos:  t.Pos,
-				}
+				return makeSemi(t.Pos, "\n")
 			}
 			continue // ignore this end line
 		case lex8.Comment:

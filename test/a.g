@@ -3,3 +3,5 @@ func main() {
 	var b = 4
 	print(a + b)
 }
+
+func main() { a }
