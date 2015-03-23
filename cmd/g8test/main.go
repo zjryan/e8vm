@@ -45,6 +45,12 @@ func main() {
 	if e != nil {
 		exit(e)
 	}
+	defer func() {
+		e := fin.Close()
+		if e != nil {
+			exit(e)
+		}
+	}()
 
 	if *doTokens {
 		toks, es := parse.Tokens(fname, fin)

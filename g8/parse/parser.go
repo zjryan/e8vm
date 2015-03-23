@@ -117,6 +117,16 @@ func (p *parser) ExpectOp(op string) *lex8.Token {
 	return p.Shift()
 }
 
+func (p *parser) ExpectKeyword(kw string) *lex8.Token {
+	if !p.SeeLit(Keyword, kw) {
+		p.ErrorfHere("expect keyword '%s', got %s",
+			kw, p.typeStr(p.Token()),
+		)
+		return nil
+	}
+	return p.Shift()
+}
+
 // Tokens parses a file into a token array
 func Tokens(f string, r io.Reader) ([]*lex8.Token, []*lex8.Error) {
 	x, _ := makeTokener(f, r)

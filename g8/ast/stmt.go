@@ -71,14 +71,13 @@ type ReturnStmt struct {
 }
 
 // ContinueStmt
-type ContinueStmt struct {
-	Kw, Label, Semi *lex8.Token
-}
+type ContinueStmt struct{ Kw, Label, Semi *lex8.Token }
 
 // BreakStmt
-type BreakStmt struct {
-	Kw, Label, Semi *lex8.Token
-}
+type BreakStmt struct{ Kw, Label, Semi *lex8.Token }
+
+// FallthorughStmt
+type FallthroughStmt struct{ Kw, Semi *lex8.Token }
 
 // EmptyStmt
 type EmptyStmt struct {

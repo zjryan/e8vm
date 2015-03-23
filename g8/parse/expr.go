@@ -153,10 +153,10 @@ func parseExpr(p *parser) ast.Expr {
 
 // Exprs parses a list of expressions and returns an array of ast node of
 // these expressions.
-func Exprs(f string, rc io.ReadCloser) ([]ast.Expr, []*lex8.Error) {
+func Exprs(f string, r io.Reader) ([]ast.Expr, []*lex8.Error) {
 	var ret []ast.Expr
 
-	p, _ := newParser(f, rc)
+	p, _ := newParser(f, r)
 	for !p.See(lex8.EOF) {
 		expr := parseExpr(p)
 		if expr != nil {

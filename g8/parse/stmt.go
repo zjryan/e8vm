@@ -49,15 +49,38 @@ func parseSwitchStmt(p *parser) *ast.SwitchStmt {
 }
 
 func parseReturnStmt(p *parser) *ast.ReturnStmt {
-	panic("todo")
+	ret := new(ast.ReturnStmt)
+	ret.Kw = p.ExpectKeyword("return")
+	ret.Exprs = parseExprList(p)
+	ret.Semi = p.ExpectSemi()
+	return ret
 }
 
 func parseBreakStmt(p *parser) *ast.BreakStmt {
-	panic("todo")
+	ret := new(ast.BreakStmt)
+	ret.Kw = p.ExpectKeyword("break")
+	if p.See(Ident) {
+		ret.Label = p.Expect(Ident)
+	}
+	ret.Semi = p.ExpectSemi()
+	return ret
 }
 
 func parseContinueStmt(p *parser) *ast.ContinueStmt {
-	panic("todo")
+	ret := new(ast.ContinueStmt)
+	ret.Kw = p.ExpectKeyword("continue")
+	if p.See(Ident) {
+		ret.Label = p.Expect(Ident)
+	}
+	ret.Semi = p.ExpectSemi()
+	return ret
+}
+
+func parseFallthroughStmt(p *parser) *ast.FallthroughStmt {
+	ret := new(ast.FallthroughStmt)
+	ret.Kw = p.ExpectKeyword("fallthrough")
+	ret.Semi = p.ExpectSemi()
+	return ret
 }
 
 func parseStmt(p *parser) ast.Stmt {
@@ -80,6 +103,8 @@ func parseStmt(p *parser) ast.Stmt {
 			return parseBreakStmt(p)
 		case "continue":
 			return parseContinueStmt(p)
+		case "fallthrough":
+			return parseFallthroughStmt(p)
 		}
 	}
 
@@ -122,10 +147,10 @@ func parseStmt(p *parser) ast.Stmt {
 
 // Stmts parses a file input stream as a list of statements,
 // like a bare function body.
-func Stmts(f string, rc io.ReadCloser) ([]ast.Stmt, []*lex8.Error) {
+func Stmts(f string, r io.Reader) ([]ast.Stmt, []*lex8.Error) {
 	var ret []ast.Stmt
 
-	p, _ := newParser(f, rc)
+	p, _ := newParser(f, r)
 	for !p.See(lex8.EOF) {
 		stmt := parseStmt(p)
 		if stmt != nil {
