@@ -31,6 +31,22 @@ func parseOperand(p *parser) ast.Expr {
 	return nil
 }
 
+func parseExprList(p *parser) *ast.ExprList {
+	ret := new(ast.ExprList)
+	for {
+		expr := parseExpr(p)
+		if p.InError() {
+			return nil
+		}
+		ret.Exprs = append(ret.Exprs, expr)
+		if !p.SeeOp(",") {
+			break
+		}
+		ret.Commas = append(ret.Commas, p.Shift())
+	}
+	return ret
+}
+
 func parseExprListClosed(p *parser, closeWith string) *ast.ExprList {
 	ret := new(ast.ExprList)
 
@@ -147,7 +163,7 @@ func Exprs(f string, rc io.ReadCloser) ([]ast.Expr, []*lex8.Error) {
 
 		p.ExpectSemi()
 		if p.InError() {
-			p.SkipErrStmt(Semi)
+			p.skipErrStmt()
 		}
 	}
 

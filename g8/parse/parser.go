@@ -55,11 +55,37 @@ func (p *parser) ExpectSemi() *lex8.Token {
 	}
 
 	t := p.Token()
+	if t.Type == Operator && (t.Lit == "}" || t.Lit == ")") {
+		return t // fake semicolon by operator
+	}
+
 	if t.Type != Semi {
 		p.ErrorfHere("expect ';', got %s", p.typeStr(t))
 		return nil
 	}
 	return p.Shift()
+}
+
+func (p *parser) skipErrStmt() bool {
+	if !p.InError() {
+		return false
+	}
+
+	for {
+		t := p.Token()
+		if t.Type == Semi || t.Type == lex8.EOF {
+			break
+		} else if t.Type == Operator && t.Lit == "}" {
+			break
+		}
+		p.Next()
+	}
+	if p.See(Semi) {
+		p.Next()
+	}
+
+	p.BailOut()
+	return true
 }
 
 func (p *parser) ExpectOp(op string) *lex8.Token {

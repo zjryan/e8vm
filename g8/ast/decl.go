@@ -7,9 +7,14 @@ import (
 // Decl: var, function, struct or interface
 type Decl interface{}
 
+type IdentList struct {
+	Idents []*lex8.Token
+	Commas []*lex8.Token
+}
+
 // VarDecl declarse a set of variable
 type VarDecl struct {
-	Idents []*lex8.Token
+	Idents *IdentList
 	Type   Expr
 	Eq     *lex8.Token
 	Exprs  *ExprList
@@ -18,11 +23,11 @@ type VarDecl struct {
 
 // ConstDecl declares a set of constants
 type ConstDecl struct {
-	Idents []*lex8.Token
-	Type   Expr
-	Eq     *lex8.Token
-	Exprs  *ExprList
-	Semi   *lex8.Token
+	Ident *IdentList
+	Type  Expr
+	Eq    *lex8.Token
+	Exprs *ExprList
+	Semi  *lex8.Token
 }
 
 // ConstDecls is a const declaration with a leading keyword
