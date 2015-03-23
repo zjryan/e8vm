@@ -41,6 +41,5 @@ symdep:
 	symdep lonnie.io/e8vm/lex8
 	symdep lonnie.io/e8vm/asm8
 	symdep lonnie.io/e8vm/build8
-	symdep lonnie.io/e8vm/dagvis
 
 check: fmt all lint symdep
