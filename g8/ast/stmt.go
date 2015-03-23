@@ -51,6 +51,7 @@ type IfStmt struct {
 
 // ElseStmt is the dangling statement block after if
 type ElseStmt struct {
+	Else *lex8.Token
 	If   *lex8.Token // optional
 	Expr Expr        // optional for else if
 	Body Stmt
