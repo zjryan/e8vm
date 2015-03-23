@@ -7,6 +7,11 @@ import (
 // Expr is a general expression in the language
 type Expr interface{}
 
+// Operand is an operand expression
+type Operand struct {
+	*lex8.Token
+}
+
 // OpExpr is a binary or unary operation that uses an operator
 type OpExpr struct {
 	A  Expr
