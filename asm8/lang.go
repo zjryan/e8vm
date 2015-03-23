@@ -42,8 +42,9 @@ func (lang) Compile(p build8.Pkg) []*lex8.Error {
 	if pkg.imports != nil {
 		for _, stmt := range pkg.imports.stmts {
 			imp := imports[stmt.as]
-			if imp == nil {
+			if imp == nil || imp.Pkg == nil {
 				errs.Errorf(stmt.Path.Pos, "import missing")
+				continue
 			}
 
 			stmt.linkable = imp.Pkg.Compiled()
