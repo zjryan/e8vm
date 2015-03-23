@@ -49,7 +49,23 @@ func (p *parser) typeStr(t *lex8.Token) string {
 	return TypeStr(t.Type)
 }
 
+func (p *parser) ExpectSemi() *lex8.Token {
+	if p.InError() {
+		return nil
+	}
+
+	t := p.Token()
+	if t.Type != Semi {
+		p.ErrorfHere("expect ';', got %s", p.typeStr(t))
+		return nil
+	}
+	return p.Shift()
+}
+
 func (p *parser) ExpectOp(op string) *lex8.Token {
+	if p.InError() {
+		return nil
+	}
 	t := p.Token()
 	if t.Type != Operator || t.Lit != op {
 		p.ErrorfHere("expect '%s', got %s", op, p.typeStr(t))

@@ -31,7 +31,7 @@ func parseOperand(p *parser) ast.Expr {
 	return nil
 }
 
-func parseExprList(p *parser) *ast.ExprList {
+func parseExprListClosed(p *parser, closeWith string) *ast.ExprList {
 	ret := new(ast.ExprList)
 
 	for {
@@ -40,12 +40,21 @@ func parseExprList(p *parser) *ast.ExprList {
 			return nil
 		}
 		ret.Exprs = append(ret.Exprs, expr)
-		if !p.SeeOp(",") {
-			break
+
+		if p.SeeOp(closeWith) {
+			return ret
 		}
 
-		comma := p.Shift()
+		comma := p.ExpectOp(",")
+		if comma == nil {
+			return nil
+		}
 		ret.Commas = append(ret.Commas, comma)
+
+		// could be a trailing comma
+		if p.SeeOp(closeWith) {
+			return ret
+		}
 	}
 
 	return ret
@@ -72,7 +81,7 @@ func parsePrimaryExpr(p *parser) ast.Expr {
 			continue
 		}
 
-		lst := parseExprList(p)
+		lst := parseExprListClosed(p, ")")
 		if p.InError() {
 			return nil
 		}
@@ -126,7 +135,7 @@ func parseExpr(p *parser) ast.Expr {
 	return parseBinaryExpr(p, 0)
 }
 
-// Exprs parses a list of expressions and returns an array of ast node of 
+// Exprs parses a list of expressions and returns an array of ast node of
 // these expressions.
 func Exprs(f string, rc io.ReadCloser) ([]ast.Expr, []*lex8.Error) {
 	var ret []ast.Expr
@@ -135,7 +144,8 @@ func Exprs(f string, rc io.ReadCloser) ([]ast.Expr, []*lex8.Error) {
 	for !p.See(lex8.EOF) {
 		expr := parseExpr(p)
 		ret = append(ret, expr)
-		p.Expect(Semi)
+
+		p.ExpectSemi()
 		if p.InError() {
 			p.SkipErrStmt(Semi)
 		}
