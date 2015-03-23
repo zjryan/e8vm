@@ -13,7 +13,7 @@ type File struct {
 }
 
 // a listing of possible declarations
-var decls = []interface{} {
+var decls = []interface{}{
 	new(FuncDecl),
 	new(VarDecl),
 }
