@@ -6,10 +6,6 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func isDigit(r rune) bool {
-	return r >= '0' && r <= '9'
-}
-
 func lexC8(x *lex8.Lexer) *lex8.Token {
 	r := x.Rune()
 	if x.IsWhite(r) {
@@ -20,30 +16,24 @@ func lexC8(x *lex8.Lexer) *lex8.Token {
 	case '\n':
 		x.Next()
 		return x.MakeToken(Endl)
-	case '{', '}', '(', ')', '[', ']':
-		x.Next()
-		return x.MakeToken(Operator)
-	case '/':
-		x.Next()
-		r2 := x.Rune()
-		if r2 == '/' || r2 == '*' {
-			return lex8.LexComment(x)
-		} else if r2 == '=' {
-			x.Next()
-			return x.MakeToken(Operator)
-		} else {
-			return x.MakeToken(Operator)
-		}
 	case '"':
 		return lex8.LexString(x, String)
+	case '\'':
+		panic("char is on todo")
 	}
 
 	if isDigit(r) {
-		panic("todo: lex number")
+		return lexNumber(x)
+	}
+
+	// always make progress at this point
+	x.Next()
+	t := lexOperator(x, r)
+	if t != nil {
+		return t
 	}
 
 	x.Errorf("illegal char %q", r)
-	x.Next()
 	return x.MakeToken(lex8.Illegal)
 }
 
