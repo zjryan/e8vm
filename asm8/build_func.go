@@ -140,10 +140,9 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 	if s.pkg == "" {
 		sym := b.scope.Query(s.sym) // find the symbol in scope
 		if sym != nil {
-			var p *link8.Pkg
-			p, pkg = b.curPkg.PkgIndex(sym.Package)
-			index = p.SymIndex(sym.Name)
 			typ = sym.Type
+			pkg = 0
+			index = b.curPkg.SymIndex(sym.Name)
 		}
 	} else {
 		p := queryPkg(b, t, s.pkg) // find the package

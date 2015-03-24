@@ -30,6 +30,7 @@ func NewPkg(p string) *Pkg {
 	ret.funcs = make(map[uint32]*Func)
 	ret.vars = make(map[uint32]*Var)
 
+	// 0 is always itself
 	index := ret.Require(ret)
 	if index != 0 {
 		panic("bug")

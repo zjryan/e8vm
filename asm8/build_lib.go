@@ -20,7 +20,6 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 			SymFunc,
 			fn,
 			t.Pos,
-			pkg.path,
 		}
 
 		if !declareSymbol(b, sym) {
@@ -38,7 +37,6 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 			SymVar,
 			v,
 			t.Pos,
-			pkg.path,
 		}
 
 		if !declareSymbol(b, sym) {
@@ -57,7 +55,6 @@ func buildPkgScope(b *builder, pkg *pkg) {
 				SymImport,
 				stmt,
 				stmt.Path.Pos,
-				stmt.path,
 			}
 
 			if !declareSymbol(b, sym) {

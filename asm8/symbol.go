@@ -7,15 +7,14 @@ import (
 
 // Symbol is a data structure for saving a symbol.
 type symbol struct {
-	Name    string
-	Type    int
-	Item    interface{}
-	Pos     *lex8.Pos
-	Package string // Package path
+	Name string
+	Type int
+	Item interface{}
+	Pos  *lex8.Pos
 }
 
 func (s *symbol) clone() *symbol {
-	return &symbol{s.Name, s.Type, s.Item, s.Pos, s.Package}
+	return &symbol{s.Name, s.Type, s.Item, s.Pos}
 }
 
 // Symbol types
