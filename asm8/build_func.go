@@ -137,6 +137,7 @@ func init() {
 func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 	t := s.symTok
 
+	// TODO: this code part is too messy, need to clean this.
 	if s.pkg == "" {
 		sym := b.scope.Query(s.sym) // find the symbol in scope
 		if sym != nil {
@@ -146,16 +147,16 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 			}
 		}
 	} else {
-		p := queryPkg(b, t, s.pkg) // find the package
+		p := queryPkg(b, t, s.pkg) // find the package importStmt
 		if p != nil {
 			var sym *link8.Symbol
-			pkg = b.getIndex(p.as)
-
+			pkg = b.getIndex(p.as)       // package index in lib, based on alias
 			b.pkgUsed[p.as] = struct{}{} // mark pkg used
 
-			sym, index = p.lib.Query(s.sym)
+			// TODO: we should find this in back in linkable when possible
+			// this is required for handling consts
+			sym, index = p.lib.Query(s.sym) // find the symbol in the package
 			if sym != nil {
-				// should we use a consistant
 				if sym.Type == link8.SymFunc {
 					typ = SymFunc
 				} else if sym.Type == link8.SymVar {

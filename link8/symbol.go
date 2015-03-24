@@ -11,5 +11,4 @@ const (
 	SymNone = iota // for default return value
 	SymFunc
 	SymVar
-	SymConst // TODO: this is part of the header, but not really for linking
 )

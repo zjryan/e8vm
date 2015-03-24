@@ -49,7 +49,7 @@ func printStmt(p *printer, stmt ast.Stmt) {
 	p.printEndl()
 }
 
-// PrintStmt prints a statement
+// PrintStmts prints a list of statements
 func PrintStmts(stmts []ast.Stmt) string {
 	p := newPrinter()
 	printStmt(p, stmts)

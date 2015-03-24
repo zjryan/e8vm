@@ -34,7 +34,6 @@ func init() {
 		}
 	}
 	as(SymNone == link8.SymNone)
-	as(SymConst == link8.SymConst)
 	as(SymFunc == link8.SymFunc)
 	as(SymVar == link8.SymVar)
 }
