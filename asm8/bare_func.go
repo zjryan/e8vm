@@ -16,9 +16,9 @@ func BuildBareFunc(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	}
 
 	// resolving pass
-	res := newResolver()
-	rfunc := resolveFunc(res, fn)
-	if es := res.Errs(); es != nil {
+	log := lex8.NewErrorList()
+	rfunc := resolveFunc(log, fn)
+	if es := log.Errs(); es != nil {
 		return nil, es
 	}
 

@@ -18,9 +18,9 @@ func listImport(f string, rc io.ReadCloser, pkg build8.Pkg) []*lex8.Error {
 		return nil
 	}
 
-	res := newResolver()
-	imp := resolveImportDecl(res, astFile.Imports)
-	if es := res.Errs(); es != nil {
+	log := lex8.NewErrorList()
+	imp := resolveImportDecl(log, astFile.Imports)
+	if es := log.Errs(); es != nil {
 		return es
 	}
 

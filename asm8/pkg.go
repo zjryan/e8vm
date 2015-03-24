@@ -14,7 +14,7 @@ type pkg struct {
 }
 
 func resolvePkg(p string, src map[string]*build8.File) (*pkg, []*lex8.Error) {
-	res := newResolver()
+	log := lex8.NewErrorList()
 	ret := new(pkg)
 	ret.path = p
 
@@ -26,26 +26,26 @@ func resolvePkg(p string, src map[string]*build8.File) (*pkg, []*lex8.Error) {
 		}
 
 		// then resolve the file
-		file := resolveFile(res, astFile)
+		file := resolveFile(log, astFile)
 		ret.files = append(ret.files, file)
 
-		// import policy
+		// enforce import policy
 		if len(src) == 1 || name == "import.s" {
 			if ret.imports != nil {
-				res.Errorf(file.imports.Kw.Pos,
+				log.Errorf(file.imports.Kw.Pos,
 					"double valid import stmt; two import.s?",
 				)
 			} else {
 				ret.imports = file.imports
 			}
 		} else if file.imports != nil {
-			res.Errorf(file.imports.Kw.Pos,
+			log.Errorf(file.imports.Kw.Pos,
 				"invalid import outside import.s in a multi-file package",
 			)
 		}
 	}
 
-	if es := res.Errs(); es != nil {
+	if es := log.Errs(); es != nil {
 		return nil, es
 	}
 	return ret, nil
