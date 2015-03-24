@@ -1,6 +1,10 @@
 package asm8
 
-func declareSymbol(b *builder, sym *symbol) bool {
+import (
+	"lonnie.io/e8vm/sym8"
+)
+
+func declareSymbol(b *builder, sym *sym8.Symbol) bool {
 	// declare in the scope
 	exists := b.scope.Declare(sym)
 	if exists != nil {
@@ -15,13 +19,7 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 	// declare functions
 	for _, fn := range file.funcs {
 		t := fn.Name
-		sym := &symbol{
-			t.Lit,
-			SymFunc,
-			fn,
-			t.Pos,
-		}
-
+		sym := sym8.Make(t.Lit, SymFunc, fn, t.Pos)
 		if !declareSymbol(b, sym) {
 			continue
 		}
@@ -32,13 +30,7 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 	// declare variables
 	for _, v := range file.vars {
 		t := v.Name
-		sym := &symbol{
-			t.Lit,
-			SymVar,
-			v,
-			t.Pos,
-		}
-
+		sym := sym8.Make(t.Lit, SymVar, v, t.Pos)
 		if !declareSymbol(b, sym) {
 			continue
 		}
@@ -50,13 +42,7 @@ func declareFile(b *builder, pkg *pkg, file *file) {
 func buildPkgScope(b *builder, pkg *pkg) {
 	if pkg.imports != nil {
 		for as, stmt := range pkg.imports.stmts {
-			sym := &symbol{
-				as,
-				SymImport,
-				stmt,
-				stmt.Path.Pos,
-			}
-
+			sym := sym8.Make(as, SymImport, stmt, stmt.Path.Pos)
 			if !declareSymbol(b, sym) {
 				continue
 			}

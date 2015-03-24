@@ -3,6 +3,7 @@ package asm8
 import (
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
+	"lonnie.io/e8vm/sym8"
 )
 
 // buildFunc builds a function object from a function AST node.
@@ -30,13 +31,7 @@ func declareLabels(b *builder, f *funcDecl) {
 
 		lab := stmt.label
 		op := stmt.Ops[0]
-		sym := &symbol{
-			Name: lab,
-			Type: SymLabel,
-			Item: stmt,
-			Pos:  op.Pos,
-		}
-
+		sym := sym8.Make(lab, SymLabel, stmt, op.Pos)
 		decl := b.scope.Declare(sym)
 		if decl != nil {
 			b.Errorf(op.Pos, "%q already declared", lab)
@@ -134,6 +129,9 @@ func init() {
 // resolveSymbol resolves the symbol in the statement,
 // returns the symbol linking object and its <sym, pkg> index pair
 // in the current package context.
+//
+// this function only resolves symbol that requires linking
+// which are variables and functions
 func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 	t := s.symTok
 
@@ -149,7 +147,8 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 	} else {
 		p := queryPkg(b, t, s.pkg) // find the package importStmt
 		if p != nil {
-			var sym *link8.Symbol
+			var sym *link8.Symbol // for saving the linking symbol in the lib
+
 			pkg = b.getIndex(p.as)       // package index in lib, based on alias
 			b.pkgUsed[p.as] = struct{}{} // mark pkg used
 

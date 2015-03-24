@@ -2,12 +2,13 @@ package asm8
 
 import (
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/sym8"
 )
 
 // Builder manipulates an AST, checks its syntax, and builds the assembly
 type builder struct {
 	*lex8.ErrorList
-	scope *symScope
+	scope *sym8.Scope
 
 	curPkg *lib
 
@@ -18,7 +19,7 @@ type builder struct {
 func newBuilder() *builder {
 	ret := new(builder)
 	ret.ErrorList = lex8.NewErrorList()
-	ret.scope = newSymScope()
+	ret.scope = sym8.NewScope()
 	ret.indices = make(map[string]uint32)
 	ret.pkgUsed = make(map[string]struct{})
 

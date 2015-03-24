@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"lonnie.io/e8vm/link8"
+	"lonnie.io/e8vm/sym8"
 )
 
 // Lib is the compiler output of a package
@@ -12,7 +13,7 @@ import (
 type lib struct {
 	*link8.Pkg
 
-	symbols map[string]*symbol
+	symbols map[string]*sym8.Symbol
 }
 
 // NewPkgObj creates a new package compile object
@@ -20,7 +21,7 @@ func newLib(p string) *lib {
 	ret := new(lib)
 	ret.Pkg = link8.NewPkg(p)
 
-	ret.symbols = make(map[string]*symbol)
+	ret.symbols = make(map[string]*sym8.Symbol)
 
 	id := ret.Require(ret.Pkg) // require itself
 	if id != 0 {
@@ -38,7 +39,7 @@ func (p *lib) Link() *link8.Pkg { return p.Pkg }
 // link8.Package, and it returns the index.  If the symbol is a constant, it
 // returns 0 after the declaration. Other types will panic. Redeclaration will
 // panic.
-func (p *lib) Declare(s *symbol) uint32 {
+func (p *lib) Declare(s *sym8.Symbol) uint32 {
 	_, found := p.symbols[s.Name]
 	if found {
 		panic("redeclare")
@@ -66,7 +67,7 @@ func (p *lib) Declare(s *symbol) uint32 {
 // Query returns the symbol declared by name and its symbol index
 // if the symbol is a function or variable. It returns nil, 0 when
 // the symbol of name is not found.
-func (p *lib) query(name string) (*symbol, uint32) {
+func (p *lib) query(name string) (*sym8.Symbol, uint32) {
 	ret, found := p.symbols[name]
 	if !found {
 		return nil, 0

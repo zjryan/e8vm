@@ -1,6 +1,6 @@
 package link8
 
-// Symbol is a linking symbol in an object file.
+// Symbol is a linking symbol in an object file
 type Symbol struct {
 	Name string
 	Type int

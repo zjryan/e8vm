@@ -1,21 +1,8 @@
 package asm8
 
 import (
-	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
 )
-
-// Symbol is a data structure for saving a symbol.
-type symbol struct {
-	Name string
-	Type int
-	Item interface{}
-	Pos  *lex8.Pos
-}
-
-func (s *symbol) clone() *symbol {
-	return &symbol{s.Name, s.Type, s.Item, s.Pos}
-}
 
 // Symbol types
 const (
