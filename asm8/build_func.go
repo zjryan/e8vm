@@ -141,8 +141,9 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 		sym := b.scope.Query(s.sym) // find the symbol in scope
 		if sym != nil {
 			typ = sym.Type
-			pkg = 0
-			index = b.curPkg.SymIndex(sym.Name)
+			if typ == SymVar || typ == SymFunc {
+				index = b.curPkg.SymIndex(sym.Name)
+			}
 		}
 	} else {
 		p := queryPkg(b, t, s.pkg) // find the package
@@ -171,8 +172,10 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 		b.Errorf(t.Pos, "%q not found", t.Lit)
 	} else if typ == SymConst {
 		b.Errorf(t.Pos, "const symbol filling not implemented yet")
+		typ = SymNone // report as error
 	} else if typ == SymImport || typ == SymLabel {
 		b.Errorf(t.Pos, "cannot link %s %q", symStr(typ), t.Lit)
+		typ = SymNone // report as error
 	}
 
 	return
@@ -185,7 +188,6 @@ func linkSymbol(b *builder, s *funcStmt, f *link8.Func) {
 		return // this may happen for bare function
 	}
 
-	// TODO: this now looks for the symbol
 	typ, pkg, index := resolveSymbol(b, s)
 	if typ == SymNone {
 		return
