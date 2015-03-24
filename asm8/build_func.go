@@ -141,7 +141,7 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 		if sym != nil {
 			typ = sym.Type
 			if typ == SymVar || typ == SymFunc {
-				index = b.curPkg.SymIndex(sym.Name)
+				index = b.curPkg.SymIndex(sym.Name())
 			}
 		}
 	} else {

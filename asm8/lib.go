@@ -40,23 +40,23 @@ func (p *lib) Link() *link8.Pkg { return p.Pkg }
 // returns 0 after the declaration. Other types will panic. Redeclaration will
 // panic.
 func (p *lib) Declare(s *sym8.Symbol) uint32 {
-	_, found := p.symbols[s.Name]
+	_, found := p.symbols[s.Name()]
 	if found {
 		panic("redeclare")
 	}
-	p.symbols[s.Name] = s
+	p.symbols[s.Name()] = s
 
 	switch s.Type {
 	case SymConst:
 		return 0
 	case SymFunc:
 		return p.Pkg.Declare(&link8.Symbol{
-			Name: s.Name,
+			Name: s.Name(),
 			Type: link8.SymFunc,
 		})
 	case SymVar:
 		return p.Pkg.Declare(&link8.Symbol{
-			Name: s.Name,
+			Name: s.Name(),
 			Type: link8.SymVar,
 		})
 	default:

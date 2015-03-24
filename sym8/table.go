@@ -19,19 +19,19 @@ func (tab *Table) Query(n string) *Symbol {
 		return nil
 	}
 
-	return s.Clone()
+	return s
 }
 
 // Declare adds a symbol into the table.
 // It returns nil on successful, and returns the conflict symbol
 // when it is already declared.
 func (tab *Table) Declare(s *Symbol) *Symbol {
-	n := s.Name
+	n := s.Name()
 	p := tab.m[n]
 	if p != nil {
-		return p.Clone()
+		return p
 	}
 
-	tab.m[n] = s.Clone()
+	tab.m[n] = s
 	return nil
 }

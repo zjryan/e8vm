@@ -6,16 +6,16 @@ import (
 
 // Symbol is a data structure for saving a symbol.
 type Symbol struct {
-	Name string
+	name string
+
 	Type int
 	Item interface{}
 	Pos  *lex8.Pos
 }
 
-// Clone deep copies the symbol
-func (s *Symbol) Clone() *Symbol {
-	return &Symbol{s.Name, s.Type, s.Item, s.Pos}
-}
+// Name returns the symbol name.
+// This name is immutable for its used for indexing in the tables.
+func (s *Symbol) Name() string { return s.name }
 
 // Make creates a new symbol
 func Make(name string, t int, item interface{}, pos *lex8.Pos) *Symbol {
