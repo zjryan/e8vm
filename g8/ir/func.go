@@ -4,6 +4,7 @@ package ir
 // or unamed local variables and also a set of basic blocks.
 // it can generate a linkable function.
 type Func struct {
+	id          int
 	locals      []*stackVar
 	namedLocals map[string]*stackVar
 	blocks      []*Block
@@ -36,4 +37,10 @@ func (f *Func) newLocal(name string) *stackVar {
 
 func (f *Func) newTemp() *stackVar {
 	return f.newLocal("")
+}
+
+func (f *Func) newBlock() *Block {
+	ret := new(Block)
+	ret.id = len(f.blocks)
+	return ret
 }

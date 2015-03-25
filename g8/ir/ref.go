@@ -16,3 +16,6 @@ type stackVar struct {
 type heapVar struct{ pkg, sym int } // a variable symbol on heap
 type funcSym struct{ pkg, sym int } // a function symbol
 type number struct{ v uint32 }      // a constant number
+
+func num(v uint32) *number { return &number{v} }
+func snum(v int32) *number { return &number{uint32(v)} }
