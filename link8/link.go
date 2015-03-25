@@ -10,7 +10,7 @@ func LinkMain(main *Pkg, out io.WriteCloser) error {
 	lnk := NewLinker()
 	lnk.AddPkgs(main)
 
-	funcMain, index := main.Query("main")
+	funcMain, index := main.SymbolByName("main")
 	if funcMain == nil || funcMain.Type != SymFunc {
 		return fmt.Errorf("main function missing")
 	}

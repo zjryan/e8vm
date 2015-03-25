@@ -77,7 +77,7 @@ func (p *lib) query(name string) (*sym8.Symbol, uint32) {
 	case SymConst:
 		return ret, 0
 	case SymFunc, SymVar:
-		s, index := p.Pkg.Query(name)
+		s, index := p.Pkg.SymbolByName(name)
 		if s == nil {
 			panic("symbol missing")
 		}

@@ -1,9 +1,5 @@
 package link8
 
-import (
-	"path"
-)
-
 // Pkg is the compiling object of a package. It is the linking
 // unit for programs.
 type Pkg struct {
@@ -38,9 +34,6 @@ func NewPkg(p string) *Pkg {
 
 	return ret
 }
-
-// Name returns the package's default name.
-func (p *Pkg) Name() string { return path.Base(p.path) }
 
 // Path returns the package's path string.
 func (p *Pkg) Path() string { return p.path }
@@ -91,8 +84,8 @@ func (p *Pkg) Declare(s *Symbol) uint32 {
 	return index
 }
 
-// Query returns the symbol with the particular name.
-func (p *Pkg) Query(name string) (*Symbol, uint32) {
+// SymbolByName returns the symbol with the particular name.
+func (p *Pkg) SymbolByName(name string) (*Symbol, uint32) {
 	index, found := p.symIndex[name]
 	if !found {
 		return nil, 0
@@ -103,7 +96,7 @@ func (p *Pkg) Query(name string) (*Symbol, uint32) {
 
 // HasFunc checks if the package has a function of a particular name.
 func (p *Pkg) HasFunc(name string) bool {
-	sym, _ := p.Query(name)
+	sym, _ := p.SymbolByName(name)
 	if sym == nil || sym.Type != SymFunc {
 		return false
 	}

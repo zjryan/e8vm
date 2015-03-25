@@ -154,7 +154,7 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 
 			// TODO: we should find this in back in linkable when possible
 			// this is required for handling consts
-			sym, index = p.lib.Query(s.sym) // find the symbol in the package
+			sym, index = p.lib.SymbolByName(s.sym) // find the symbol in the package
 			if sym != nil {
 				if sym.Type == link8.SymFunc {
 					typ = SymFunc
