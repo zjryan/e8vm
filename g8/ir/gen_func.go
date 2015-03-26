@@ -89,6 +89,7 @@ func layoutLocals(f *Func) {
 
 	pushVar(f, regArgs...)
 	pushVar(f, regRets...)
+	pushVar(f, f.locals...)
 }
 
 func makePrologue(f *Func) *Block {
