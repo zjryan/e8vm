@@ -72,15 +72,19 @@ func (p *Pkg) SymIndex(name string) uint32 {
 }
 
 // Declare declares a symbol and assigns a symbol index.
+// If s.Name is empty string, then the symbol is anonymous.
 func (p *Pkg) Declare(s *Symbol) uint32 {
-	_, found := p.symIndex[s.Name]
-	if found {
-		panic("redeclaring")
+	index := uint32(len(p.symbols))
+	p.symbols = append(p.symbols, s)
+
+	if s.Name != "" {
+		_, found := p.symIndex[s.Name]
+		if found {
+			panic("redeclaring symbol with same name")
+		}
+		p.symIndex[s.Name] = index
 	}
 
-	index := uint32(len(p.symbols))
-	p.symIndex[s.Name] = index
-	p.symbols = append(p.symbols, s)
 	return index
 }
 

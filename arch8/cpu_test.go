@@ -2,8 +2,6 @@ package arch8
 
 import (
 	"testing"
-
-	"lonnie.io/e8vm/conv"
 )
 
 type ti1 int
@@ -37,7 +35,7 @@ func TestCPU(t *testing.T) {
 	as(e == errHalt, "not halting")
 
 	cpu.Reset()
-	m.WriteWord(conv.InitPC, 1)
+	m.WriteWord(InitPC, 1)
 	e = cpu.Tick()
 	as(e == errTimeInt, "not time interrupt")
 

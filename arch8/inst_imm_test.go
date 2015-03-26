@@ -3,13 +3,10 @@ package arch8
 import (
 	"testing"
 
-	"lonnie.io/e8vm/conv"
 	"math/rand"
 )
 
 func TestInstImm(t *testing.T) {
-	const InitPC = conv.InitPC
-
 	m := newPhyMemory(PageSize * 32)
 	cpu := newCPU(m, new(instImm), 0)
 

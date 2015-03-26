@@ -5,12 +5,9 @@ import (
 
 	"math"
 	"math/rand"
-
-	"lonnie.io/e8vm/conv"
 )
 
 func TestInstReg(t *testing.T) {
-	const InitPC = conv.InitPC
 	m := newPhyMemory(PageSize * 32)
 	cpu := newCPU(m, new(instReg), 0)
 
