@@ -28,65 +28,65 @@ func (i *instReg) I(cpu *cpu, in uint32) *Excep {
 
 	if isFloat == 0 {
 		switch funct {
-		case 0: // sll
+		case SLL:
 			d = s1 << shift
-		case 1: // srl
+		case SRL:
 			d = s1 >> shift
-		case 2: // sra
+		case SRA:
 			d = uint32(int32(s1) >> shift)
-		case 3: // sllv
+		case SLLV:
 			d = s1 << s2
-		case 4: // srlv
+		case SRLV:
 			d = s1 >> s2
-		case 5: // srla
+		case SRLA:
 			d = uint32(int32(s1) >> s2)
-		case 6: // add
+		case ADD:
 			d = s1 + s2
-		case 7: // sub
+		case SUB:
 			d = s1 - s2
-		case 8: // and
+		case AND:
 			d = s1 & s2
-		case 9: // or
+		case OR:
 			d = s1 | s2
-		case 10: // xor
+		case XOR:
 			d = s1 ^ s2
-		case 11: // nor
+		case NOR:
 			d = ^(s1 | s2)
-		case 12: // slt
+		case SLT:
 			if int32(s1) < int32(s2) {
 				d = 1
 			} else {
 				d = 0
 			}
-		case 13: // sltu
+		case SLTU:
 			if s1 < s2 {
 				d = 1
 			} else {
 				d = 0
 			}
-		case 14: // mul
+		case MUL:
 			d = uint32(int32(s1) * int32(s2))
-		case 15: // mulu
+		case MULU:
 			d = s1 * s2
-		case 16: // div
+		case DIV:
 			if s2 == 0 {
 				d = 0
 			} else {
 				d = uint32(int32(s1) / int32(s2))
 			}
-		case 17: // divu
+		case DIVU:
 			if s2 == 0 {
 				d = 0
 			} else {
 				d = s1 / s2
 			}
-		case 18: // mod
+		case MOD:
 			if s2 == 0 {
 				d = 0
 			} else {
 				d = uint32(int32(s1) % int32(s2))
 			}
-		case 19: // modu
+		case MODU:
 			if s2 == 0 {
 				d = 0
 			} else {
@@ -100,15 +100,15 @@ func (i *instReg) I(cpu *cpu, in uint32) *Excep {
 		f2 := math.Float32frombits(s2)
 		var fd float32
 		switch funct {
-		case 0: // fadd
+		case FADD:
 			fd = f1 + f2
-		case 1: // fsub
+		case FSUB:
 			fd = f1 - f2
-		case 2: // fmul
+		case FMUL:
 			fd = f1 * f2
-		case 3: // fdiv
+		case FDIV:
 			fd = f1 / f2
-		case 4: // fint
+		case FINT:
 			d = uint32(f1)
 		default:
 			return errInvalidInst

@@ -22,31 +22,31 @@ func (i *instImm) I(cpu *cpu, in uint32) *Excep {
 	switch op {
 	case 0:
 		panic("register based instruction")
-	case 1: // addi
+	case ADDI:
 		d = s + ims
-	case 2: // slti
+	case SLTI:
 		if int32(s) < int32(ims) {
 			d = 1
 		} else {
 			d = 0
 		}
-	case 3: // andi
+	case ANDI:
 		d = s & im
-	case 4: // ori
+	case ORI:
 		d = s | im
-	case 5: // lui
+	case LUI:
 		d = im << 16
-	case 6: // lw
+	case LW:
 		d, e = cpu.readWord(addr)
-	case 7: // lb
+	case LB:
 		b, e = cpu.readByte(addr)
 		d = uint32(int32(int8(b)))
-	case 8: // lbu
+	case LBU:
 		b, e = cpu.readByte(addr)
 		d = uint32(b)
-	case 9: // sw
+	case SW:
 		e = cpu.writeWord(addr, d)
-	case 10: // sb
+	case SB:
 		e = cpu.writeByte(addr, byte(d))
 	default:
 		return errInvalidInst

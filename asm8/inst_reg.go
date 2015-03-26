@@ -65,7 +65,8 @@ func parseShift(p lex8.Logger, op *lex8.Token) uint32 {
 	return uint32(ret)
 }
 
-func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *inst {
+// InstReg composes a register based instruction
+func InstReg(fn, d, s1, s2, sh, isFloat uint32) uint32 {
 	ret := uint32(0)
 	ret |= (d & 0x7) << 21
 	ret |= (s1 & 0x7) << 18
@@ -73,7 +74,11 @@ func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *inst {
 	ret |= (sh & 0x1f) << 10
 	ret |= (isFloat & 0x1) << 8
 	ret |= fn & 0xff
+	return ret
+}
 
+func makeInstReg(fn, d, s1, s2, sh, isFloat uint32) *inst {
+	ret := InstReg(fn, d, s1, s2, sh, isFloat)
 	return &inst{inst: ret}
 }
 

@@ -20,9 +20,13 @@ var (
 	}
 )
 
+// InstSys makes a system instruction
+func InstSys(op, reg uint32) uint32 {
+	return ((op & 0xff) << 24) | ((reg & 0x7) << 21)
+}
+
 func makeInstSys(op, reg uint32) *inst {
-	ret := ((op & 0xff) << 24) | ((reg & 0x7) << 21)
-	return &inst{inst: ret}
+	return &inst{inst: InstSys(op, reg)}
 }
 
 func resolveInstSys(p lex8.Logger, ops []*lex8.Token) (*inst, bool) {

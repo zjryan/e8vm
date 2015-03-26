@@ -107,4 +107,8 @@ func genFunc(f *Func) {
 	layoutLocals(f)
 	f.prologue = makePrologue(f)
 	f.epilogue = makeEpilogue(f)
+
+	for _, b := range f.blocks {
+		genBlock(b)
+	}
 }

@@ -11,26 +11,26 @@ func (i *instSys) I(cpu *cpu, in uint32) *Excep {
 	s := cpu.regs[src]
 
 	switch op {
-	case 64: // halt
+	case HALT:
 		return errHalt
-	case 65: // syscall
+	case SYSCALL:
 		if !cpu.UserMode() {
 			return errInvalidInst
 		}
 		return cpu.Syscall()
-	case 66: // usermod
+	case USERMOD:
 		cpu.ring = 1
-	case 67: // vtable
+	case VTABLE:
 		if cpu.UserMode() {
 			return errInvalidInst
 		}
 		cpu.virtMem.SetTable(s)
-	case 68: // iret
+	case IRET:
 		if cpu.UserMode() {
 			return errInvalidInst
 		}
 		return cpu.Iret()
-	case 69: // cpuid
+	case CPUID:
 		s = uint32(cpu.index)
 	default:
 		return errInvalidInst

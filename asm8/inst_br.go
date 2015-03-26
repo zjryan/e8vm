@@ -12,10 +12,17 @@ var (
 	}
 )
 
-func makeInstBr(op, s1, s2 uint32) *inst {
+// InstBr compose a branch instruction
+func InstBr(op, s1, s2, im uint32) uint32 {
 	ret := (op & 0xff) << 24
 	ret |= (s1 & 0x7) << 21
 	ret |= (s2 & 0x7) << 18
+	ret |= im & 0x3ffff
+	return ret
+}
+
+func makeInstBr(op, s1, s2 uint32) *inst {
+	ret := InstBr(op, s1, s2, 0)
 	return &inst{inst: ret}
 }
 

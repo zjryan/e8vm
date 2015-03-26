@@ -13,6 +13,13 @@ func isValidSymbol(sym string) bool {
 	return true
 }
 
+// InstJmp makes a jump instruction
+func InstJmp(op, im uint32) uint32 {
+	ret := (op & 0x3) << 30
+	ret |= im & 0x3fffffff
+	return ret
+}
+
 func resolveInstJmp(p lex8.Logger, ops []*lex8.Token) (*inst, bool) {
 	op0 := ops[0]
 	opName := op0.Lit
@@ -44,7 +51,7 @@ func resolveInstJmp(p lex8.Logger, ops []*lex8.Token) (*inst, bool) {
 	}
 
 	ret := new(inst)
-	ret.inst = (op & 0x3) << 30
+	ret.inst = InstJmp(op, 0)
 	ret.pkg = pack
 	ret.sym = sym
 	ret.fill = fill

@@ -17,11 +17,11 @@ func (i *instBr) I(cpu *cpu, in uint32) *Excep {
 	br := pc + uint32(int32(im<<14)>>12)
 
 	switch op {
-	case 32: // bne
+	case BNE: // bne
 		if s1 != s2 {
 			pc = br
 		}
-	case 33: // beq
+	case BEQ: // beq
 		if s1 == s2 {
 			pc = br
 		}
