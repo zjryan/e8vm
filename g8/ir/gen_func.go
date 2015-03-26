@@ -103,11 +103,11 @@ func makeEpilogue(f *Func) *Block {
 	return b
 }
 
-func genFunc(f *Func) {
+func genFunc(p *Pkg, f *Func) {
 	layoutLocals(f)
+
 	f.prologue = makePrologue(f)
 	f.epilogue = makeEpilogue(f)
-
 	for _, b := range f.blocks {
 		genBlock(b)
 	}

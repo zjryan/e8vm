@@ -19,6 +19,8 @@ type Func struct {
 
 	callerFrameSize int32
 	frameSize       int32
+
+	index uint32 // the index in the lib
 }
 
 func (f *Func) newVar(
