@@ -40,7 +40,7 @@ func loadRef(b *Block, reg uint32, r Ref) {
 		if high != 0 {
 			b.inst(asm.lui(reg, high))
 		}
-		b.inst(asm.ori(reg, reg, r.v))
+		b.inst(asm.ori(reg, _0, r.v))
 	default:
 		panic("not implemented")
 	}

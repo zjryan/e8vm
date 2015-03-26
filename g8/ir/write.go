@@ -17,7 +17,7 @@ func writeFunc(p *Pkg, f *Func) {
 	lfunc := link8.NewFunc()
 
 	writeBlock(lfunc, f.prologue)
-	for _, b := range f.blocks {
+	for _, b := range f.body {
 		writeBlock(lfunc, b)
 	}
 	writeBlock(lfunc, f.epilogue)

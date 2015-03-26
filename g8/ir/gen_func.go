@@ -79,7 +79,7 @@ func layoutLocals(f *Func) {
 }
 
 func makePrologue(f *Func) *Block {
-	b := f.NewBlock()
+	b := f.newBlock()
 	saveVar(b, arch8.RET, f.retAddr)
 	for _, v := range f.args {
 		if v.viaReg == 0 {
@@ -91,7 +91,7 @@ func makePrologue(f *Func) *Block {
 }
 
 func makeEpilogue(f *Func) *Block {
-	b := f.NewBlock()
+	b := f.newBlock()
 	for _, v := range f.rets {
 		if v.viaReg == 0 {
 			continue
@@ -108,7 +108,8 @@ func genFunc(p *Pkg, f *Func) {
 
 	f.prologue = makePrologue(f)
 	f.epilogue = makeEpilogue(f)
-	for _, b := range f.blocks {
+
+	for _, b := range f.body {
 		genBlock(b)
 	}
 }

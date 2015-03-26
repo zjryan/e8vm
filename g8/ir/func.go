@@ -14,6 +14,7 @@ type Func struct {
 	vars      []*stackVar
 	namedVars map[string]*stackVar
 	blocks    []*Block
+	body      []*Block
 
 	prologue *Block
 	epilogue *Block
@@ -75,9 +76,16 @@ func (f *Func) NewTemp(n int32) *stackVar {
 	return f.NewLocal("", n)
 }
 
-// NewBlock creates a new basic block for the function
-func (f *Func) NewBlock() *Block {
+func (f *Func) newBlock() *Block {
 	ret := new(Block)
 	ret.id = len(f.blocks)
+	f.blocks = append(f.blocks, ret)
+	return ret
+}
+
+// NewBlock creates a new basic block for the function
+func (f *Func) NewBlock() *Block {
+	ret := f.newBlock()
+	f.body = append(f.body, ret)
 	return ret
 }
