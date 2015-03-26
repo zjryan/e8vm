@@ -34,7 +34,7 @@ func (b *Block) Jump(dest *Block, x Ref, op string, y Ref) {
 	b.addJump(&jump{x, op, y, dest.id})
 }
 
-// Jump append a redirection to the end of the basic block.
+// JumpID appends a redirection to the end of the basic block.
 // The redirection points to the basic block of the particular id.
 func (b *Block) JumpID(id int, x Ref, op string, y Ref) {
 	b.addJump(&jump{x, op, y, id})

@@ -1,5 +1,6 @@
 package ir
 
+// Ref is a reference of an object
 type Ref interface{}
 
 // stackVar is a variable on stack
@@ -18,9 +19,12 @@ type stackVar struct {
 	regOnly bool
 }
 
-type heapVar struct{ pkg, sym int } // a variable symbol on heap
+type heapSym struct{ pkg, sym int } // a variable on heap
 type funcSym struct{ pkg, sym int } // a function symbol
 type number struct{ v uint32 }      // a constant number
 
+// Num creates a constant reference to a int32 number
 func Num(v uint32) Ref { return &number{v} }
+
+// Snum creates a constant reference to a uint32 number
 func Snum(v int32) Ref { return &number{uint32(v)} }

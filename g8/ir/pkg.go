@@ -11,7 +11,7 @@ type Pkg struct {
 	path string
 
 	funcs []*Func
-	vars  []*heapVar
+	vars  []*heapSym
 }
 
 // NewPkg creates a package with a particular path name.
