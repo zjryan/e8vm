@@ -112,10 +112,14 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	lib := ret.Compiled().Lib() // the linkable lib
 	// a package with main entrance, build the bin
 	if lib.HasFunc("main") {
+		log := lex8.NewErrorList()
+
 		fout := b.home.makeBin(p)
-		e := link8.LinkMain(lib, fout)
-		if e != nil {
-			return nil, lex8.SingleErr(e)
+		log.SaveError(link8.LinkMain(lib, fout))
+		log.SaveError(fout.Close())
+
+		if es := log.Errs(); es != nil {
+			return nil, es
 		}
 	}
 

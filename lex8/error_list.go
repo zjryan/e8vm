@@ -53,6 +53,13 @@ func (lst *ErrorList) Errorf(p *Pos, f string, args ...interface{}) {
 	lst.Add(&Error{p, fmt.Errorf(f, args...)})
 }
 
+// SaveError saves a single normal error without a position.
+func (lst *ErrorList) SaveError(e error) {
+	if e != nil {
+		lst.Add(&Error{Err: e})
+	}
+}
+
 // Print prints to the writer (maximume lst.MaxPrint errors).
 func (lst *ErrorList) Print(w io.Writer) error {
 	for _, e := range lst.errs {

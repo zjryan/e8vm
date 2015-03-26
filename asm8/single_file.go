@@ -1,6 +1,7 @@
 package asm8
 
 import (
+	"bytes"
 	"io"
 
 	"lonnie.io/e8vm/build8"
@@ -17,7 +18,7 @@ func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 		return nil, es
 	}
 
-	buf := new(link8.Buf)
+	buf := new(bytes.Buffer)
 	e := link8.LinkMain(pkg.Compiled().Lib(), buf)
 	if e != nil {
 		return nil, lex8.SingleErr(e)

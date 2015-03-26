@@ -6,7 +6,7 @@ import (
 )
 
 // LinkMain produces a image for a main() in a package.
-func LinkMain(main *Pkg, out io.WriteCloser) error {
+func LinkMain(main *Pkg, out io.Writer) error {
 	lnk := NewLinker()
 	lnk.AddPkgs(main)
 
@@ -26,12 +26,10 @@ func LinkMain(main *Pkg, out io.WriteCloser) error {
 	for _, f := range funcs {
 		writeFunc(w, f.pkg, f.Func())
 	}
-
 	for _, v := range vars {
 		writeVar(w, v.Var())
 	}
-
-	return out.Close()
+	return w.Err()
 }
 
 // LinkBareFunc produces a image of a single function that has no links.
@@ -44,5 +42,10 @@ func LinkBareFunc(f *Func) ([]byte, error) {
 	buf := new(Buf)
 	w := newWriter(buf)
 	w.writeBareFunc(f)
+	e := w.Err()
+	if e != nil {
+		return nil, e
+	}
+
 	return buf.Bytes(), nil
 }

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"bytes"
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/dasm8"
@@ -44,7 +45,7 @@ func irTest() {
 
 	lib := ir.BuildPkg(p)
 
-	buf := new(link8.Buf)
+	buf := new(bytes.Buffer)
 	e := link8.LinkMain(lib, buf)
 	if e != nil {
 		exit(e)

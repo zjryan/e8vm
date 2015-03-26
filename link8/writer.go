@@ -7,13 +7,13 @@ import (
 )
 
 type writer struct {
-	wc io.WriteCloser
-	e  error
+	w io.Writer
+	e error
 }
 
-func newWriter(wc io.WriteCloser) *writer {
+func newWriter(w io.Writer) *writer {
 	ret := new(writer)
-	ret.wc = wc
+	ret.w = w
 	return ret
 }
 
@@ -26,7 +26,7 @@ func (w *writer) Write(buf []byte) (int, error) {
 		return 0, w.e
 	}
 
-	n, e := w.wc.Write(buf)
+	n, e := w.w.Write(buf)
 	if e != nil {
 		w.e = e
 	}
@@ -47,10 +47,6 @@ func (w *writer) writeBareFunc(f *Func) {
 	for _, i := range f.insts {
 		w.writeU32(i)
 	}
-}
-
-func (w *writer) Close() error {
-	return w.wc.Close()
 }
 
 func writeVar(w *writer, v *Var) {
