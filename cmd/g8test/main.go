@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"flag"
 	"fmt"
 	"os"
-	"bytes"
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/dasm8"
