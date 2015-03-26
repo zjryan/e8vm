@@ -1,9 +1,9 @@
 package link8
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"bytes"
 )
 
 // LinkMain produces a image for a main() in a package.
