@@ -47,16 +47,21 @@ func (_s) addi(d, s uint32, im int32) uint32 {
 
 func (_s) lui(d, im uint32) uint32     { return S.InstImm(A.LUI, d, 0, im) }
 func (_s) ori(d, s, im uint32) uint32  { return S.InstImm(A.ORI, d, s, im) }
+func (_s) xori(d, s, im uint32) uint32 { return S.InstImm(A.XORI, d, s, im) }
 func (_s) andi(d, s, im uint32) uint32 { return S.InstImm(A.ANDI, d, s, im) }
 
 func (_s) reg(op, d, s1, s2 uint32) uint32 {
 	return S.InstReg(op, d, s1, s2, 0, 0)
 }
 
-func (_s) add(d, s1, s2 uint32) uint32 { return asm.reg(A.ADD, d, s1, s2) }
-func (_s) sub(d, s1, s2 uint32) uint32 { return asm.reg(A.SUB, d, s1, s2) }
-func (_s) mul(d, s1, s2 uint32) uint32 { return asm.reg(A.MUL, d, s1, s2) }
-func (_s) div(d, s1, s2 uint32) uint32 { return asm.reg(A.DIV, d, s1, s2) }
-func (_s) mod(d, s1, s2 uint32) uint32 { return asm.reg(A.MOD, d, s1, s2) }
-func (_s) and(d, s1, s2 uint32) uint32 { return asm.reg(A.AND, d, s1, s2) }
-func (_s) or(d, s1, s2 uint32) uint32  { return asm.reg(A.OR, d, s1, s2) }
+func (_s) add(d, s1, s2 uint32) uint32  { return asm.reg(A.ADD, d, s1, s2) }
+func (_s) sub(d, s1, s2 uint32) uint32  { return asm.reg(A.SUB, d, s1, s2) }
+func (_s) mul(d, s1, s2 uint32) uint32  { return asm.reg(A.MUL, d, s1, s2) }
+func (_s) div(d, s1, s2 uint32) uint32  { return asm.reg(A.DIV, d, s1, s2) }
+func (_s) mod(d, s1, s2 uint32) uint32  { return asm.reg(A.MOD, d, s1, s2) }
+func (_s) and(d, s1, s2 uint32) uint32  { return asm.reg(A.AND, d, s1, s2) }
+func (_s) or(d, s1, s2 uint32) uint32   { return asm.reg(A.OR, d, s1, s2) }
+func (_s) xor(d, s1, s2 uint32) uint32  { return asm.reg(A.XOR, d, s1, s2) }
+func (_s) nor(d, s1, s2 uint32) uint32  { return asm.reg(A.NOR, d, s1, s2) }
+func (_s) sltu(d, s1, s2 uint32) uint32 { return asm.reg(A.SLTU, d, s1, s2) }
+func (_s) slt(d, s1, s2 uint32) uint32  { return asm.reg(A.SLT, d, s1, s2) }

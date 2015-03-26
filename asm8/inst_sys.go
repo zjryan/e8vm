@@ -1,8 +1,8 @@
 package asm8
 
 import (
-	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/arch8"
+	"lonnie.io/e8vm/lex8"
 )
 
 var (

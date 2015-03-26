@@ -26,6 +26,7 @@ var (
 	opImuMap = map[string]uint32{
 		"andi": arch8.ANDI,
 		"ori":  arch8.ORI,
+		"xori": arch8.XORI,
 	}
 
 	// op reg imm(signed or unsigned)

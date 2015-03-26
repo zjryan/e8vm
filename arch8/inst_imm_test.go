@@ -66,17 +66,18 @@ func TestInstImm(t *testing.T) {
 		return uint32((int32(i << 16)) >> 16)
 	}
 
-	tf(1, func(v, im uint32) uint32 { return v + sext(im) })
-	tf(2, func(v, im uint32) uint32 {
+	tf(ADDI, func(v, im uint32) uint32 { return v + sext(im) })
+	tf(SLTI, func(v, im uint32) uint32 {
 		se := sext(im)
 		if int32(v) < int32(se) {
 			return 1
 		}
 		return 0
 	})
-	tf(3, func(v, im uint32) uint32 { return v & im })
-	tf(4, func(v, im uint32) uint32 { return v | im })
-	tf(5, func(_, im uint32) uint32 { return im << 16 })
+	tf(ANDI, func(v, im uint32) uint32 { return v & im })
+	tf(ORI, func(v, im uint32) uint32 { return v | im })
+	tf(XORI, func(v, im uint32) uint32 { return v ^ im })
+	tf(LUI, func(_, im uint32) uint32 { return im << 16 })
 
 	for i := 0; i < 100; i++ {
 		addr := uint32(PageSize * 10)
@@ -93,7 +94,7 @@ func TestInstImm(t *testing.T) {
 		s := uint32(rand.Intn(5))
 		d := uint32(rand.Intn(5))
 
-		tst(6, s, addr, offset, d, w)
+		tst(LW, s, addr, offset, d, w)
 	}
 
 	for i := 0; i < 100; i++ {
@@ -111,8 +112,8 @@ func TestInstImm(t *testing.T) {
 		d := uint32(rand.Intn(5))
 
 		w := uint32(int32(uint32(b)<<24) >> 24)
-		tst(7, s, addr, offset, d, w)
-		tst(8, s, addr, offset, d, uint32(b))
+		tst(LB, s, addr, offset, d, w)
+		tst(LBU, s, addr, offset, d, uint32(b))
 	}
 
 	for i := 0; i < 100; i++ {
@@ -129,7 +130,7 @@ func TestInstImm(t *testing.T) {
 			d = uint32(rand.Intn(5))
 		}
 
-		twr(9, s, addr, offset, d, w)
+		twr(SW, s, addr, offset, d, w)
 
 		got, e := m.ReadWord(addr + offset)
 		if e != nil {
@@ -154,7 +155,7 @@ func TestInstImm(t *testing.T) {
 			d = uint32(rand.Intn(5))
 		}
 
-		twr(10, s, addr, offset, d, uint32(b))
+		twr(SB, s, addr, offset, d, uint32(b))
 
 		got, e := m.ReadByte(addr + offset)
 		if e != nil {

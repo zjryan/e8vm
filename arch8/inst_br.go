@@ -21,7 +21,7 @@ func (i *instBr) I(cpu *cpu, in uint32) *Excep {
 		if s1 != s2 {
 			pc = br
 		}
-	case BEQ: 
+	case BEQ:
 		if s1 == s2 {
 			pc = br
 		}

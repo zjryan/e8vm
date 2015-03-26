@@ -6,13 +6,14 @@ const (
 	SLTI = 2
 	ANDI = 3
 	ORI  = 4
-	LUI  = 5
+	XORI = 5
+	LUI  = 6
 
-	LW  = 6
-	LB  = 7
-	LBU = 8
-	SW  = 9
-	SB  = 10
+	LW  = 7
+	LB  = 8
+	LBU = 9
+	SW  = 10
+	SB  = 11
 )
 
 // reg instructions

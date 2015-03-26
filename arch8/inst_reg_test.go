@@ -141,69 +141,69 @@ func TestInstReg(t *testing.T) {
 
 	tst(0, 0, 0, 0, 0, 0, 0) // noop
 
-	tf(3, func(a, b uint32) uint32 { return a << b })
-	tf(4, func(a, b uint32) uint32 { return a >> b })
-	tf(5, func(a, b uint32) uint32 { return uint32(int32(a) >> b) })
+	tf(SLLV, func(a, b uint32) uint32 { return a << b })
+	tf(SRLV, func(a, b uint32) uint32 { return a >> b })
+	tf(SRLA, func(a, b uint32) uint32 { return uint32(int32(a) >> b) })
 
-	tfs(0, func(a, sh uint32) uint32 { return a << sh })
-	tfs(1, func(a, sh uint32) uint32 { return a >> sh })
-	tfs(2, func(a, sh uint32) uint32 { return uint32(int32(a) >> sh) })
+	tfs(SLL, func(a, sh uint32) uint32 { return a << sh })
+	tfs(SRL, func(a, sh uint32) uint32 { return a >> sh })
+	tfs(SRA, func(a, sh uint32) uint32 { return uint32(int32(a) >> sh) })
 
-	tf(6, func(a, b uint32) uint32 { return a + b })
-	tf(7, func(a, b uint32) uint32 { return a - b })
-	tf(8, func(a, b uint32) uint32 { return a & b })
-	tf(9, func(a, b uint32) uint32 { return a | b })
-	tf(10, func(a, b uint32) uint32 { return a ^ b })
-	tf(11, func(a, b uint32) uint32 { return ^(a | b) })
-	tf(12, func(a, b uint32) uint32 {
+	tf(ADD, func(a, b uint32) uint32 { return a + b })
+	tf(SUB, func(a, b uint32) uint32 { return a - b })
+	tf(AND, func(a, b uint32) uint32 { return a & b })
+	tf(OR, func(a, b uint32) uint32 { return a | b })
+	tf(XOR, func(a, b uint32) uint32 { return a ^ b })
+	tf(NOR, func(a, b uint32) uint32 { return ^(a | b) })
+	tf(SLT, func(a, b uint32) uint32 {
 		if int32(a) < int32(b) {
 			return 1
 		}
 		return 0
 	})
-	tf(13, func(a, b uint32) uint32 {
+	tf(SLTU, func(a, b uint32) uint32 {
 		if a < b {
 			return 1
 		}
 		return 0
 	})
-	tf(14, func(a, b uint32) uint32 {
+	tf(MUL, func(a, b uint32) uint32 {
 		return uint32(int32(a) * int32(b))
 	})
-	tf(15, func(a, b uint32) uint32 { return a * b })
+	tf(MULU, func(a, b uint32) uint32 { return a * b })
 
-	tf(16, func(a, b uint32) uint32 {
+	tf(DIV, func(a, b uint32) uint32 {
 		if b == 0 {
 			return 0
 		}
 		return uint32(int32(a) / int32(b))
 	})
-	tf(17, func(a, b uint32) uint32 {
+	tf(DIVU, func(a, b uint32) uint32 {
 		if b == 0 {
 			return 0
 		}
 		return a / b
 	})
-	tf0(16, func(a uint32) uint32 { return 0 })
-	tf0(17, func(a uint32) uint32 { return 0 })
+	tf0(DIV, func(a uint32) uint32 { return 0 })
+	tf0(DIVU, func(a uint32) uint32 { return 0 })
 
-	tf(18, func(a, b uint32) uint32 {
+	tf(MOD, func(a, b uint32) uint32 {
 		if b == 0 {
 			return 0
 		}
 		return uint32(int32(a) % int32(b))
 	})
-	tf(19, func(a, b uint32) uint32 {
+	tf(MODU, func(a, b uint32) uint32 {
 		if b == 0 {
 			return 0
 		}
 		return a % b
 	})
-	tf0(18, func(a uint32) uint32 { return 0 })
-	tf0(19, func(a uint32) uint32 { return 0 })
+	tf0(MOD, func(a uint32) uint32 { return 0 })
+	tf0(MODU, func(a uint32) uint32 { return 0 })
 
-	tff(0, func(a, b float32) float32 { return a + b })
-	tff(1, func(a, b float32) float32 { return a - b })
-	tff(2, func(a, b float32) float32 { return a * b })
-	tff(3, func(a, b float32) float32 { return a / b })
+	tff(FADD, func(a, b float32) float32 { return a + b })
+	tff(FSUB, func(a, b float32) float32 { return a - b })
+	tff(FMUL, func(a, b float32) float32 { return a * b })
+	tff(FDIV, func(a, b float32) float32 { return a / b })
 }

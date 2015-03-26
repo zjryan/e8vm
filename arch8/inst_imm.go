@@ -34,6 +34,8 @@ func (i *instImm) I(cpu *cpu, in uint32) *Excep {
 		d = s & im
 	case ORI:
 		d = s | im
+	case XORI:
+		d = s ^ im
 	case LUI:
 		d = im << 16
 	case LW:

@@ -13,7 +13,7 @@ func TestInstBr(t *testing.T) {
 	}
 
 	bne := func(s1, s2 uint32, off int32) uint32 {
-		in := uint32(32) << 24
+		in := uint32(BNE) << 24
 		in |= (s1 & 0x7) << 21
 		in |= (s2 & 0x7) << 18
 		in |= uint32(off) & 0x3ffff
@@ -21,7 +21,7 @@ func TestInstBr(t *testing.T) {
 	}
 
 	beq := func(s1, s2 uint32, off int32) uint32 {
-		in := uint32(33) << 24
+		in := uint32(BEQ) << 24
 		in |= (s1 & 0x7) << 21
 		in |= (s2 & 0x7) << 18
 		in |= uint32(off) & 0x3ffff
