@@ -28,15 +28,27 @@ other args are pushed on the stack
 
 **/
 
+func alignUp(size, align int32) int32 {
+	mod := size % align
+	if mod == 0 {
+		return size
+	}
+	return size + align - mod
+}
+
 func layoutArgs(f *Func, args []*stackVar) []*stackVar {
 	nreg := uint32(0)
 	frameSize := int32(0)
 	var regArgs []*stackVar
 
 	for _, arg := range args {
-		if nreg >= 4 || arg.size != regSize {
+		if nreg >= 4 || arg.size > regSize {
+			size := alignUp(arg.size, regSize)
+			if size%regSize != 0 {
+				panic("invalid arg size")
+			}
 			arg.offset = frameSize
-			frameSize += arg.size
+			frameSize += size
 			continue
 		}
 
@@ -56,8 +68,9 @@ func layoutArgs(f *Func, args []*stackVar) []*stackVar {
 // pushLocal allocates a frame slot for the local var
 func pushVar(f *Func, vars ...*stackVar) {
 	for _, v := range vars {
+		size := alignUp(v.size, regSize)
 		v.offset = f.frameSize
-		f.frameSize += v.size
+		f.frameSize += size
 	}
 }
 
