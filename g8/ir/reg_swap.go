@@ -1,5 +1,19 @@
 package ir
 
+func loadRet(f *Func, b *Block, v *stackVar) {
+	if v.size != regSize {
+		panic("ret must be regsize")
+	}
+	b.inst(asm.lw(_pc, _sp, v.offset-f.frameSize))
+}
+
+func saveRet(f *Func, b *Block, v *stackVar) {
+	if v.size != regSize {
+		panic("ret must be regsize")
+	}
+	b.inst(asm.sw(_ret, _sp, v.offset-f.frameSize))
+}
+
 func saveVar(b *Block, reg uint32, v *stackVar) {
 	if v.size == regSize {
 		b.inst(asm.sw(reg, _sp, v.offset))

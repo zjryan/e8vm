@@ -36,10 +36,11 @@ func alignUp(size, align int32) int32 {
 	return size + align - mod
 }
 
-func layoutArgs(f *Func, args []*stackVar) []*stackVar {
+func layoutArgs(f *Func, args []*stackVar) ([]*stackVar, []bool) {
 	nreg := uint32(0)
 	frameSize := int32(0)
 	var regArgs []*stackVar
+	regs := make([]bool, 5) // only need to track r1-r4
 
 	for _, arg := range args {
 		if nreg >= 4 || arg.size > regSize {
@@ -55,6 +56,7 @@ func layoutArgs(f *Func, args []*stackVar) []*stackVar {
 		// this arg is now sent in via a register
 		nreg++
 		arg.viaReg = nreg
+		regs[nreg] = true
 		regArgs = append(regArgs, arg)
 	}
 
@@ -62,7 +64,7 @@ func layoutArgs(f *Func, args []*stackVar) []*stackVar {
 		f.callerFrameSize = frameSize
 	}
 
-	return regArgs
+	return regArgs, regs
 }
 
 // pushVar allocates a frame slot for the local var
@@ -75,32 +77,55 @@ func pushVar(f *Func, vars ...*stackVar) {
 }
 
 func layoutLocals(f *Func) {
-	regArgs := layoutArgs(f, f.args)
-	regRets := layoutArgs(f, f.rets)
+	regArgs, _ := layoutArgs(f, f.args)
+	regRets, regUsed := layoutArgs(f, f.rets)
+
+	var savedRegs []*stackVar
+	for i := uint32(_1); i <= _4; i++ {
+		if !regUsed[i] {
+			v := f.newVar("", regSize)
+			v.viaReg = i
+			savedRegs = append(savedRegs, v)
+		}
+	}
+	f.savedRegs = savedRegs
 
 	// layout the variables in the function
 	f.frameSize = f.callerFrameSize
 	f.retAddr = f.newVar("", regSize)
 	f.retAddr.viaReg = arch8.RET // the return address
 
-	pushVar(f, f.retAddr)
 	// if all args and rets are via register
 	// then f.retAddr.offset should be 0
 
 	pushVar(f, regArgs...)
 	pushVar(f, regRets...)
+	pushVar(f, savedRegs...)
 	pushVar(f, f.locals...)
+
+	// and we push retAddr at the end
+	pushVar(f, f.retAddr)
 }
 
 func makePrologue(f *Func) *Block {
 	b := f.newBlock()
-	saveVar(b, arch8.RET, f.retAddr)
+
+	saveRet(f, b, f.retAddr)
+	// move the sp
+	b.inst(asm.addi(_sp, _sp, -f.frameSize))
+
 	for _, v := range f.args {
 		if v.viaReg == 0 {
 			continue // skip args not sent in via register
 		}
 		saveVar(b, v.viaReg, v)
 	}
+
+	// this is for restoreing the registers
+	for _, v := range f.savedRegs {
+		saveVar(b, v.viaReg, v)
+	}
+
 	return b
 }
 
@@ -112,8 +137,14 @@ func makeEpilogue(f *Func) *Block {
 		}
 		loadVar(b, v.viaReg, v)
 	}
+
+	for _, v := range f.savedRegs {
+		loadVar(b, v.viaReg, v) // restoring the registers
+	}
+
+	b.inst(asm.addi(_sp, _sp, f.frameSize))
 	// back to the caller
-	loadVar(b, arch8.PC, f.retAddr)
+	loadRet(f, b, f.retAddr)
 	return b
 }
 

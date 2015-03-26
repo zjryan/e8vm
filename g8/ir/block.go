@@ -6,7 +6,8 @@ type Block struct {
 	ops   []op
 	jumps []*jump
 
-	insts []*inst
+	insts   []*inst
+	spMoved bool
 }
 
 func (b *Block) addOp(op op) { b.ops = append(b.ops, op) }

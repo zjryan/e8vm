@@ -11,6 +11,7 @@ type Func struct {
 	namedVars map[string]*stackVar
 	args      []*stackVar
 	rets      []*stackVar
+	savedRegs []*stackVar
 	locals    []*stackVar
 	retAddr   *stackVar
 

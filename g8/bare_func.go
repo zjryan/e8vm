@@ -10,16 +10,6 @@ import (
 	"lonnie.io/e8vm/link8"
 )
 
-type builder struct {
-	*lex8.ErrorList
-}
-
-func newBuilder() *builder {
-	ret := new(builder)
-	ret.ErrorList = lex8.NewErrorList()
-	return ret
-}
-
 func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
 	panic("todo")
 }
