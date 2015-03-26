@@ -73,7 +73,7 @@ func (p *Pkg) SymIndex(name string) uint32 {
 
 // Declare declares a symbol and assigns a symbol index.
 // If s.Name is empty string, then the symbol is anonymous.
-func (p *Pkg) Declare(s *Symbol) uint32 {
+func (p *Pkg) declare(s *Symbol) uint32 {
 	index := uint32(len(p.symbols))
 	p.symbols = append(p.symbols, s)
 
@@ -86,6 +86,17 @@ func (p *Pkg) Declare(s *Symbol) uint32 {
 	}
 
 	return index
+}
+
+// DeclareFunc declares a function (code block) and returns the symbol index.
+// The name could be an empty string to be an anonymous function
+func (p *Pkg) DeclareFunc(name string) uint32 {
+	return p.declare(&Symbol{name, SymFunc})
+}
+
+// DeclareVar declares a variable (data block) and returns the symbol index.
+func (p *Pkg) DeclareVar(name string) uint32 {
+	return p.declare(&Symbol{name, SymVar})
 }
 
 // SymbolByName returns the symbol with the particular name.

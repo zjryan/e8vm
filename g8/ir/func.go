@@ -5,6 +5,7 @@ package ir
 // it can generate a linkable function.
 type Func struct {
 	id      int
+	name    string
 	args    []*stackVar
 	rets    []*stackVar
 	locals  []*stackVar

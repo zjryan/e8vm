@@ -34,11 +34,6 @@ func newLib(p string) *lib {
 // Link returns the link8.Package for linking.
 func (p *lib) Link() *link8.Pkg { return p.Pkg }
 
-// Declare declares a symbol inside the package.  If the symbol is a function
-// or variable, it is also declared as an object file symbol in the underlying
-// link8.Package, and it returns the index.  If the symbol is a constant, it
-// returns 0 after the declaration. Other types will panic. Redeclaration will
-// panic.
 func (p *lib) Declare(s *sym8.Symbol) uint32 {
 	_, found := p.symbols[s.Name()]
 	if found {
@@ -48,17 +43,11 @@ func (p *lib) Declare(s *sym8.Symbol) uint32 {
 
 	switch s.Type {
 	case SymConst:
-		return 0
+		panic("todo")
 	case SymFunc:
-		return p.Pkg.Declare(&link8.Symbol{
-			Name: s.Name(),
-			Type: link8.SymFunc,
-		})
+		return p.Pkg.DeclareFunc(s.Name())
 	case SymVar:
-		return p.Pkg.Declare(&link8.Symbol{
-			Name: s.Name(),
-			Type: link8.SymVar,
-		})
+		return p.Pkg.DeclareVar(s.Name())
 	default:
 		panic("declare with invalid sym type")
 	}
