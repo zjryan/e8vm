@@ -3,29 +3,29 @@ package ir
 type op interface{}
 
 type arithOp struct {
-	dest ref
-	a    ref
+	dest Ref
+	a    Ref
 	op   string
-	b    ref
+	b    Ref
 }
 
 type callOp struct {
-	dest ref
-	f    ref
-	args []ref
+	dest Ref
+	f    Ref
+	args []Ref
 }
 
 type jump struct {
-	a  ref
+	a  Ref
 	op string
-	b  ref
+	b  Ref
 	to int // block id
 }
 
-func arith(dest ref, a ref, op string, b ref) *arithOp {
+func arith(dest Ref, a Ref, op string, b Ref) *arithOp {
 	return &arithOp{dest, a, op, b}
 }
 
-func call(dest ref, f ref, args ...ref) *callOp {
+func call(dest Ref, f Ref, args ...Ref) *callOp {
 	return &callOp{dest, f, args}
 }

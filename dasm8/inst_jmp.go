@@ -2,12 +2,14 @@ package dasm8
 
 import (
 	"fmt"
+
+	"lonnie.io/e8vm/arch8"
 )
 
 var (
 	opJmpMap = map[uint32]string{
-		2: "j",
-		3: "jal",
+		arch8.J:   "j",
+		arch8.JAL: "jal",
 	}
 )
 

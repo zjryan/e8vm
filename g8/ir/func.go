@@ -49,29 +49,34 @@ func (f *Func) newVar(
 
 const regSize = 4
 
-func (f *Func) newArg(name string, n int32) *stackVar {
+// AddArg adds an arg stack variable for the function.
+func (f *Func) AddArg(name string, n int32) *stackVar {
 	ret := f.newVar(name, n)
 	f.args = append(f.args, ret)
 	return ret
 }
 
-func (f *Func) newRet(name string, n int32) *stackVar {
+// AddRet adds a return value for the function.
+func (f *Func) AddRet(name string, n int32) *stackVar {
 	ret := f.newVar(name, n)
 	f.rets = append(f.rets, ret)
 	return ret
 }
 
-func (f *Func) newLocal(name string, n int32) *stackVar {
+// NewLocal creates a new named local variable of size n on stack.
+func (f *Func) NewLocal(name string, n int32) *stackVar {
 	ret := f.newVar(name, n)
 	f.locals = append(f.rets, ret)
 	return ret
 }
 
-func (f *Func) newTemp(n int32) *stackVar {
-	return f.newLocal("", n)
+// NewTemp creates a new temp variable of size n on stack.
+func (f *Func) NewTemp(n int32) *stackVar {
+	return f.NewLocal("", n)
 }
 
-func (f *Func) newBlock() *Block {
+// NewBlock creates a new basic block for the function
+func (f *Func) NewBlock() *Block {
 	ret := new(Block)
 	ret.id = len(f.blocks)
 	return ret

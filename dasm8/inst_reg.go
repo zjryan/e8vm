@@ -2,41 +2,43 @@ package dasm8
 
 import (
 	"fmt"
+
+	"lonnie.io/e8vm/arch8"
 )
 
 var (
 	opShiftMap = map[uint32]string{
-		0: "sll",
-		1: "srl",
-		2: "sra",
+		arch8.SLL: "sll",
+		arch8.SRL: "srl",
+		arch8.SRA: "sra",
 	}
 
 	opReg3Map = map[uint32]string{
-		3:  "sllv",
-		4:  "srlv",
-		5:  "srla",
-		6:  "add",
-		7:  "sub",
-		8:  "and",
-		9:  "or",
-		10: "xor",
-		11: "nor",
-		12: "slt",
-		13: "sltu",
-		14: "mul",
-		15: "mulu",
-		16: "div",
-		17: "divu",
-		18: "mod",
-		19: "modu",
+		arch8.SLLV: "sllv",
+		arch8.SRLV: "srlv",
+		arch8.SRLA: "srla",
+		arch8.ADD:  "add",
+		arch8.SUB:  "sub",
+		arch8.AND:  "and",
+		arch8.OR:   "or",
+		arch8.XOR:  "xor",
+		arch8.NOR:  "nor",
+		arch8.SLT:  "slt",
+		arch8.SLTU: "sltu",
+		arch8.MUL:  "mul",
+		arch8.MULU: "mulu",
+		arch8.DIV:  "div",
+		arch8.DIVU: "divu",
+		arch8.MOD:  "mod",
+		arch8.MODU: "modu",
 	}
 
 	opFloatMap = map[uint32]string{
-		0: "fadd",
-		1: "fsub",
-		2: "fmul",
-		3: "fdiv",
-		4: "fint",
+		arch8.FADD: "fadd",
+		arch8.FSUB: "fsub",
+		arch8.FMUL: "fmul",
+		arch8.FDIV: "fdiv",
+		arch8.FINT: "fint",
 	}
 )
 

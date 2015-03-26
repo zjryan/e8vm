@@ -4,7 +4,8 @@ import (
 	"lonnie.io/e8vm/link8"
 )
 
-func genPkg(p *Pkg) *link8.Pkg {
+// BuildPkg builds a package and returns the built lib
+func BuildPkg(p *Pkg) *link8.Pkg {
 	p.lib = link8.NewPkg(p.path)
 
 	for _, f := range p.funcs {

@@ -2,29 +2,32 @@ package dasm8
 
 import (
 	"fmt"
+
+	"lonnie.io/e8vm/arch8"
 )
 
 var (
 	opImsMap = map[uint32]string{
-		1: "addi",
-		2: "slti",
+		arch8.ADDI: "addi",
+		arch8.SLTI: "slti",
 	}
 
 	opMemMap = map[uint32]string{
-		6:  "lw",
-		7:  "lb",
-		8:  "lbu",
-		9:  "sw",
-		10: "sb",
+		arch8.LW:  "lw",
+		arch8.LB:  "lb",
+		arch8.LBU: "lbu",
+		arch8.SW:  "sw",
+		arch8.SB:  "sb",
 	}
 
 	opImuMap = map[uint32]string{
-		3: "andi",
-		4: "ori",
+		arch8.ANDI: "andi",
+		arch8.ORI:  "ori",
+		arch8.XORI: "xori",
 	}
 
 	opImu2Map = map[uint32]string{
-		5: "lui",
+		arch8.LUI: "lui",
 	}
 )
 

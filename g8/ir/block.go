@@ -11,25 +11,32 @@ type Block struct {
 
 func (b *Block) addOp(op op) { b.ops = append(b.ops, op) }
 
-func (b *Block) arith(dest ref, x ref, op string, y ref) {
+// Arith append an arithmetic operation to the basic block
+func (b *Block) Arith(dest Ref, x Ref, op string, y Ref) {
 	b.addOp(&arithOp{dest, x, op, y})
 }
 
-func (b *Block) assign(dest ref, a ref) {
-	b.arith(dest, a, "", nil)
+// Assign appends an assignment operation to the basic block
+func (b *Block) Assign(dest Ref, a Ref) {
+	b.Arith(dest, nil, "", a)
 }
 
-func (b *Block) call(dest ref, f ref, args ...ref) {
+// Call appends a function call operation to the basic block
+func (b *Block) Call(dest Ref, f Ref, args ...Ref) {
 	b.addOp(&callOp{dest, f, args})
 }
 
 func (b *Block) addJump(j *jump) { b.jumps = append(b.jumps, j) }
 
-func (b *Block) jump(dest *Block, x ref, op string, y ref) {
+// Jump appends a redirection to the end of the basic block.
+// The redirection points to dest.
+func (b *Block) Jump(dest *Block, x Ref, op string, y Ref) {
 	b.addJump(&jump{x, op, y, dest.id})
 }
 
-func (b *Block) jumpID(id int, x ref, op string, y ref) {
+// Jump append a redirection to the end of the basic block.
+// The redirection points to the basic block of the particular id.
+func (b *Block) JumpID(id int, x Ref, op string, y Ref) {
 	b.addJump(&jump{x, op, y, id})
 }
 

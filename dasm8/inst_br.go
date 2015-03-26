@@ -2,12 +2,14 @@ package dasm8
 
 import (
 	"fmt"
+
+	"lonnie.io/e8vm/arch8"
 )
 
 var (
 	opBrMap = map[uint32]string{
-		32: "bne",
-		33: "beq",
+		arch8.BNE: "bne",
+		arch8.BEQ: "beq",
 	}
 )
 

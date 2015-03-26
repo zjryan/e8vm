@@ -2,19 +2,21 @@ package dasm8
 
 import (
 	"fmt"
+
+	"lonnie.io/e8vm/arch8"
 )
 
 var (
 	opSysMap = map[uint32]string{
-		64: "halt",
-		65: "syscall",
-		66: "usermod",
-		68: "iret",
+		arch8.HALT:    "halt",
+		arch8.SYSCALL: "syscall",
+		arch8.USERMOD: "usermod",
+		arch8.IRET:    "iret",
 	}
 
 	opSys1Map = map[uint32]string{
-		67: "vtable",
-		69: "cpuid",
+		arch8.VTABLE: "vtable",
+		arch8.CPUID:  "cpuid",
 	}
 )
 

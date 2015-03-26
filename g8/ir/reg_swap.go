@@ -20,7 +20,7 @@ func loadVar(b *Block, reg uint32, v *stackVar) {
 	}
 }
 
-func saveRef(b *Block, reg uint32, r ref) {
+func saveRef(b *Block, reg uint32, r Ref) {
 	switch r := r.(type) {
 	case *stackVar:
 		saveVar(b, reg, r)
@@ -31,7 +31,7 @@ func saveRef(b *Block, reg uint32, r ref) {
 	}
 }
 
-func loadRef(b *Block, reg uint32, r ref) {
+func loadRef(b *Block, reg uint32, r Ref) {
 	switch r := r.(type) {
 	case *stackVar:
 		loadVar(b, reg, r)
