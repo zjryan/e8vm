@@ -1,9 +1,5 @@
 package arch8
 
-import (
-	"lonnie.io/e8vm/conv"
-)
-
 // PageSize is the number of bytes a page contains.
 const PageSize = 4096
 
@@ -40,7 +36,7 @@ func wordOff(offset uint32) uint32 {
 // When offset is not 4-byte aligned, it aligns down.
 func (p *page) ReadWord(offset uint32) uint32 {
 	offset = wordOff(offset)
-	return conv.Endian.Uint32(p.Bytes[offset : offset+4])
+	return Endian.Uint32(p.Bytes[offset : offset+4])
 }
 
 // WriteWord writes the word at the particular offset.
@@ -48,5 +44,5 @@ func (p *page) ReadWord(offset uint32) uint32 {
 // When offset is not 4-byte aligned, it aligns down.
 func (p *page) WriteWord(offset uint32, w uint32) {
 	offset = wordOff(offset)
-	conv.Endian.PutUint32(p.Bytes[offset:offset+4], w)
+	Endian.PutUint32(p.Bytes[offset:offset+4], w)
 }

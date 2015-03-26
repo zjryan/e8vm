@@ -1,9 +1,5 @@
 package arch8
 
-import (
-	"lonnie.io/e8vm/conv"
-)
-
 // Inst is an interface for executing one single instruction
 type inst interface {
 	I(cpu *cpu, in uint32) *Excep
@@ -41,7 +37,7 @@ func newCPU(mem *phyMemory, i inst, index byte) *cpu {
 	ret.interrupt = newInterrupt(intPage, index)
 	ret.inst = i
 
-	ret.regs[PC] = conv.InitPC
+	ret.regs[PC] = InitPC
 
 	return ret
 }
@@ -57,7 +53,7 @@ func (c *cpu) Reset() {
 	for i := 0; i < Nreg; i++ {
 		c.regs[i] = 0
 	}
-	c.regs[PC] = conv.InitPC
+	c.regs[PC] = InitPC
 	c.virtMem.SetTable(0)
 	c.ring = 0
 	c.interrupt.Disable()

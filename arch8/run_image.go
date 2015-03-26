@@ -2,8 +2,6 @@ package arch8
 
 import (
 	"os"
-
-	"lonnie.io/e8vm/conv"
 )
 
 // RunImage loads and run a raw image on a single core machine
@@ -15,7 +13,7 @@ func RunImage(path string) error {
 	}
 
 	m := NewMachine(uint32(1<<30), 1)
-	e = m.LoadImage(f, conv.InitPC)
+	e = m.LoadImage(f, InitPC)
 	if e != nil {
 		return e
 	}

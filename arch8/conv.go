@@ -1,5 +1,4 @@
-// Package conv defines the common conventions of the architecture
-package conv
+package arch8
 
 import (
 	"encoding/binary"

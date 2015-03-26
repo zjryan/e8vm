@@ -5,8 +5,8 @@ import (
 	"math"
 	"strconv"
 
+	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/asm8/parse"
-	"lonnie.io/e8vm/conv"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -62,7 +62,7 @@ func parseDataNums(p lex8.Logger, args []*lex8.Token, mode int) ([]byte, uint32)
 			buf.WriteByte(byte(ui))
 		} else if nbit == 32 {
 			var bs [4]byte
-			conv.Endian.PutUint32(bs[:], ui)
+			arch8.Endian.PutUint32(bs[:], ui)
 			buf.Write(bs[:])
 		}
 	}

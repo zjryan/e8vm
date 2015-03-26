@@ -10,7 +10,6 @@ import (
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/asm8"
-	"lonnie.io/e8vm/conv"
 	"lonnie.io/e8vm/dasm8"
 	"lonnie.io/e8vm/lex8"
 )
@@ -27,7 +26,7 @@ func run(bs []byte) (int, error) {
 
 	// create a single core machine
 	m := arch8.NewMachine(uint32(*memSize), 1)
-	e := m.LoadImage(r, conv.InitPC)
+	e := m.LoadImage(r, arch8.InitPC)
 	if e != nil {
 		return 0, e
 	}
@@ -86,7 +85,7 @@ func main() {
 	}
 
 	if *doDasm {
-		lines := dasm8.Dasm(bs, conv.InitPC)
+		lines := dasm8.Dasm(bs, arch8.InitPC)
 		for _, line := range lines {
 			fmt.Println(line)
 		}
