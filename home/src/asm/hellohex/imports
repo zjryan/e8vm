@@ -1,2 +1,0 @@
-asm/fmt fmt2
-// asm/fmt fmt // duplicated import is okay
