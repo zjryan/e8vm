@@ -25,7 +25,3 @@ func (p *Pkg) newFunc() *Func {
 	ret.id = len(p.funcs)
 	return ret
 }
-
-func (p *Pkg) generate() {
-	panic("todo")
-}

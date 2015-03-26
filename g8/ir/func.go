@@ -4,18 +4,30 @@ package ir
 // or unamed local variables and also a set of basic blocks.
 // it can generate a linkable function.
 type Func struct {
-	id          int
-	locals      []*stackVar
-	namedLocals map[string]*stackVar
-	blocks      []*Block
+	id      int
+	args    []*stackVar
+	rets    []*stackVar
+	locals  []*stackVar
+	retAddr *stackVar
 
-	frameSize uint32
+	vars      []*stackVar
+	namedVars map[string]*stackVar
+	blocks    []*Block
+
+	prologue *Block
+	epilogue *Block
+
+	callerFrameSize int32
+	frameSize       int32
 }
 
-func (f *Func) newLocalSize(name string, n int32) *stackVar {
+func (f *Func) newVar(
+	name string,
+	n int32,
+) *stackVar {
 	if name != "" {
-		if f.namedLocals[name] != nil {
-			panic("dup local name")
+		if f.namedVars[name] != nil {
+			panic("dup var name")
 		}
 	}
 
@@ -24,19 +36,36 @@ func (f *Func) newLocalSize(name string, n int32) *stackVar {
 	ret.size = n
 	ret.id = len(f.locals)
 
-	f.locals = append(f.locals, ret)
+	f.vars = append(f.vars, ret)
 	if name != "" {
-		f.namedLocals[name] = ret
+		f.namedVars[name] = ret
 	}
+
 	return ret
 }
 
-func (f *Func) newLocal(name string) *stackVar {
-	return f.newLocalSize(name, 4)
+const regSize = 4
+
+func (f *Func) newArg(name string, n int32) *stackVar {
+	ret := f.newVar(name, n)
+	f.args = append(f.args, ret)
+	return ret
 }
 
-func (f *Func) newTemp() *stackVar {
-	return f.newLocal("")
+func (f *Func) newRet(name string, n int32) *stackVar {
+	ret := f.newVar(name, n)
+	f.rets = append(f.rets, ret)
+	return ret
+}
+
+func (f *Func) newLocal(name string, n int32) *stackVar {
+	ret := f.newVar(name, n)
+	f.locals = append(f.rets, ret)
+	return ret
+}
+
+func (f *Func) newTemp(n int32) *stackVar {
+	return f.newLocal("", n)
 }
 
 func (f *Func) newBlock() *Block {
