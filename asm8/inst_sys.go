@@ -2,21 +2,22 @@ package asm8
 
 import (
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/arch8"
 )
 
 var (
 	// op
 	opSysMap = map[string]uint32{
-		"halt":    64,
-		"syscall": 65,
-		"usermod": 66,
-		"iret":    68,
+		"halt":    arch8.HALT,
+		"syscall": arch8.SYSCALL,
+		"usermod": arch8.USERMOD,
+		"iret":    arch8.IRET,
 	}
 
 	// op reg
 	opSys1Map = map[string]uint32{
-		"vtable": 67,
-		"cpuid":  69,
+		"vtable": arch8.VTABLE,
+		"cpuid":  arch8.CPUID,
 	}
 )
 
