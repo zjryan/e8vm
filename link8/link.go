@@ -3,6 +3,7 @@ package link8
 import (
 	"fmt"
 	"io"
+	"bytes"
 )
 
 // LinkMain produces a image for a main() in a package.
@@ -34,12 +35,11 @@ func LinkMain(main *Pkg, out io.Writer) error {
 
 // LinkBareFunc produces a image of a single function that has no links.
 func LinkBareFunc(f *Func) ([]byte, error) {
-
 	if f.TooLarge() {
 		return nil, fmt.Errorf("code section too large")
 	}
 
-	buf := new(Buf)
+	buf := new(bytes.Buffer)
 	w := newWriter(buf)
 	w.writeBareFunc(f)
 	e := w.Err()
