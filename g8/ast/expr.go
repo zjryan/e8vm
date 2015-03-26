@@ -32,6 +32,9 @@ type ExprList struct {
 	Commas []*lex8.Token
 }
 
+// Len returns the length of the expression list
+func (list *ExprList) Len() int { return len(list.Exprs) }
+
 // CallExpr is a function call expression
 type CallExpr struct {
 	Func   Expr
