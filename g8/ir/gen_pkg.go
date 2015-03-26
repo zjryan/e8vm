@@ -13,6 +13,7 @@ func genPkg(p *Pkg) *link8.Pkg {
 
 	for _, f := range p.funcs {
 		genFunc(p, f)
+		writeFunc(p, f)
 	}
 
 	return p.lib
