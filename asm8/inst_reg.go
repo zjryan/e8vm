@@ -3,50 +3,51 @@ package asm8
 import (
 	"strconv"
 
+	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/lex8"
 )
 
 var (
 	// op reg reg shift
 	opShiftMap = map[string]uint32{
-		"sll": 0,
-		"srl": 1,
-		"sra": 2,
+		"sll": arch8.SLL,
+		"srl": arch8.SRL,
+		"sra": arch8.SRA,
 	}
 
 	// op reg reg reg
 	opReg3Map = map[string]uint32{
-		"sllv": 3,
-		"srlv": 4,
-		"srla": 5,
-		"add":  6,
-		"sub":  7,
-		"and":  8,
-		"or":   9,
-		"xor":  10,
-		"nor":  11,
-		"slt":  12,
-		"sltu": 13,
-		"mul":  14,
-		"mulu": 15,
-		"div":  16,
-		"divu": 17,
-		"mod":  18,
-		"modu": 19,
+		"sllv": arch8.SLLV,
+		"srlv": arch8.SRLV,
+		"srla": arch8.SRLA,
+		"add":  arch8.ADD,
+		"sub":  arch8.SUB,
+		"and":  arch8.AND,
+		"or":   arch8.OR,
+		"xor":  arch8.XOR,
+		"nor":  arch8.NOR,
+		"slt":  arch8.SLT,
+		"sltu": arch8.SLTU,
+		"mul":  arch8.MUL,
+		"mulu": arch8.MULU,
+		"div":  arch8.DIV,
+		"divu": arch8.DIVU,
+		"mod":  arch8.MOD,
+		"modu": arch8.MODU,
 	}
 
 	// op reg reg
 	opReg2Map = map[string]uint32{
-		"mov": 0,
+		"mov": arch8.SLL,
 	}
 
 	// op reg reg reg
 	opFloatMap = map[string]uint32{
-		"fadd": 0,
-		"fsub": 1,
-		"fmul": 2,
-		"fdiv": 3,
-		"fint": 4,
+		"fadd": arch8.FADD,
+		"fsub": arch8.FSUB,
+		"fmul": arch8.FMUL,
+		"fdiv": arch8.FDIV,
+		"fint": arch8.FINT,
 	}
 )
 

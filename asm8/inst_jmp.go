@@ -1,6 +1,7 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -28,9 +29,9 @@ func resolveInstJmp(p lex8.Logger, ops []*lex8.Token) (*inst, bool) {
 	// op sym
 	switch opName {
 	case "j":
-		op = 2
+		op = arch8.J
 	case "jal":
-		op = 3
+		op = arch8.JAL
 	default:
 		return nil, false
 	}

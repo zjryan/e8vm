@@ -3,33 +3,34 @@ package asm8
 import (
 	"strconv"
 
+	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/lex8"
 )
 
 var (
 	// op reg reg imm(signed)
 	opImsMap = map[string]uint32{
-		"addi": 1,
-		"slti": 2,
+		"addi": arch8.ADDI,
+		"slti": arch8.SLTI,
 	}
 
 	opMemMap = map[string]uint32{
-		"lw":  6,
-		"lb":  7,
-		"lbu": 8,
-		"sw":  9,
-		"sb":  10,
+		"lw":  arch8.LW,
+		"lb":  arch8.LB,
+		"lbu": arch8.LBU,
+		"sw":  arch8.SW,
+		"sb":  arch8.SB,
 	}
 
 	// op reg reg imm(unsigned)
 	opImuMap = map[string]uint32{
-		"andi": 3,
-		"ori":  4,
+		"andi": arch8.ANDI,
+		"ori":  arch8.ORI,
 	}
 
 	// op reg imm(signed or unsigned)
 	opImmMap = map[string]uint32{
-		"lui": 5,
+		"lui": arch8.LUI,
 	}
 )
 

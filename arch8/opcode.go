@@ -60,3 +60,9 @@ const (
 	IRET    = 68
 	CPUID   = 69
 )
+
+// jump instructions
+const (
+	J   = 2
+	JAL = 3
+)

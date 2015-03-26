@@ -1,14 +1,15 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/lex8"
 )
 
 var (
 	// op reg reg label
 	opBrMap = map[string]uint32{
-		"bne": 32,
-		"beq": 33,
+		"bne": arch8.BNE,
+		"beq": arch8.BEQ,
 	}
 )
 

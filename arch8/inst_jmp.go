@@ -13,9 +13,9 @@ func (i *instJmp) I(cpu *cpu, in uint32) *Excep {
 	to := pc + (off << 2)
 
 	switch op {
-	case 2: // j
+	case J:
 		/* do nothing */
-	case 3: // jal
+	case JAL:
 		cpu.regs[RET] = pc
 	default:
 		return errInvalidInst
