@@ -4,22 +4,22 @@ package ir
 // or unamed local variables and also a set of basic blocks.
 // it can generate a linkable function.
 type Func struct {
-	id      int
-	name    string
-	args    []*stackVar
-	rets    []*stackVar
-	locals  []*stackVar
-	retAddr *stackVar
+	id   int
+	name string
 
 	vars      []*stackVar
 	namedVars map[string]*stackVar
-	blocks    []*Block
-	body      []*Block
+	args      []*stackVar
+	rets      []*stackVar
+	locals    []*stackVar
+	retAddr   *stackVar
 
+	blocks   []*Block
 	prologue *Block
 	epilogue *Block
+	body     []*Block
 
-	callerFrameSize int32
+	callerFrameSize int32 // frame size where the caller pushed
 	frameSize       int32
 
 	index uint32 // the index in the lib

@@ -65,7 +65,7 @@ func layoutArgs(f *Func, args []*stackVar) []*stackVar {
 	return regArgs
 }
 
-// pushLocal allocates a frame slot for the local var
+// pushVar allocates a frame slot for the local var
 func pushVar(f *Func, vars ...*stackVar) {
 	for _, v := range vars {
 		size := alignUp(v.size, regSize)
