@@ -2,14 +2,17 @@ package g8
 
 type typ interface{}
 
-type typErr struct{} // for storing error types
+type typBasic int
 
-type typUint struct{} // uint32 variable
-type typInt struct{}  // int32, default type for all bare integers
-type typUint8 struct{}
-type typInt8 struct{}
-type typFloat32 struct{}
-type typStr struct{} // string constant
+const (
+	typErr typBasic = iota
+	typInt
+	typUint
+	typInt8
+	typUint8
+	typFloat32
+	typString
+)
 
 type typPtr struct{ t typ } // a pointer type
 type typSlice struct{ t typ }
@@ -18,19 +21,19 @@ type typArray struct {
 	n uint32
 }
 
-type varDecl struct {
+type varSig struct {
 	name string
 	t    typ
 }
 
-type funcDecl struct {
+type funcSig struct {
 	name string
 	t    *typFunc
 }
 
 type typStruct struct {
-	fields  []*varDecl
-	methods []*funcDecl
+	fields  []*varSig
+	methods []*funcSig
 }
 
 type typFunc struct {

@@ -26,10 +26,10 @@ func buildInt(b *builder, op *lex8.Token) *ref {
 		return nil
 	} else if ret > math.MaxInt32 {
 		// must be unsigned integer
-		return newRef(typUint{}, ir.Num(uint32(ret)))
+		return newRef(typUint, ir.Num(uint32(ret)))
 	}
 
-	return newRef(typInt{}, ir.Snum(int32(ret)))
+	return newRef(typInt, ir.Snum(int32(ret)))
 }
 
 func buildIdent(b *builder, op *lex8.Token) *ref {
@@ -47,22 +47,48 @@ func buildOperand(b *builder, op *ast.Operand) *ref {
 	}
 }
 
-func buildOpExpr(b *builder, op *ast.OpExpr) *ref {
-	if op.A == nil {
-		panic("todo: unary op")
-	} else {
-		switch op.Op.Lit {
-		case "+":
-			A := buildExpr(b, op.A)
-			B := buildExpr(b, op.B)
-			// TODO: check type here
-			ret := newRef(A.typ, b.f.NewTemp(4))
-			b.b.Arith(ret.ir, A.ir, "+", B.ir)
-			return ret
-		default:
-			panic("todo")
-		}
+func isBasic(a typ, t typBasic) bool {
+	code, ok := a.(typBasic)
+	if !ok {
+		return false
 	}
+	return code == t
+}
+
+func bothBasic(a, b typ, t typBasic) bool {
+	return isBasic(a, t) && isBasic(b, t)
+}
+
+func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
+	op := expr.Op.Lit
+	A := buildExpr(b, expr.A)
+	B := buildExpr(b, expr.B)
+
+	if !bothBasic(A.typ, B.typ, typInt) {
+		b.Errorf(expr.Op.Pos, "we only support int operators now")
+		return nil
+	}
+
+	switch op {
+	case "+", "-", "*", "&", "|":
+		ret := newRef(A.typ, b.f.NewTemp(4))
+		b.b.Arith(ret.ir, A.ir, op, B.ir)
+		return ret
+	case "%", "/":
+		// TODO: division requires panic for 0
+		ret := newRef(A.typ, b.f.NewTemp(4))
+		b.b.Arith(ret.ir, A.ir, op, B.ir)
+		return ret
+	default:
+		panic("todo")
+	}
+}
+
+func buildOpExpr(b *builder, expr *ast.OpExpr) *ref {
+	if expr.A == nil {
+		panic("todo: unary op")
+	}
+	return buildBinaryOpExpr(b, expr)
 }
 
 func buildExpr(b *builder, expr ast.Expr) *ref {
