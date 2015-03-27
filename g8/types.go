@@ -4,9 +4,6 @@ type typ interface{}
 
 type typErr struct{} // for storing error types
 
-type constUint uint32 // unsigned integer constant
-type constInt int32   // signed integer constant
-
 type typUint struct{} // uint32 variable
 type typInt struct{}  // int32, default type for all bare integers
 type typUint8 struct{}

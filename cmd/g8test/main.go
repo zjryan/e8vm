@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"flag"
 	"fmt"
@@ -9,10 +8,9 @@ import (
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/dasm8"
-	"lonnie.io/e8vm/g8/ir"
+	"lonnie.io/e8vm/g8"
 	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/lex8"
-	"lonnie.io/e8vm/link8"
 )
 
 func exit(e error) {
@@ -31,30 +29,6 @@ func printErrs(es []*lex8.Error) {
 		fmt.Println(e)
 	}
 	exit(nil)
-}
-
-func irTest() {
-	p := ir.NewPkg("_")
-	f := p.NewFunc("main")
-	b := f.NewBlock()
-
-	v1 := f.NewTemp(4)
-
-	b.Assign(v1, ir.Snum(3))
-	b.Arith(v1, v1, "+", ir.Snum(4))
-
-	lib := ir.BuildPkg(p)
-
-	buf := new(bytes.Buffer)
-	e := link8.LinkMain(lib, buf)
-	if e != nil {
-		exit(e)
-	}
-
-	lines := dasm8.Dasm(buf.Bytes(), arch8.InitPC)
-	for _, line := range lines {
-		fmt.Println(line)
-	}
 }
 
 func main() {
@@ -98,6 +72,11 @@ func main() {
 		printErrs(es)
 		fmt.Print(parse.PrintStmts(stmts))
 	case "ir":
-		irTest()
+		bs, es := g8.BuildBareFunc(fname, fin)
+		printErrs(es)
+		lines := dasm8.Dasm(bs, arch8.InitPC)
+		for _, line := range lines {
+			fmt.Println(line)
+		}
 	}
 }

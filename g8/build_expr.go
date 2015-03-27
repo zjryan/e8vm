@@ -1,6 +1,7 @@
 package g8
 
 import (
+	"fmt"
 	"math"
 	"strconv"
 
@@ -10,8 +11,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// parseInt parses an signed or unsigned 32-bit integer
-func parseInt(b *builder, op *lex8.Token) typ {
+func buildInt(b *builder, op *lex8.Token) *ref {
 	ret, e := strconv.ParseInt(op.Lit, 0, 32)
 	if e != nil {
 		b.Errorf(op.Pos, "invalid integer: %s", e)
@@ -26,30 +26,42 @@ func parseInt(b *builder, op *lex8.Token) typ {
 		return nil
 	} else if ret > math.MaxInt32 {
 		// must be unsigned integer
-		return constUint(uint32(ret))
+		return newRef(typUint{}, ir.Num(uint32(ret)))
 	}
 
-	return constInt(int32(ret))
+	return newRef(typInt{}, ir.Snum(int32(ret)))
+}
+
+func buildIdent(b *builder, op *lex8.Token) *ref {
+	panic("todo")
 }
 
 func buildOperand(b *builder, op *ast.Operand) *ref {
 	switch op.Token.Type {
 	case parse.Int:
-		t := parseInt(b, op.Token)
-		if t == nil {
-			return nil
-		}
-
-		switch t := t.(type) {
-		case constUint:
-			return newRef(t, ir.Num(uint32(t)))
-		case constInt:
-			return newRef(t, ir.Snum(int32(t)))
-		default:
-			panic("unknwon integer type")
-		}
+		return buildInt(b, op.Token)
+	case parse.Ident:
+		return buildIdent(b, op.Token)
 	default:
 		panic("invalid or not implemented")
+	}
+}
+
+func buildOpExpr(b *builder, op *ast.OpExpr) *ref {
+	if op.A == nil {
+		panic("todo: unary op")
+	} else {
+		switch op.Op.Lit {
+		case "+":
+			A := buildExpr(b, op.A)
+			B := buildExpr(b, op.B)
+			// TODO: check type here
+			ret := newRef(A.typ, b.f.NewTemp(4))
+			b.b.Arith(ret.ir, A.ir, "+", B.ir)
+			return ret
+		default:
+			panic("todo")
+		}
 	}
 }
 
@@ -59,9 +71,14 @@ func buildExpr(b *builder, expr ast.Expr) *ref {
 	}
 
 	switch expr := expr.(type) {
+	case *ast.Operand:
+		return buildOperand(b, expr)
+	case *ast.ParenExpr:
+		return buildExpr(b, expr.Expr)
+	case *ast.OpExpr:
+		return buildOpExpr(b, expr)
 	default:
-		_ = expr
-		panic("invalid or not implemented")
+		panic(fmt.Errorf("%T: invalid or not implemented", expr))
 	}
 }
 

@@ -25,12 +25,14 @@ func printExpr(p *printer, expr ast.Expr) {
 	case *ast.ParenExpr:
 		printExprs(p, "(", expr.Expr, ")")
 	case *ast.ExprList:
+		printExprs(p, "[")
 		for i, e := range expr.Exprs {
 			if i != 0 {
 				printExprs(p, ",")
 			}
 			printExprs(p, e)
 		}
+		printExprs(p, "]")
 	case *ast.CallExpr:
 		if expr.Args != nil {
 			printExprs(p, expr.Func, "(", expr.Args, ")")

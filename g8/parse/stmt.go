@@ -134,8 +134,14 @@ func parseStmt(p *parser) ast.Stmt {
 		ret.Semi = p.ExpectSemi()
 		return ret
 	} else if semi := p.AcceptSemi(); semi != nil {
+		if exprs.Len() != 1 {
+			p.ErrorfHere("expression list is not a valid statement")
+			p.BailOut() // reset this error
+			return nil
+		}
+
 		ret := new(ast.ExprStmt)
-		ret.Expr = exprs
+		ret.Expr = exprs.Exprs[0]
 		ret.Semi = semi
 		return ret
 	}
