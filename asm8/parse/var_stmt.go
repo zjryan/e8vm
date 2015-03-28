@@ -18,7 +18,9 @@ func parseArgs(p *parser) (typ *lex8.Token, args []*lex8.Token) {
 			if t.Type == Operand || t.Type == String {
 				args = append(args, t)
 			} else {
-				p.Errorf(t.Pos, "expect operand or string, got %s", p.TypeStr(t.Type))
+				p.Errorf(t.Pos, "expect operand or string, got %s",
+					p.TypeStr(t.Type),
+				)
 			}
 		}
 		if p.See(lex8.EOF) {

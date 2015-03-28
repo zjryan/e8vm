@@ -21,7 +21,8 @@ func NewParser(t Tokener, types *Types) *Parser {
 	return ret
 }
 
-// Errorf adds a new parser error to the parser's error list at a particular position.
+// Errorf adds a new parser error to the parser's error list at a particular
+// position.
 func (p *Parser) Errorf(pos *Pos, f string, args ...interface{}) {
 	p.errs.Errorf(pos, f, args...)
 }
@@ -68,14 +69,15 @@ func (p *Parser) Shift() *Token {
 }
 
 // InError checks if the parser is in error state.
-// A parser can enter error state by adding a parser error with Errorf() or ErrorfAt().
-// A parser leaves error by calling BailOut().
+// A parser can enter error state by adding a parser error with Errorf() or
+// ErrorfAt().  A parser leaves error by calling BailOut().
 func (p *Parser) InError() bool { return p.errs.InJail() }
 
 // BailOut bails out the parser from an error state.
 func (p *Parser) BailOut() { p.errs.BailOut() }
 
-// TypeStr returns the name of a type used by the type register of this parser.
+// TypeStr returns the name of a type used by the type register of this
+// parser.
 func (p *Parser) TypeStr(t int) string {
 	return p.types.Name(t)
 }
@@ -83,8 +85,8 @@ func (p *Parser) TypeStr(t int) string {
 // ExpectLit checks if the current token is type t and has literal lit.  If it
 // is, the token is accepted, the current token is shifted, and it returns the
 // accepted token.  If it is not, the call reports an error, enters the parser
-// into error state, and returns nil.  If the parser is already in error state,
-// the call returns nil immediately, and nothing is checked.
+// into error state, and returns nil.  If the parser is already in error
+// state, the call returns nil immediately, and nothing is checked.
 func (p *Parser) ExpectLit(t int, lit string) *Token {
 	if p.InError() {
 		return nil
@@ -94,15 +96,17 @@ func (p *Parser) ExpectLit(t int, lit string) *Token {
 		return p.Shift()
 	}
 
-	p.ErrorfHere("expect %s %s, got %s", p.TypeStr(t), lit, p.TypeStr(p.t.Type))
+	p.ErrorfHere("expect %s %s, got %s",
+		p.TypeStr(t), lit, p.TypeStr(p.t.Type),
+	)
 	return nil
 }
 
 // Expect checks if the current token is type t. If it is, the token is
 // accepted, the current token is shifted, and it returns the accepted token.
-// If it is not, the call reports an error, enters the parser into error state,
-// and returns nil. If the parser is already in error state, the call returns
-// nil immediately, and nothing is checked.
+// If it is not, the call reports an error, enters the parser into error
+// state, and returns nil. If the parser is already in error state, the call
+// returns nil immediately, and nothing is checked.
 func (p *Parser) Expect(t int) *Token {
 	if p.InError() {
 		return nil
@@ -117,8 +121,9 @@ func (p *Parser) Expect(t int) *Token {
 }
 
 // SkipErrStmt skips tokens until it meets a token of type sep or the end of
-// file (token EOF) and returns true, but only when the parser is in error state.
-// If the parser is not in error state, it returns false and nothing is skipped.
+// file (token EOF) and returns true, but only when the parser is in error
+// state.  If the parser is not in error state, it returns false and nothing
+// is skipped.
 func (p *Parser) SkipErrStmt(sep int) bool {
 	if !p.InError() {
 		return false

@@ -123,7 +123,9 @@ func buildExprList(b *builder, list *ast.ExprList) []*ref {
 	return ret
 }
 
-func buildIdentList(b *builder, list *ast.ExprList) ([]*lex8.Token, ast.Expr) {
+func buildIdentList(b *builder, list *ast.ExprList) (
+	[]*lex8.Token, ast.Expr,
+) {
 	ret := make([]*lex8.Token, 0, list.Len())
 	for _, expr := range list.Exprs {
 		op, ok := expr.(*ast.Operand)

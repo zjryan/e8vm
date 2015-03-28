@@ -72,7 +72,9 @@ func (c *multiCore) PrintStatus() {
 
 func printCPUStatus(c *cpu) {
 	p := func(name string, reg int) {
-		fmt.Printf(" %3s = 0x%08x %-11d\n", name, c.regs[reg], int32(c.regs[reg]))
+		fmt.Printf(" %3s = 0x%08x %-11d\n",
+			name, c.regs[reg], int32(c.regs[reg]),
+		)
 	}
 
 	p("r0", R0)

@@ -16,7 +16,8 @@ func isPublic(name string) bool {
 	return r >= 'A' && r <= 'Z'
 }
 
-// mightBeSymbol just looks at the first rune and see if it is *poosibly* a symbol
+// mightBeSymbol just looks at the first rune and see
+// if it is *possibly* a symbol
 func mightBeSymbol(sym string) bool {
 	if sym == "" {
 		return false

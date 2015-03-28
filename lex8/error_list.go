@@ -5,11 +5,6 @@ import (
 	"io"
 )
 
-// Logger is an error logging interface
-type Logger interface {
-	Errorf(p *Pos, fmt string, args ...interface{})
-}
-
 // ErrorList saves a list of error
 type ErrorList struct {
 	errs []*Error
@@ -51,13 +46,6 @@ func (lst *ErrorList) BailOut() { lst.inJail = false }
 // Errorf appends a new error with particular position and format.
 func (lst *ErrorList) Errorf(p *Pos, f string, args ...interface{}) {
 	lst.Add(&Error{p, fmt.Errorf(f, args...)})
-}
-
-// SaveError saves a single normal error without a position.
-func (lst *ErrorList) SaveError(e error) {
-	if e != nil {
-		lst.Add(&Error{Err: e})
-	}
 }
 
 // Print prints to the writer (maximume lst.MaxPrint errors).

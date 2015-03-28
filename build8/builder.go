@@ -115,8 +115,8 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 		log := lex8.NewErrorList()
 
 		fout := b.home.makeBin(p)
-		log.SaveError(link8.LinkMain(lib, fout))
-		log.SaveError(fout.Close())
+		lex8.LogError(log, link8.LinkMain(lib, fout))
+		lex8.LogError(log, fout.Close())
 
 		if es := log.Errs(); es != nil {
 			return nil, es

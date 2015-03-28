@@ -149,12 +149,12 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 		if p != nil {
 			var sym *link8.Symbol // for saving the linking symbol in the lib
 
-			pkg = b.getIndex(p.as)       // package index in lib, based on alias
+			pkg = b.getIndex(p.as)       // package index, based on alias
 			b.pkgUsed[p.as] = struct{}{} // mark pkg used
 
 			// TODO: we should find this in back in linkable when possible
 			// this is required for handling consts
-			sym, index = p.lib.SymbolByName(s.sym) // find the symbol in the package
+			sym, index = p.lib.SymbolByName(s.sym) // find the symbol
 			if sym != nil {
 				if sym.Type == link8.SymFunc {
 					typ = SymFunc
@@ -208,7 +208,8 @@ func linkSymbol(b *builder, s *funcStmt, f *link8.Func) {
 
 // makeFuncObj converts a function AST node f into a function object. It
 // resolves the symbols of fillLink, fillHigh and fillLow into <pack, sym>
-// index pairs, using the symbol scope and the curPkg context in the Builder b.
+// index pairs, using the symbol scope and the curPkg context in the
+// Builder b.
 func makeFuncObj(b *builder, f *funcDecl) *link8.Func {
 	ret := link8.NewFunc()
 	for _, s := range f.stmts {

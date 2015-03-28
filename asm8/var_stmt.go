@@ -19,7 +19,9 @@ func resolveVarStmt(log lex8.Logger, v *ast.VarStmt) *varStmt {
 	return ret
 }
 
-func resolveData(p lex8.Logger, t *lex8.Token, args []*lex8.Token) ([]byte, uint32) {
+func resolveData(p lex8.Logger, t *lex8.Token, args []*lex8.Token) (
+	[]byte, uint32,
+) {
 	switch t.Lit {
 	case "str":
 		return parseDataStr(p, args)

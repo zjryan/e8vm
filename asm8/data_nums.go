@@ -26,7 +26,9 @@ const (
 	modeFloat  = 0x4
 )
 
-func parseDataNums(p lex8.Logger, args []*lex8.Token, mode int) ([]byte, uint32) {
+func parseDataNums(p lex8.Logger, args []*lex8.Token, mode int) (
+	[]byte, uint32,
+) {
 	if !checkTypeAll(p, args, parse.Operand) {
 		return nil, 0
 	}

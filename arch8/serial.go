@@ -33,7 +33,7 @@ const (
 	serialOutHead   = serialBase + 16 // updated by cpu
 	serialOutTail   = serialBase + 20 // updated by hardware
 	serialOutWait   = serialBase + 24 // cycles to wait to raise an interrupt
-	serialOutThresh = serialBase + 28 // threashold to raise an output interrupt
+	serialOutThresh = serialBase + 28 // threashold for an output interrupt
 
 	serialInBuf  = serialBase + 64
 	serialOutBuf = serialBase + 96
