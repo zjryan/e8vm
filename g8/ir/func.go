@@ -8,7 +8,6 @@ type Func struct {
 	name string
 
 	vars      []*stackVar
-	namedVars map[string]*stackVar
 	args      []*stackVar
 	rets      []*stackVar
 	savedRegs []*stackVar
@@ -30,21 +29,12 @@ func (f *Func) newVar(
 	name string,
 	n int32,
 ) *stackVar {
-	if name != "" {
-		if f.namedVars[name] != nil {
-			panic("dup var name")
-		}
-	}
-
 	ret := new(stackVar)
 	ret.name = name
 	ret.size = n
 	ret.id = len(f.locals)
 
 	f.vars = append(f.vars, ret)
-	if name != "" {
-		f.namedVars[name] = ret
-	}
 
 	return ret
 }
@@ -68,7 +58,7 @@ func (f *Func) AddRet(name string, n int32) Ref {
 // NewLocal creates a new named local variable of size n on stack.
 func (f *Func) NewLocal(name string, n int32) Ref {
 	ret := f.newVar(name, n)
-	f.locals = append(f.rets, ret)
+	f.locals = append(f.locals, ret)
 	return ret
 }
 

@@ -4,10 +4,6 @@ import (
 	"lonnie.io/e8vm/g8/ast"
 )
 
-func declareVar(b *builder, name string, t typ) *ref {
-	panic("todo")
-}
-
 func buildDefineStmt(b *builder, stmt *ast.DefineStmt) {
 	if stmt.Left.Len() == stmt.Right.Len() {
 		rights := buildExprList(b, stmt.Right)
@@ -23,8 +19,10 @@ func buildDefineStmt(b *builder, stmt *ast.DefineStmt) {
 
 		leftRefs := make([]*ref, 0, len(lefts))
 		for i, left := range lefts {
-			// TODO: ignore "_"
-			r := declareVar(b, left.Lit, rights[i].typ)
+			r := declareVar(b, left, rights[i].typ)
+			if r == nil {
+				return // declare error
+			}
 			leftRefs = append(leftRefs, r)
 		}
 

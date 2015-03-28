@@ -33,7 +33,19 @@ func buildInt(b *builder, op *lex8.Token) *ref {
 }
 
 func buildIdent(b *builder, op *lex8.Token) *ref {
-	panic("todo")
+	s := b.scope.Query(op.Lit)
+	if s == nil {
+		b.Errorf(op.Pos, "undefined identifer %s", op.Lit)
+		return nil
+	}
+
+	switch s.Type {
+	case symVar:
+		v := s.Item.(*objVar)
+		return v.ref
+	default:
+		panic("todo")
+	}
 }
 
 func buildOperand(b *builder, op *ast.Operand) *ref {
@@ -47,22 +59,13 @@ func buildOperand(b *builder, op *ast.Operand) *ref {
 	}
 }
 
-func isBasic(a typ, t typBasic) bool {
-	code, ok := a.(typBasic)
-	if !ok {
-		return false
-	}
-	return code == t
-}
-
-func bothBasic(a, b typ, t typBasic) bool {
-	return isBasic(a, t) && isBasic(b, t)
-}
-
 func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	op := expr.Op.Lit
 	A := buildExpr(b, expr.A)
 	B := buildExpr(b, expr.B)
+	if A == nil || B == nil { // some thing errored
+		return nil
+	}
 
 	if !bothBasic(A.typ, B.typ, typInt) {
 		b.Errorf(expr.Op.Pos, "we only support int operators now")
