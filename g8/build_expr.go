@@ -19,10 +19,10 @@ func buildInt(b *builder, op *lex8.Token) *ref {
 	}
 
 	if ret < math.MinInt32 {
-		b.Errorf(op.Pos, "integer too small, not fit in 32-bit")
+		b.Errorf(op.Pos, "integer too small to fit in 32-bit")
 		return nil
 	} else if ret > math.MaxUint32 {
-		b.Errorf(op.Pos, "integer too large, not fit in 32-bit")
+		b.Errorf(op.Pos, "integer too large to fit in 32-bit")
 		return nil
 	} else if ret > math.MaxInt32 {
 		// must be unsigned integer
