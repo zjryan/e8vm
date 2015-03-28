@@ -63,7 +63,7 @@ func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	op := expr.Op.Lit
 	A := buildExpr(b, expr.A)
 	B := buildExpr(b, expr.B)
-	if A == nil || B == nil { // some thing errored
+	if A == nil || B == nil { // some error occured
 		return nil
 	}
 
