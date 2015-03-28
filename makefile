@@ -2,6 +2,7 @@
 
 all:
 	go install -v ./...
+	e8chk -path="lonnie.io/e8vm"
 
 rall:
 	touch `find . -name "*.go"`
