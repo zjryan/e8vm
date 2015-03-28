@@ -46,14 +46,10 @@ func (x *Lexer) Next() (rune, error) {
 }
 
 // Rune returns the current rune.
-func (x *Lexer) Rune() rune {
-	return x.r
-}
+func (x *Lexer) Rune() rune { return x.r }
 
 // See returns true when the current rune is r.
-func (x *Lexer) See(r rune) bool {
-	return x.r == r
-}
+func (x *Lexer) See(r rune) bool { return x.r == r }
 
 // Discard clears the scanning buffer
 func (x *Lexer) Discard() { x.s.Accept() }
@@ -76,9 +72,7 @@ func (x *Lexer) SkipWhite() {
 
 // Buffered returns the current buffered string
 // in the scanner
-func (x *Lexer) Buffered() string {
-	return x.s.Buffered()
-}
+func (x *Lexer) Buffered() string { return x.s.Buffered() }
 
 // MakeToken accepts the runes in the scanning buffer
 // and returns it as a token of type t.
