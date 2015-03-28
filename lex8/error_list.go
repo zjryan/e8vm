@@ -14,6 +14,8 @@ type ErrorList struct {
 	inJail bool
 }
 
+var _ Logger = new(ErrorList)
+
 // NewErrorList creates a new error list with default (20) maximum
 // lines of errors.
 func NewErrorList() *ErrorList {
