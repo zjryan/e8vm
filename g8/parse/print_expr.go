@@ -4,9 +4,9 @@ import (
 	"lonnie.io/e8vm/g8/ast"
 )
 
-func printExprs(p *printer, exprs ...interface{}) {
-	for _, expr := range exprs {
-		printExpr(p, expr)
+func printExprs(p *printer, args ...interface{}) {
+	for _, arg := range args {
+		printExpr(p, arg)
 	}
 }
 
