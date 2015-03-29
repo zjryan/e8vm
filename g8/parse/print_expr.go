@@ -1,21 +1,25 @@
 package parse
 
 import (
+	"bytes"
+	"fmt"
+
+	"lonnie.io/e8vm/fmt8"
 	"lonnie.io/e8vm/g8/ast"
 )
 
-func printExprs(p *printer, args ...interface{}) {
+func printExprs(p *fmt8.Printer, args ...interface{}) {
 	for _, arg := range args {
 		printExpr(p, arg)
 	}
 }
 
-func printExpr(p *printer, expr ast.Expr) {
+func printExpr(p *fmt8.Printer, expr ast.Expr) {
 	switch expr := expr.(type) {
 	case string:
-		p.printStr(expr)
+		fmt.Fprintf(p, expr)
 	case *ast.Operand:
-		printExprs(p, expr.Token.Lit)
+		fmt.Fprintf(p, expr.Token.Lit)
 	case *ast.OpExpr:
 		if expr.A == nil {
 			printExprs(p, "(", expr.Op.Lit, expr.B, ")")
@@ -46,7 +50,8 @@ func printExpr(p *printer, expr ast.Expr) {
 
 // PrintExpr prints an expression
 func PrintExpr(expr ast.Expr) string {
-	p := newPrinter()
+	buf := new(bytes.Buffer)
+	p := fmt8.NewPrinter(buf)
 	printExpr(p, expr)
-	return p.String()
+	return buf.String()
 }

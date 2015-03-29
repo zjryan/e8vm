@@ -1,21 +1,23 @@
 package parse
 
 import (
+	"bytes"
+	"fmt"
+
+	"lonnie.io/e8vm/fmt8"
 	"lonnie.io/e8vm/g8/ast"
 )
 
-func printStmt(p *printer, stmt ast.Stmt) {
+func printStmt(p *fmt8.Printer, stmt ast.Stmt) {
 	switch stmt := stmt.(type) {
 	case *ast.EmptyStmt:
-		p.printStr("; // empty")
+		fmt.Fprint(p, "; // emtpy")
 	case *ast.Block:
-		p.printStr("{")
-		p.printEndl()
+		fmt.Fprintln(p, "{")
 		p.Tab()
 		printStmt(p, stmt.Stmts)
 		p.ShiftTab()
-		p.printStr("}")
-		p.printEndl()
+		fmt.Fprint(p, "}")
 	case []ast.Stmt:
 		for _, s := range stmt {
 			printStmt(p, s)
@@ -42,16 +44,17 @@ func printStmt(p *printer, stmt ast.Stmt) {
 			printExprs(p, "break ", stmt.Label.Lit)
 		}
 	case *ast.FallthroughStmt:
-		p.printStr("fallthrough")
+		fmt.Fprint(p, "fallthrough")
 	default:
 		panic("unknown statement type")
 	}
-	p.printEndl()
+	fmt.Fprintln(p)
 }
 
 // PrintStmts prints a list of statements
 func PrintStmts(stmts []ast.Stmt) string {
-	p := newPrinter()
+	buf := new(bytes.Buffer)
+	p := fmt8.NewPrinter(buf)
 	printStmt(p, stmts)
-	return p.String()
+	return buf.String()
 }

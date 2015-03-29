@@ -37,7 +37,7 @@ func printPkg(p *fmt8.Printer, pkg *Pkg) {
 	}
 }
 
-// PrintFunc prints a the content of a function
+// PrintPkg prints a the content of a IR package
 func PrintPkg(out io.Writer, pkg *Pkg) error {
 	p := fmt8.NewPrinter(out)
 	printPkg(p, pkg)
