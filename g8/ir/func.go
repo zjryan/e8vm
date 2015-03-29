@@ -7,12 +7,11 @@ type Func struct {
 	id   int
 	name string
 
-	vars      []*stackVar
-	args      []*stackVar
-	rets      []*stackVar
-	savedRegs []*stackVar
-	locals    []*stackVar
-	retAddr   *stackVar
+	args      []*stackVar // function call arguments
+	rets      []*stackVar // return values
+	savedRegs []*stackVar // saved general purpose registers
+	locals    []*stackVar // local variables
+	retAddr   *stackVar   // saved return address register
 
 	blocks   []*Block
 	prologue *Block
@@ -33,8 +32,6 @@ func (f *Func) newVar(
 	ret.name = name
 	ret.size = n
 	ret.id = len(f.locals)
-
-	f.vars = append(f.vars, ret)
 
 	return ret
 }
