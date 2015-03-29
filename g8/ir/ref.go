@@ -18,6 +18,14 @@ type stackVar struct {
 	regOnly bool
 }
 
+func newVar(n int32, name string) *stackVar {
+	ret := new(stackVar)
+	ret.name = name
+	ret.size = n
+
+	return ret
+}
+
 type heapSym struct{ pkg, sym int } // a variable on heap
 type funcSym struct{ pkg, sym int } // a function symbol
 type number struct{ v uint32 }      // a constant number

@@ -12,7 +12,7 @@ import (
 )
 
 func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
-	b.f = b.p.NewFunc("main")
+	b.f = b.p.NewFunc("main", ir.VoidFuncSig)
 	b.b = b.f.NewBlock()
 
 	for _, stmt := range stmts {

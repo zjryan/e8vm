@@ -23,8 +23,8 @@ func (b *Block) Assign(dest Ref, a Ref) {
 }
 
 // Call appends a function call operation to the basic block
-func (b *Block) Call(dest Ref, f Ref, args ...Ref) {
-	b.addOp(&callOp{dest, f, args})
+func (b *Block) Call(dests []Ref, f Ref, sig *FuncSig, args ...Ref) {
+	b.addOp(&callOp{dests, f, sig, args})
 }
 
 func (b *Block) addJump(j *jump) { b.jumps = append(b.jumps, j) }

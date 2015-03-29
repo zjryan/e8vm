@@ -10,8 +10,9 @@ type arithOp struct {
 }
 
 type callOp struct {
-	dest Ref
+	dest []Ref
 	f    Ref
+	sig  *FuncSig
 	args []Ref
 }
 
@@ -20,12 +21,4 @@ type jump struct {
 	op string
 	b  Ref
 	to int // block id
-}
-
-func arith(dest Ref, a Ref, op string, b Ref) *arithOp {
-	return &arithOp{dest, a, op, b}
-}
-
-func call(dest Ref, f Ref, args ...Ref) *callOp {
-	return &callOp{dest, f, args}
 }

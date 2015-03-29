@@ -22,11 +22,8 @@ func NewPkg(path string) *Pkg {
 }
 
 // NewFunc creates a new function from the package.
-func (p *Pkg) NewFunc(name string) *Func {
-	ret := new(Func)
-	ret.id = len(p.funcs)
-	ret.name = name
-
+func (p *Pkg) NewFunc(name string, sig *FuncSig) *Func {
+	ret := newFunc(name, len(p.funcs), sig)
 	p.funcs = append(p.funcs, ret)
 	return ret
 }

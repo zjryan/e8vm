@@ -7,9 +7,9 @@ type Func struct {
 	id   int
 	name string
 
-	args      []*stackVar // function call arguments
-	rets      []*stackVar // return values
-	savedRegs []*stackVar // saved general purpose registers
+	sig *FuncSig
+
+	savedRegs []*stackVar
 	locals    []*stackVar // local variables
 	retAddr   *stackVar   // saved return address register
 
@@ -24,35 +24,20 @@ type Func struct {
 	index uint32 // the index in the lib
 }
 
-func (f *Func) newVar(
-	n int32, name string,
-) *stackVar {
-	ret := new(stackVar)
+func newFunc(name string, id int, sig *FuncSig) *Func {
+	ret := new(Func)
+	ret.id = id
 	ret.name = name
-	ret.size = n
+	ret.sig = sig
 
 	return ret
 }
 
 const regSize = 4
 
-// AddArg adds an arg stack variable for the function.
-func (f *Func) AddArg(n int32, name string) Ref {
-	ret := f.newVar(n, name)
-	f.args = append(f.args, ret)
-	return ret
-}
-
-// AddRet adds a return value for the function.
-func (f *Func) AddRet(n int32, name string) Ref {
-	ret := f.newVar(n, name)
-	f.rets = append(f.rets, ret)
-	return ret
-}
-
 // NewLocal creates a new named local variable of size n on stack.
 func (f *Func) NewLocal(n int32, name string) Ref {
-	ret := f.newVar(n, name)
+	ret := newVar(n, name)
 	f.locals = append(f.locals, ret)
 	return ret
 }

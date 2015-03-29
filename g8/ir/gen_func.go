@@ -77,22 +77,20 @@ func pushVar(f *Func, vars ...*stackVar) {
 }
 
 func layoutLocals(f *Func) {
-	regArgs, _ := layoutArgs(f, f.args)
-	regRets, regUsed := layoutArgs(f, f.rets)
+	regArgs, _ := layoutArgs(f, f.sig.args)
+	regRets, regUsed := layoutArgs(f, f.sig.rets)
 
-	var savedRegs []*stackVar
 	for i := uint32(_1); i <= _4; i++ {
 		if !regUsed[i] {
-			v := f.newVar(regSize, "")
+			v := newVar(regSize, "")
 			v.viaReg = i
-			savedRegs = append(savedRegs, v)
+			f.savedRegs = append(f.savedRegs, v)
 		}
 	}
-	f.savedRegs = savedRegs
 
 	// layout the variables in the function
 	f.frameSize = f.callerFrameSize
-	f.retAddr = f.newVar(regSize, "")
+	f.retAddr = newVar(regSize, "")
 	f.retAddr.viaReg = arch8.RET // the return address
 
 	// if all args and rets are via register
@@ -100,7 +98,7 @@ func layoutLocals(f *Func) {
 
 	pushVar(f, regArgs...)
 	pushVar(f, regRets...)
-	pushVar(f, savedRegs...)
+	pushVar(f, f.savedRegs...)
 	pushVar(f, f.locals...)
 
 	// and we push retAddr at the end
@@ -114,7 +112,7 @@ func makePrologue(f *Func) *Block {
 	// move the sp
 	b.inst(asm.addi(_sp, _sp, -f.frameSize))
 
-	for _, v := range f.args {
+	for _, v := range f.sig.args {
 		if v.viaReg == 0 {
 			continue // skip args not sent in via register
 		}
@@ -131,15 +129,16 @@ func makePrologue(f *Func) *Block {
 
 func makeEpilogue(f *Func) *Block {
 	b := f.newBlock()
-	for _, v := range f.rets {
+
+	for _, v := range f.savedRegs {
+		loadVar(b, v.viaReg, v) // restoring the registers
+	}
+
+	for _, v := range f.sig.rets {
 		if v.viaReg == 0 {
 			continue
 		}
 		loadVar(b, v.viaReg, v)
-	}
-
-	for _, v := range f.savedRegs {
-		loadVar(b, v.viaReg, v) // restoring the registers
 	}
 
 	b.inst(asm.addi(_sp, _sp, f.frameSize))
