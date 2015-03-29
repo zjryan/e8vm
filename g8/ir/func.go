@@ -1,5 +1,9 @@
 package ir
 
+import (
+	"fmt"
+)
+
 // Func is an IR function. It consists of a bunch of named
 // or unamed local variables and also a set of basic blocks.
 // it can generate a linkable function.
@@ -18,6 +22,7 @@ type Func struct {
 	epilogue *Block
 	body     []*Block
 
+	nvar            int
 	callerFrameSize int32 // frame size where the caller pushed
 	frameSize       int32
 
@@ -43,7 +48,11 @@ func (f *Func) NewLocal(n int32, name string) Ref {
 }
 
 // NewTemp creates a new temp variable of size n on stack.
-func (f *Func) NewTemp(n int32) Ref { return f.NewLocal(n, "") }
+func (f *Func) NewTemp(n int32) Ref {
+	s := fmt.Sprintf("<%d>", f.nvar)
+	f.nvar++
+	return f.NewLocal(n, s)
+}
 
 func (f *Func) newBlock() *Block {
 	ret := new(Block)

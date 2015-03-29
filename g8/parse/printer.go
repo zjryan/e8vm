@@ -8,7 +8,6 @@ import (
 
 type printer struct {
 	buf     *bytes.Buffer
-	e       error
 	midLine bool
 
 	indent    int
@@ -23,10 +22,6 @@ func newPrinter() *printer {
 }
 
 func (p *printer) printStr(s string) {
-	if p.e != nil {
-		return
-	}
-
 	if strings.HasSuffix(s, "\n") {
 		p.midLine = false
 	} else if s != "" {
@@ -38,8 +33,7 @@ func (p *printer) printStr(s string) {
 		}
 		p.midLine = true
 	}
-	_, e := fmt.Fprint(p.buf, s)
-	p.e = e
+	fmt.Fprint(p.buf, s)
 }
 
 func (p *printer) printEndl() { p.printStr("\n") }
@@ -50,5 +44,4 @@ func (p *printer) ShiftTab() {
 	}
 }
 
-func (p *printer) Error() error   { return p.e }
 func (p *printer) String() string { return p.buf.String() }
