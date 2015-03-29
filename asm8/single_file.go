@@ -19,7 +19,7 @@ func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	}
 
 	buf := new(bytes.Buffer)
-	e := link8.LinkMain(pkg.Compiled().Lib(), buf)
+	e := link8.LinkMain(pkg.Compiled().Lib(), buf, "main")
 	if e != nil {
 		return nil, lex8.SingleErr(e)
 	}

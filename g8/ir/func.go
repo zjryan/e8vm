@@ -25,13 +25,11 @@ type Func struct {
 }
 
 func (f *Func) newVar(
-	name string,
-	n int32,
+	n int32, name string,
 ) *stackVar {
 	ret := new(stackVar)
 	ret.name = name
 	ret.size = n
-	ret.id = len(f.locals)
 
 	return ret
 }
@@ -39,30 +37,28 @@ func (f *Func) newVar(
 const regSize = 4
 
 // AddArg adds an arg stack variable for the function.
-func (f *Func) AddArg(name string, n int32) Ref {
-	ret := f.newVar(name, n)
+func (f *Func) AddArg(n int32, name string) Ref {
+	ret := f.newVar(n, name)
 	f.args = append(f.args, ret)
 	return ret
 }
 
 // AddRet adds a return value for the function.
-func (f *Func) AddRet(name string, n int32) Ref {
-	ret := f.newVar(name, n)
+func (f *Func) AddRet(n int32, name string) Ref {
+	ret := f.newVar(n, name)
 	f.rets = append(f.rets, ret)
 	return ret
 }
 
 // NewLocal creates a new named local variable of size n on stack.
-func (f *Func) NewLocal(name string, n int32) Ref {
-	ret := f.newVar(name, n)
+func (f *Func) NewLocal(n int32, name string) Ref {
+	ret := f.newVar(n, name)
 	f.locals = append(f.locals, ret)
 	return ret
 }
 
 // NewTemp creates a new temp variable of size n on stack.
-func (f *Func) NewTemp(n int32) Ref {
-	return f.NewLocal("", n)
-}
+func (f *Func) NewTemp(n int32) Ref { return f.NewLocal(n, "") }
 
 func (f *Func) newBlock() *Block {
 	ret := new(Block)

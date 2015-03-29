@@ -36,7 +36,7 @@ func BuildBareFunc(f string, r io.Reader) ([]byte, []*lex8.Error) {
 	}
 
 	buf := new(bytes.Buffer)
-	e := link8.LinkMain(pkg, buf)
+	e := link8.LinkMain(pkg, buf, "main")
 	if e != nil {
 		return nil, lex8.SingleErr(e)
 	}

@@ -5,8 +5,7 @@ type Ref interface{}
 
 // stackVar is a variable on stack
 type stackVar struct {
-	name   string
-	id     int
+	name   string // not unique, just for debugging
 	offset int32
 	size   int32
 

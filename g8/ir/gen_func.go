@@ -83,7 +83,7 @@ func layoutLocals(f *Func) {
 	var savedRegs []*stackVar
 	for i := uint32(_1); i <= _4; i++ {
 		if !regUsed[i] {
-			v := f.newVar("", regSize)
+			v := f.newVar(regSize, "")
 			v.viaReg = i
 			savedRegs = append(savedRegs, v)
 		}
@@ -92,7 +92,7 @@ func layoutLocals(f *Func) {
 
 	// layout the variables in the function
 	f.frameSize = f.callerFrameSize
-	f.retAddr = f.newVar("", regSize)
+	f.retAddr = f.newVar(regSize, "")
 	f.retAddr.viaReg = arch8.RET // the return address
 
 	// if all args and rets are via register

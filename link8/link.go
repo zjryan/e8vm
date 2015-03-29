@@ -7,11 +7,11 @@ import (
 )
 
 // LinkMain produces a image for a main() in a package.
-func LinkMain(main *Pkg, out io.Writer) error {
+func LinkMain(main *Pkg, out io.Writer, start string) error {
 	lnk := NewLinker()
 	lnk.AddPkgs(main)
 
-	funcMain, index := main.SymbolByName("main")
+	funcMain, index := main.SymbolByName(start)
 	if funcMain == nil || funcMain.Type != SymFunc {
 		return fmt.Errorf("main function missing")
 	}
