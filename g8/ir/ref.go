@@ -1,5 +1,9 @@
 package ir
 
+import (
+	"fmt"
+)
+
 // Ref is a reference of an object
 type Ref interface{}
 
@@ -27,9 +31,18 @@ func newVar(n int32, name string) *stackVar {
 	return ret
 }
 
+func (v *stackVar) String() string {
+	if v.name != "" {
+		return v.name
+	}
+	return fmt.Sprintf("<%d>", v.id)
+}
+
 type heapSym struct{ pkg, sym int } // a variable on heap
 type funcSym struct{ pkg, sym int } // a function symbol
 type number struct{ v uint32 }      // a constant number
+
+func (n *number) String() string { return fmt.Sprintf("%d", n.v) }
 
 // Num creates a constant reference to a int32 number
 func Num(v uint32) Ref { return &number{v} }

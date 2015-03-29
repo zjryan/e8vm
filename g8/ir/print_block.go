@@ -3,33 +3,43 @@ package ir
 import (
 	"fmt"
 	"io"
+
+	"lonnie.io/e8vm/fmt8"
 )
 
-func printBlock(p *printer, b *Block) {
-	p.printStr(fmt.Sprintf("[block %d]", b.id))
-	p.Endline()
-
+func printBlock(p *fmt8.Printer, b *Block) {
+	fmt.Fprintln(p, b)
+	p.Tab()
 	for _, op := range b.ops {
 		printOp(p, op)
 	}
+	p.ShiftTab()
 }
 
-func printFunc(p *printer, f *Func) {
-	p.printStr(fmt.Sprintf("func %s", f.name))
-	p.Endline()
+func printFunc(p *fmt8.Printer, f *Func) {
+	fmt.Fprintf(p, "func %s {\n", f.name)
+	p.Tab()
 
-	// printBlock(p, f.prologue)
 	for _, b := range f.body {
 		printBlock(p, b)
 	}
-	// printBlock(p, f.epilogue)
+
+	p.ShiftTab()
+	fmt.Fprintln(p, "}")
+}
+
+func printPkg(p *fmt8.Printer, pkg *Pkg) {
+	fmt.Fprintf(p, "package %s\n", pkg.path)
+
+	for _, f := range pkg.funcs {
+		fmt.Fprintln(p)
+		printFunc(p, f)
+	}
 }
 
 // PrintFunc prints a the content of a function
-func PrintFunc(out io.Writer, f *Func) error {
-	p := new(printer)
-	p.out = out
-
-	printFunc(p, f)
-	return p.e
+func PrintPkg(out io.Writer, pkg *Pkg) error {
+	p := fmt8.NewPrinter(out)
+	printPkg(p, pkg)
+	return p.Err()
 }

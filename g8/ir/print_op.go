@@ -2,54 +2,37 @@ package ir
 
 import (
 	"fmt"
-	"io"
+
+	"lonnie.io/e8vm/fmt8"
 )
 
-type printer struct {
-	out io.Writer
-	e   error
-}
-
-func (p *printer) printStr(s string) {
-	if p.e != nil {
-		return
-	}
-	_, e := fmt.Print(s)
-	p.e = e
-}
-
-func (p *printer) Print(args ...interface{}) {
-	for _, arg := range args {
-		switch arg := arg.(type) {
-		case string:
-			p.printStr(arg)
-		case *stackVar:
-			p.printStr(arg.name)
-		case *number:
-			p.printStr(fmt.Sprintf("%d", arg.v))
-		default:
-			panic(fmt.Errorf("invalid or unimplemented ref: %T", arg))
-		}
-	}
-}
-
-func (p *printer) Endline() { p.printStr("\n") }
-
-func printOp(p *printer, op op) {
+func printOp(p *fmt8.Printer, op op) {
 	switch op := op.(type) {
 	case *arithOp:
 		if op.a == nil {
-			p.Print(op.dest, "=", op.op, op.b)
+			if op.op == "" {
+				fmt.Fprintf(p, "%s = %s\n",
+					op.dest, op.b,
+				)
+			} else {
+				fmt.Fprintf(p, "%s = %s %s\n",
+					op.dest, op.op, op.b,
+				)
+			}
 		} else {
-			p.Print(op.dest, "=", op.a, op.op, op.b)
+			fmt.Fprintf(p, "%s = %s %s %s\n",
+				op.dest, op.a, op.op, op.b,
+			)
 		}
-		p.Endline()
 	case *callOp:
-		p.Print(op.dest, "=", op.f, "(")
-		for _, arg := range op.args {
-			p.Print(arg)
+		fmt.Fprintf(p, "%s = %s(", op.dest, op.f)
+		for i, arg := range op.args {
+			if i > 0 {
+				fmt.Fprint(p, ",")
+			}
+			fmt.Fprint(p, arg)
 		}
-		p.Print(")")
+		fmt.Fprint(p, ")\n")
 	default:
 		panic(fmt.Errorf("invalid or unknown IR op: %T", op))
 	}

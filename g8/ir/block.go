@@ -1,5 +1,9 @@
 package ir
 
+import (
+	"fmt"
+)
+
 // Block is a basic block
 type Block struct {
 	id    int // basic block ida
@@ -9,6 +13,8 @@ type Block struct {
 	insts   []*inst
 	spMoved bool
 }
+
+func (b *Block) String() string { return fmt.Sprintf("B%d:", b.id) }
 
 func (b *Block) addOp(op op) { b.ops = append(b.ops, op) }
 

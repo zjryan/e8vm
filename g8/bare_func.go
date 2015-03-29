@@ -3,7 +3,6 @@ package g8
 import (
 	"bytes"
 	"io"
-	"os"
 
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/ir"
@@ -20,32 +19,27 @@ func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
 		buildStmt(b, stmt)
 	}
 
-	e := ir.PrintFunc(os.Stdout, b.f)
-	if e != nil {
-		panic(e)
-	}
-
 	return ir.BuildPkg(b.p)
 }
 
 // BuildBareFunc builds a bare main function of signature func main()
-func BuildBareFunc(f string, r io.Reader) ([]byte, []*lex8.Error) {
+func BuildBareFunc(f string, r io.Reader) (*ir.Pkg, []byte, []*lex8.Error) {
 	stmts, es := parse.Stmts(f, r)
 	if es != nil {
-		return nil, es
+		return nil, nil, es
 	}
 
 	b := newBuilder("_")
 	pkg := buildBareFunc(b, stmts)
 	if es := b.Errs(); es != nil {
-		return nil, es
+		return nil, nil, es
 	}
 
 	buf := new(bytes.Buffer)
 	e := link8.LinkMain(pkg, buf, "main")
 	if e != nil {
-		return nil, lex8.SingleErr(e)
+		return nil, nil, lex8.SingleErr(e)
 	}
 
-	return buf.Bytes(), nil
+	return b.p, buf.Bytes(), nil
 }
