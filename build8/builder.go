@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
@@ -18,7 +19,9 @@ type Builder struct {
 	// TODO: built should be something like an LRU cache
 	// the libraries should be load back in only when linking
 
-	lang    Lang
+	langs       map[string]Lang
+	defaultLang Lang
+
 	Verbose bool
 }
 
@@ -27,13 +30,41 @@ func NewBuilder(homePath string) *Builder {
 	ret := new(Builder)
 	ret.home = &home{path: homePath}
 	ret.pkgs = make(map[string]*pkg)
+	ret.langs = make(map[string]Lang)
 
 	return ret
 }
 
 // AddLang registers a langauge into the building system
-func (b *Builder) AddLang(lang Lang)     { b.lang = lang }
-func (b *Builder) getLang(p string) Lang { return b.lang }
+func (b *Builder) AddLang(prefix string, lang Lang) error {
+	// TODO: use a prefix tree
+	// for now, we just force no two prefixes conflict.
+
+	if prefix == "" {
+		b.defaultLang = lang
+		return nil
+	}
+
+	for other := range b.langs {
+		if strings.HasPrefix(other, prefix) ||
+			strings.HasPrefix(prefix, other) {
+			return fmt.Errorf("prefix %q conflict with %q", prefix, other)
+		}
+	}
+
+	b.langs[prefix] = lang
+	return nil
+}
+
+func (b *Builder) getLang(p string) Lang {
+	for prefix, lang := range b.langs {
+		if strings.HasPrefix(p, prefix) {
+			return lang
+		}
+	}
+
+	return b.defaultLang
+}
 
 func (b *Builder) prepare(p string) (*pkg, []*lex8.Error) {
 	saved := b.pkgs[p]
@@ -49,7 +80,7 @@ func (b *Builder) prepare(p string) (*pkg, []*lex8.Error) {
 		return pkg, nil
 	}
 
-	es := lang.Prepare(pkg.Src(), pkg)
+	es := lang.Prepare(pkg.srcMap(), pkg)
 	if es != nil {
 		return pkg, es
 	}
@@ -104,7 +135,7 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	}
 
 	// compile now
-	compiled, es := lang.Compile(p, ret.Src(), ret.imports)
+	compiled, es := lang.Compile(p, ret.srcMap(), ret.imports)
 	if es != nil {
 		return nil, es
 	}

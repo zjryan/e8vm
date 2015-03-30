@@ -4,12 +4,8 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// BuildAll packages under the home path
-func BuildAll(homePath string, verbose bool, lang Lang) []*lex8.Error {
-	b := NewBuilder(homePath)
-	b.AddLang(lang)
-	b.Verbose = verbose
-
+// BuildAll packages covered by a builder
+func BuildAll(b *Builder) []*lex8.Error {
 	pkgs, e := b.ListPkgs()
 	if e != nil {
 		return lex8.SingleErr(e)

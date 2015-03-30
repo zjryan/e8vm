@@ -77,10 +77,7 @@ func listSrcFiles(dir string, lang Lang) ([]string, error) {
 	return ret, nil
 }
 
-func (p *pkg) Path() string { return p.path }
-
-// Src returns the map of the source files
-func (p *pkg) Src() map[string]*File {
+func (p *pkg) srcMap() map[string]*File {
 	ret := make(map[string]*File)
 
 	for _, f := range p.files {
@@ -100,11 +97,7 @@ func (p *pkg) Import(name, path string, pos *lex8.Pos) {
 	p.imports[name] = &Import{Path: path, Pos: pos}
 }
 
-/*
-func (p *pkg) Imports() map[string]*Import { return p.imports }
-func (p *pkg) SetCompiled(lib Linkable)    { p.compiled = lib }
-func (p *pkg) Compiled() Linkable          { return p.compiled }
-*/
+var _ Importer = new(pkg)
 
 func (p *pkg) lastUpdate(suffix string) (*timeStamp, error) {
 	ts := new(timeStamp)
