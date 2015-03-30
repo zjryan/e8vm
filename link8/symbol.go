@@ -12,3 +12,16 @@ const (
 	SymFunc
 	SymVar
 )
+
+func symStr(t int) string {
+	switch t {
+	case SymNone:
+		return "none"
+	case SymFunc:
+		return "func"
+	case SymVar:
+		return "var"
+	default:
+		return "unknown"
+	}
+}

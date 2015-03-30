@@ -1,6 +1,7 @@
 package g8
 
 import (
+	"fmt"
 	"strings"
 
 	"lonnie.io/e8vm/build8"
@@ -29,5 +30,20 @@ func (lang) Compile(
 ) (
 	compiled build8.Linkable, es []*lex8.Error,
 ) {
-	panic("todo")
+	// need to load these two builtin functions here
+	b := newBuilder(path)
+
+	builtin, ok := imp["$"]
+	if !ok {
+		e := fmt.Errorf("builtin import missing for %q", path)
+		return nil, lex8.SingleErr(e)
+	}
+
+	declareBuiltin(b, builtin.Compiled.Lib())
+
+	if es = b.Errs(); es != nil {
+		return nil, es
+	}
+
+	return nil, lex8.SingleErr(fmt.Errorf("g8 compiler not complete"))
 }

@@ -1,5 +1,10 @@
 package link8
 
+import (
+	"fmt"
+	"io"
+)
+
 // Pkg is the compiling object of a package. It is the linking
 // unit for programs.
 type Pkg struct {
@@ -154,4 +159,13 @@ func (p *Pkg) Var(index uint32) *Var {
 		panic("not found")
 	}
 	return ret
+}
+
+// PrintSymbols prints all symbols out to a writer.
+func (p *Pkg) PrintSymbols(out io.Writer) {
+	for index, sym := range p.symbols {
+		fmt.Fprintf(out, "%d: %s %s\n",
+			index, symStr(sym.Type), sym.Name,
+		)
+	}
 }
