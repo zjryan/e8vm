@@ -34,7 +34,8 @@ For starters:
 - Toolchains needs no setup. Code compiles and runs inside browser with one click.
 - Documentations are only for explaining the non-obvious
 
-So that people can start reading.
+Algorithms might still hard to understand, but at least people can
+start reading, from the files that depends on nothing.
 
 ## Near future plan (2 years)
 
@@ -56,7 +57,7 @@ So that people can start reading.
 - Code compiles to Javascript, x86 and ARM
 - Build a library/wiki of code
 - Build online coding courses and games
-- Build an online coding/logic Q&A website
+- Build an online coding/logic Q&amp;A website
 - Build an online code market
 - Be the best programmer headhunting platform
 
