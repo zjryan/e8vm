@@ -71,5 +71,5 @@ func (lang) Compile(p build8.Pkg) []*lex8.Error {
 	return nil
 }
 
-// Lang is the assembly language, defined for the building system
-var Lang build8.Lang = lang{}
+// Lang returns the assembly language builder for the building system
+func Lang() build8.Lang { return lang{} }

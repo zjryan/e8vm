@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	es := build8.BuildAll(".", true, asm8.Lang)
+	es := build8.BuildAll(".", true, asm8.Lang())
 	if es != nil {
 		for _, e := range es {
 			fmt.Println(e)

@@ -1,0 +1,2 @@
+- build in functions are assembly functions with a high-level language signature.
+- 0 is the package, 

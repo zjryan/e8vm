@@ -13,7 +13,7 @@ import (
 func BuildSingleFile(f string, rc io.ReadCloser) ([]byte, []*lex8.Error) {
 	pkg := build8.NewSimplePkg(f, rc)
 
-	es := Lang.Compile(pkg)
+	es := Lang().Compile(pkg)
 	if es != nil {
 		return nil, es
 	}
