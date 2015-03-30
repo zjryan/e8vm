@@ -8,7 +8,9 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func listImport(f string, rc io.ReadCloser, pkg build8.Pkg) []*lex8.Error {
+func listImport(
+	f string, rc io.ReadCloser, imp build8.Importer,
+) []*lex8.Error {
 	astFile, es := parse.File(f, rc)
 	if es != nil {
 		return es
@@ -19,13 +21,13 @@ func listImport(f string, rc io.ReadCloser, pkg build8.Pkg) []*lex8.Error {
 	}
 
 	log := lex8.NewErrorList()
-	imp := resolveImportDecl(log, astFile.Imports)
+	impDecl := resolveImportDecl(log, astFile.Imports)
 	if es := log.Errs(); es != nil {
 		return es
 	}
 
-	for as, stmt := range imp.stmts {
-		pkg.AddImport(as, stmt.path, stmt.Path.Pos)
+	for as, stmt := range impDecl.stmts {
+		imp.Import(as, stmt.path, stmt.Path.Pos)
 	}
 
 	return nil

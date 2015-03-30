@@ -8,7 +8,7 @@ func main {
     lui     sp 0x1000
     addi    sp sp 4096 // set sp the stack
 
-    addi    r1 r0 16 // r1 = 15
+    addi    r1 r0 17
 	jal     fabo 
     // r1 = fabo(n) now
     jal     fmt.PrintUint32

@@ -13,12 +13,12 @@ func (lang) IsSrc(filename string) bool {
 	return strings.HasSuffix(filename, ".s")
 }
 
-func (lang) Import(pkg build8.Pkg) []*lex8.Error {
-	src := pkg.Src()
-
+func (lang) Prepare(
+	src map[string]*build8.File, imp build8.Importer,
+) []*lex8.Error {
 	if len(src) == 1 {
 		for _, f := range src {
-			return listImport(f.Path, f, pkg)
+			return listImport(f.Path, f, imp)
 		}
 	}
 
@@ -26,28 +26,31 @@ func (lang) Import(pkg build8.Pkg) []*lex8.Error {
 	if f == nil {
 		return nil
 	}
-	return listImport(f.Path, f, pkg)
+	return listImport(f.Path, f, imp)
 }
 
-func (lang) Compile(p build8.Pkg) []*lex8.Error {
+func (lang) Compile(
+	path string, src map[string]*build8.File, imps map[string]*build8.Import,
+) (
+	compiled build8.Linkable, es []*lex8.Error,
+) {
 	// resolve pass, will also parse the files
-	pkg, es := resolvePkg(p.Path(), p.Src())
+	pkg, es := resolvePkg(path, src)
 	if es != nil {
-		return es
+		return nil, es
 	}
 
-	imports := p.Imports()
 	// import
 	errs := lex8.NewErrorList()
 	if pkg.imports != nil {
 		for _, stmt := range pkg.imports.stmts {
-			imp := imports[stmt.as]
-			if imp == nil || imp.Pkg == nil {
+			imp := imps[stmt.as]
+			if imp == nil || imp.Compiled == nil {
 				errs.Errorf(stmt.Path.Pos, "import missing")
 				continue
 			}
 
-			stmt.linkable = imp.Pkg.Compiled()
+			stmt.linkable = imp.Compiled
 			if stmt.linkable == nil {
 				panic("import missing")
 			}
@@ -56,7 +59,7 @@ func (lang) Compile(p build8.Pkg) []*lex8.Error {
 		}
 
 		if es := errs.Errs(); es != nil {
-			return es
+			return nil, es
 		}
 	}
 
@@ -64,11 +67,10 @@ func (lang) Compile(p build8.Pkg) []*lex8.Error {
 	b := newBuilder()
 	lib := buildLib(b, pkg)
 	if es := b.Errs(); es != nil {
-		return es
+		return nil, es
 	}
 
-	p.SetCompiled(lib)
-	return nil
+	return lib, nil
 }
 
 // Lang returns the assembly language builder for the building system

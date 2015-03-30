@@ -16,12 +16,18 @@ func (lang) IsSrc(filename string) bool {
 	return strings.HasSuffix(filename, ".g")
 }
 
-func (lang) Import(p build8.Pkg) []*lex8.Error {
-	p.AddImport("$", "asm/builtin", nil)
+func (lang) Prepare(
+	src map[string]*build8.File, importer build8.Importer,
+) []*lex8.Error {
+	importer.Import("$", "asm/builtin", nil)
 	// TODO: parse import statements
 	return nil
 }
 
-func (lang) Compile(p build8.Pkg) []*lex8.Error {
-	return nil
+func (lang) Compile(
+	path string, src map[string]*build8.File, imp map[string]*build8.Import,
+) (
+	compiled build8.Linkable, es []*lex8.Error,
+) {
+	panic("todo")
 }

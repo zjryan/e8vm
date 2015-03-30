@@ -25,8 +25,6 @@ type pkg struct {
 	lib      *link8.Pkg
 }
 
-var _ Pkg = new(pkg)
-
 func newPkg(h *home, p string, lang Lang) *pkg {
 	ret := new(pkg)
 
@@ -98,13 +96,15 @@ func (p *pkg) Src() map[string]*File {
 	return ret
 }
 
-func (p *pkg) AddImport(name, path string, pos *lex8.Pos) {
+func (p *pkg) Import(name, path string, pos *lex8.Pos) {
 	p.imports[name] = &Import{Path: path, Pos: pos}
 }
 
+/*
 func (p *pkg) Imports() map[string]*Import { return p.imports }
 func (p *pkg) SetCompiled(lib Linkable)    { p.compiled = lib }
 func (p *pkg) Compiled() Linkable          { return p.compiled }
+*/
 
 func (p *pkg) lastUpdate(suffix string) (*timeStamp, error) {
 	ts := new(timeStamp)

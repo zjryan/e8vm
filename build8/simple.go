@@ -3,41 +3,15 @@ package build8
 import (
 	"io"
 	"path/filepath"
-
-	"lonnie.io/e8vm/lex8"
 )
 
-type simple struct {
-	path string
-	io.ReadCloser
-	lib Linkable
-}
-
-// NewSimplePkg creates a single-file stand-alone package.
-func NewSimplePkg(path string, rc io.ReadCloser) Pkg {
-	ret := new(simple)
-	ret.path = path
-	ret.ReadCloser = rc
-
-	return ret
-}
-
-func (s *simple) Src() map[string]*File {
-	ret := make(map[string]*File)
-	name := filepath.Base(s.path)
-	ret[name] = &File{
+// SingleFile creates a file map that can be used for single file compilation
+func SingleFile(path string, rc io.ReadCloser) map[string]*File {
+	name := filepath.Base(path)
+	file := &File{
 		Name:       name,
-		Path:       s.path,
-		ReadCloser: s.ReadCloser,
+		Path:       path,
+		ReadCloser: rc,
 	}
-	return ret
+	return map[string]*File{name: file}
 }
-
-func (s *simple) AddImport(name, path string, pos *lex8.Pos) {
-	panic("not impl.")
-}
-
-func (s *simple) Path() string                { return "_" }
-func (s *simple) Imports() map[string]*Import { return nil }
-func (s *simple) SetCompiled(lib Linkable)    { s.lib = lib }
-func (s *simple) Compiled() Linkable          { return s.lib }

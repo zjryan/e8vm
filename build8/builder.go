@@ -49,7 +49,7 @@ func (b *Builder) prepare(p string) (*pkg, []*lex8.Error) {
 		return pkg, nil
 	}
 
-	es := lang.Import(pkg)
+	es := lang.Prepare(pkg.Src(), pkg)
 	if es != nil {
 		return pkg, es
 	}
@@ -95,7 +95,7 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 		if es != nil {
 			return nil, es
 		}
-		imp.Pkg = built
+		imp.Compiled = built.compiled
 	}
 
 	// ready to build this one
@@ -104,12 +104,13 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	}
 
 	// compile now
-	es := lang.Compile(ret)
+	compiled, es := lang.Compile(p, ret.Src(), ret.imports)
 	if es != nil {
 		return nil, es
 	}
+	ret.compiled = compiled
 
-	lib := ret.Compiled().Lib() // the linkable lib
+	lib := ret.compiled.Lib() // the linkable lib
 	// a package with main entrance, build the bin
 
 	const main = "main"
