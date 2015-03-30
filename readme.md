@@ -19,8 +19,9 @@ Planned Features:
 ## TODOs
 
 - Improve code reading website
-- Complete consts
-- Package building system
-- More tests
+- Complete consts in asm8
+- Clean up the symbol linking in asm8 a little bit
+- Package building system that tracks timestamps
+- More tests; a lot more
 - Online filesystem and online editing
-- Linking github
+- Code formatter
