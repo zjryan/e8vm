@@ -15,6 +15,7 @@ const (
 	typInt8
 	typUint8
 	typFloat32
+	typBool
 	typString
 )
 

@@ -2,62 +2,9 @@ package g8
 
 import (
 	"fmt"
-	"math"
-	"strconv"
 
 	"lonnie.io/e8vm/g8/ast"
-	"lonnie.io/e8vm/g8/ir"
-	"lonnie.io/e8vm/g8/parse"
-	"lonnie.io/e8vm/lex8"
 )
-
-func buildInt(b *builder, op *lex8.Token) *ref {
-	ret, e := strconv.ParseInt(op.Lit, 0, 32)
-	if e != nil {
-		b.Errorf(op.Pos, "invalid integer: %s", e)
-		return nil
-	}
-
-	if ret < math.MinInt32 {
-		b.Errorf(op.Pos, "integer too small to fit in 32-bit")
-		return nil
-	} else if ret > math.MaxUint32 {
-		b.Errorf(op.Pos, "integer too large to fit in 32-bit")
-		return nil
-	} else if ret > math.MaxInt32 {
-		// must be unsigned integer
-		return newRef(typUint, ir.Num(uint32(ret)))
-	}
-
-	return newRef(typInt, ir.Snum(int32(ret)))
-}
-
-func buildIdent(b *builder, op *lex8.Token) *ref {
-	s := b.scope.Query(op.Lit)
-	if s == nil {
-		b.Errorf(op.Pos, "undefined identifer %s", op.Lit)
-		return nil
-	}
-
-	switch s.Type {
-	case symVar:
-		v := s.Item.(*objVar)
-		return v.ref
-	default:
-		panic("todo")
-	}
-}
-
-func buildOperand(b *builder, op *ast.Operand) *ref {
-	switch op.Token.Type {
-	case parse.Int:
-		return buildInt(b, op.Token)
-	case parse.Ident:
-		return buildIdent(b, op.Token)
-	default:
-		panic("invalid or not implemented")
-	}
-}
 
 func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	op := expr.Op.Lit
@@ -67,31 +14,72 @@ func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 		return nil
 	}
 
-	if !bothBasic(A.typ, B.typ, typInt) {
-		b.Errorf(expr.Op.Pos, "we only support int operators now")
+	opPos := expr.Op.Pos
+	if bothBasic(A.typ, B.typ, typInt) {
+		switch op {
+		case "+", "-", "*", "&", "|":
+			ret := newRef(A.typ, b.f.NewTemp(4))
+			b.b.Arith(ret.ir, A.ir, op, B.ir)
+			return ret
+		case "%", "/":
+			// TODO: division requires panic for 0
+			// this would require support on if and panic
+			ret := newRef(A.typ, b.f.NewTemp(4))
+			b.b.Arith(ret.ir, A.ir, op, B.ir)
+			return ret
+		default:
+			b.Errorf(opPos, "%q on ints", op)
+			return nil
+		}
+	}
+
+	b.Errorf(opPos, "invalid %q", op)
+	return nil
+}
+
+func buildUnaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
+	op := expr.Op.Lit
+	B := buildExpr(b, expr.B)
+	if B == nil {
 		return nil
 	}
 
-	switch op {
-	case "+", "-", "*", "&", "|":
-		ret := newRef(A.typ, b.f.NewTemp(4))
-		b.b.Arith(ret.ir, A.ir, op, B.ir)
-		return ret
-	case "%", "/":
-		// TODO: division requires panic for 0
-		ret := newRef(A.typ, b.f.NewTemp(4))
-		b.b.Arith(ret.ir, A.ir, op, B.ir)
-		return ret
-	default:
-		panic("todo")
+	opPos := expr.Op.Pos
+	if isBasic(B.typ, typInt) {
+		switch op {
+		case "+", "-", "^":
+			ret := newRef(B.typ, b.f.NewTemp(4))
+			b.b.Arith(ret.ir, nil, op, B.ir)
+			return ret
+		default:
+			b.Errorf(opPos, "%q on int", op)
+			return nil
+		}
+	} else if isBasic(B.typ, typBool) {
+		switch op {
+		case "!":
+			panic("todo")
+		default:
+			b.Errorf(opPos, "%q on boolean", op)
+			return nil
+		}
 	}
+
+	b.Errorf(opPos, "invalid unary operator %q", op)
+	return nil
 }
 
 func buildOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	if expr.A == nil {
-		panic("todo: unary op")
+		buildUnaryOpExpr(b, expr)
 	}
 	return buildBinaryOpExpr(b, expr)
+}
+
+func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
+	f := buildExpr(b, expr)
+	_ = f
+	panic("todo")
 }
 
 func buildExpr(b *builder, expr ast.Expr) *ref {
@@ -106,38 +94,9 @@ func buildExpr(b *builder, expr ast.Expr) *ref {
 		return buildExpr(b, expr.Expr)
 	case *ast.OpExpr:
 		return buildOpExpr(b, expr)
+	case *ast.CallExpr:
+		return buildCallExpr(b, expr)
 	default:
 		panic(fmt.Errorf("%T: invalid or not implemented", expr))
 	}
-}
-
-func buildExprList(b *builder, list *ast.ExprList) []*ref {
-	ret := make([]*ref, 0, list.Len())
-	for _, expr := range list.Exprs {
-		ref := buildExpr(b, expr)
-		if ref == nil {
-			return nil
-		}
-		ret = append(ret, ref)
-	}
-	return ret
-}
-
-func buildIdentList(b *builder, list *ast.ExprList) (
-	[]*lex8.Token, ast.Expr,
-) {
-	ret := make([]*lex8.Token, 0, list.Len())
-	for _, expr := range list.Exprs {
-		op, ok := expr.(*ast.Operand)
-		if !ok {
-			return nil, expr
-		}
-		if op.Token.Type != parse.Ident {
-			return nil, expr
-		}
-
-		ret = append(ret, op.Token)
-	}
-
-	return ret, nil
 }
