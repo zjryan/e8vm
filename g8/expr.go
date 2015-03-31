@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"lonnie.io/e8vm/g8/ast"
+	"lonnie.io/e8vm/g8/ir"
 )
 
 func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
@@ -78,41 +79,62 @@ func buildOpExpr(b *builder, expr *ast.OpExpr) *ref {
 
 func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	f := buildExpr(b, expr.Func)
-	t, ok := f.typ.(typFunc)
-	if !ok {
+	t, ok := f.typ.(typFunc) // the function signuature in the builder
+	if !ok {                 // not a function
 		b.Errorf(ast.ExprPos(expr.Func), "function call on non-callable")
 		return nil
 	}
+
 	narg := expr.Args.Len()
 	if narg != len(t.argTypes) {
-		// TODO: allow expr list as arg
 		b.Errorf(ast.ExprPos(expr), "argument count mismatch")
 		return nil
 	}
 
-	argRefs := make([]*ref, 0, expr.Args.Len())
-	for i, arg := range expr.Args.Exprs {
-		r := buildExpr(b, arg)
-		if r == nil {
+	argRefs := make([]*ref, 0, narg)
+	for i, argExpr := range expr.Args.Exprs {
+		argRef := buildExpr(b, argExpr)
+		if argRef == nil {
 			return nil
 		}
 
 		// type checking
 		argType := t.argTypes[i]
-		if !canAssignType(argType, r.typ) {
-			pos := ast.ExprPos(arg)
+		if !canAssignType(argType, argRef.typ) {
+			pos := ast.ExprPos(argExpr)
 			b.Errorf(pos, "argument %d expects %s got %s",
-				i, typStr(argType), typStr(r.typ),
+				i, typStr(argType), typStr(argRef.typ),
 			)
 			return nil
 		}
 
-		argRefs = append(argRefs, r)
+		argRefs = append(argRefs, argRef)
 	}
 
-	// TODO: calling with ir
-	_ = f
-	panic("todo")
+	nret := len(t.retTypes)
+	var ret []*ref
+	if nret > 0 {
+		ret = make([]*ref, 0, nret)
+		for _, retType := range t.retTypes {
+			r := b.f.NewTemp(typeSize(retType))
+			ret = append(ret, newRef(retType, r))
+		}
+	}
+
+	var sig *ir.FuncSig // TODO: make the type-less sig
+
+	args := irRefs(argRefs)
+	b.b.Call(irRefs(ret), f.ir, sig, args...) // perform the func call in IR
+
+	if len(ret) > 1 {
+		// TODO: should expression list be a type or not?
+		panic("need more thinking on expression list")
+	}
+
+	if len(ret) == 1 {
+		return ret[0]
+	}
+	return nil
 }
 
 func buildExpr(b *builder, expr ast.Expr) *ref {
