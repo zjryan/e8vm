@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func typeSize(t typ) int32 {
+func typSize(t typ) int32 {
 	switch t := t.(type) {
 	case typBasic:
 		switch t {

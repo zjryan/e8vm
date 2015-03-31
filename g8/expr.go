@@ -116,7 +116,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	if nret > 0 {
 		ret = make([]*ref, 0, nret)
 		for _, retType := range t.retTypes {
-			r := b.f.NewTemp(typeSize(retType))
+			r := b.f.NewTemp(typSize(retType))
 			ret = append(ret, newRef(retType, r))
 		}
 	}
