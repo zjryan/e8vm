@@ -77,7 +77,40 @@ func buildOpExpr(b *builder, expr *ast.OpExpr) *ref {
 }
 
 func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
-	f := buildExpr(b, expr)
+	f := buildExpr(b, expr.Func)
+	t, ok := f.typ.(typFunc)
+	if !ok {
+		b.Errorf(ast.ExprPos(expr.Func), "function call on non-callable")
+		return nil
+	}
+	narg := expr.Args.Len()
+	if narg != len(t.argTypes) {
+		// TODO: allow expr list as arg
+		b.Errorf(ast.ExprPos(expr), "argument count mismatch")
+		return nil
+	}
+
+	argRefs := make([]*ref, 0, expr.Args.Len())
+	for i, arg := range expr.Args.Exprs {
+		r := buildExpr(b, arg)
+		if r == nil {
+			return nil
+		}
+
+		// type checking
+		argType := t.argTypes[i]
+		if !canAssignType(argType, r.typ) {
+			pos := ast.ExprPos(arg)
+			b.Errorf(pos, "argument %d expects %s got %s",
+				i, typStr(argType), typStr(r.typ),
+			)
+			return nil
+		}
+
+		argRefs = append(argRefs, r)
+	}
+
+	// TODO: calling with ir
 	_ = f
 	panic("todo")
 }

@@ -55,8 +55,11 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 				return
 			}
 
-			// TODO: check type matching
 			for i, left := range lefts {
+				pos := ast.ExprPos(stmt.Left.Exprs[i])
+				if !checkAssignable(b, pos, left, rights[i]) {
+					return
+				}
 				b.b.Assign(left.ir, rights[i].ir)
 			}
 		} else if stmt.Right.Len() == 1 {
