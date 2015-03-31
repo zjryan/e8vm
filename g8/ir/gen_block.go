@@ -57,6 +57,8 @@ func genOp(b *Block, op op) {
 	switch op := op.(type) {
 	case *arithOp:
 		genArithOp(b, op)
+	case *callOp:
+		panic("call op not implemented")
 	default:
 		panic("unknown op type")
 	}

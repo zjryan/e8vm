@@ -29,7 +29,9 @@ func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
 		buildStmt(b, stmt)
 	}
 
-	return ir.BuildPkg(b.p)
+	ir.PrintPkg(os.Stdout, b.p) // just for debugging...
+
+	return ir.BuildPkg(b.p) // do the code gen
 }
 
 func (bareFunc) Prepare(
@@ -69,7 +71,6 @@ func (bareFunc) Compile(
 			return nil, es
 		}
 
-		ir.PrintPkg(os.Stdout, b.p) // just for debugging...
 		return &pkg{lib}, nil
 	}
 
