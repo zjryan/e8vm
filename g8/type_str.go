@@ -26,13 +26,13 @@ func typStr(t typ) string {
 		default:
 			panic(fmt.Errorf("invalid basic type %d", t))
 		}
-	case typPtr:
+	case *typPtr:
 		return "*" + typStr(t.t)
-	case typSlice:
+	case *typSlice:
 		return "[]" + typStr(t.t)
-	case typArray:
+	case *typArray:
 		return fmt.Sprintf("[%d]%s", t.n, typStr(t.t))
-	case typFunc:
+	case *typFunc:
 		// TODO: this is kind of ugly, need some refactor
 		buf := new(bytes.Buffer)
 		fmt.Fprintf(buf, "func (")
