@@ -34,4 +34,3 @@ func (v *stackVar) String() string {
 	}
 	return fmt.Sprintf("<%d>", v.id)
 }
-
