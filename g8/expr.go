@@ -83,7 +83,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	}
 
 	funcType, ok := f.typ.(*typFunc) // the function signuature in the builder
-	if !ok {                 // not a function
+	if !ok {                         // not a function
 		b.Errorf(ast.ExprPos(expr.Func), "function call on non-callable")
 		return nil
 	}
@@ -123,7 +123,6 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 			ret = append(ret, newRef(retType, r))
 		}
 	}
-
 
 	sig := makeFuncSig(funcType)
 	args := irRefs(argRefs)
