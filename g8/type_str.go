@@ -9,8 +9,8 @@ func typStr(t typ) string {
 	switch t := t.(type) {
 	case typBasic:
 		switch t {
-		case typErr:
-			return "ERR"
+		case typVoid:
+			return "void"
 		case typInt:
 			return "int"
 		case typUint:

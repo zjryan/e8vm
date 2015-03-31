@@ -8,8 +8,8 @@ func typSize(t typ) int32 {
 	switch t := t.(type) {
 	case typBasic:
 		switch t {
-		case typErr:
-			return 4
+		case typVoid:
+			return 0
 		case typInt, typUint:
 			return 4
 		case typInt8, typUint8:

@@ -5,7 +5,7 @@ type typ interface{}
 type typBasic int
 
 const (
-	typErr typBasic = iota
+	typVoid typBasic = iota
 	typInt
 	typUint
 	typInt8
@@ -14,6 +14,8 @@ const (
 	typBool
 	typString
 )
+
+func isVoid(a typ) bool { return isBasic(a, typVoid) }
 
 func isBasic(a typ, t typBasic) bool {
 	code, ok := a.(typBasic)

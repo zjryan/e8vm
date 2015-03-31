@@ -136,7 +136,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	if len(ret) == 1 {
 		return ret[0]
 	}
-	return nil
+	return voidRef
 }
 
 func buildExpr(b *builder, expr ast.Expr) *ref {

@@ -11,6 +11,8 @@ type ref struct {
 
 func newRef(t typ, r ir.Ref) *ref { return &ref{t, r} }
 
+var voidRef = newRef(typVoid, nil)
+
 func irRefs(list []*ref) []ir.Ref {
 	n := len(list)
 	if n == 0 {

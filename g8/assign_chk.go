@@ -12,8 +12,9 @@ func addressable(r *ref) bool {
 }
 
 func canAssignType(left, right typ) bool {
-	// TODO: might want to support some type conversion here
-	// but for now, ony assignable when the type is exactly the same
+	if isVoid(left) {
+		return false
+	}
 	return sameType(left, right)
 }
 
@@ -41,7 +42,7 @@ func sameType(t1, t2 typ) bool {
 	switch t1 := t1.(type) {
 	case typBasic:
 		if t2, ok := t2.(typBasic); ok {
-			return t2 == t1 && t1 != typErr
+			return t2 == t1
 		}
 		return false
 	case *typPtr:
