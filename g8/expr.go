@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"lonnie.io/e8vm/g8/ast"
-	"lonnie.io/e8vm/g8/ir"
 )
 
 func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
@@ -79,14 +78,14 @@ func buildOpExpr(b *builder, expr *ast.OpExpr) *ref {
 
 func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	f := buildExpr(b, expr.Func)
-	t, ok := f.typ.(typFunc) // the function signuature in the builder
+	funcType, ok := f.typ.(*typFunc) // the function signuature in the builder
 	if !ok {                 // not a function
 		b.Errorf(ast.ExprPos(expr.Func), "function call on non-callable")
 		return nil
 	}
 
 	narg := expr.Args.Len()
-	if narg != len(t.argTypes) {
+	if narg != len(funcType.argTypes) {
 		b.Errorf(ast.ExprPos(expr), "argument count mismatch")
 		return nil
 	}
@@ -99,7 +98,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		}
 
 		// type checking
-		argType := t.argTypes[i]
+		argType := funcType.argTypes[i]
 		if !canAssignType(argType, argRef.typ) {
 			pos := ast.ExprPos(argExpr)
 			b.Errorf(pos, "argument %d expects %s got %s",
@@ -111,18 +110,18 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		argRefs = append(argRefs, argRef)
 	}
 
-	nret := len(t.retTypes)
+	nret := len(funcType.retTypes)
 	var ret []*ref
 	if nret > 0 {
 		ret = make([]*ref, 0, nret)
-		for _, retType := range t.retTypes {
+		for _, retType := range funcType.retTypes {
 			r := b.f.NewTemp(typSize(retType))
 			ret = append(ret, newRef(retType, r))
 		}
 	}
 
-	var sig *ir.FuncSig // TODO: make the type-less sig
 
+	sig := makeFuncSig(funcType)
 	args := irRefs(argRefs)
 	b.b.Call(irRefs(ret), f.ir, sig, args...) // perform the func call in IR
 
