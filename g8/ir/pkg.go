@@ -18,6 +18,8 @@ type Pkg struct {
 func NewPkg(path string) *Pkg {
 	ret := new(Pkg)
 	ret.path = path
+	ret.lib = link8.NewPkg(path)
+
 	return ret
 }
 
@@ -27,3 +29,6 @@ func (p *Pkg) NewFunc(name string, sig *FuncSig) *Func {
 	p.funcs = append(p.funcs, ret)
 	return ret
 }
+
+// Require imporpts a linkable package.
+func (p *Pkg) Require(pkg *link8.Pkg) uint32 { return p.lib.Require(pkg) }

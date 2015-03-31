@@ -6,8 +6,6 @@ import (
 
 // BuildPkg builds a package and returns the built lib
 func BuildPkg(p *Pkg) *link8.Pkg {
-	p.lib = link8.NewPkg(p.path)
-
 	for _, f := range p.funcs {
 		f.index = p.lib.DeclareFunc(f.name)
 	}

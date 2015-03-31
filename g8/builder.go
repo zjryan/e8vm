@@ -14,6 +14,8 @@ type builder struct {
 	f     *ir.Func
 	b     *ir.Block
 	scope *sym8.Scope
+
+	builtin uint32 // the index of the builtin package
 }
 
 func newBuilder(path string) *builder {

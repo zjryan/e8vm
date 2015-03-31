@@ -5,8 +5,9 @@ import (
 )
 
 const (
-	symVar = iota
+	symNone = iota
 	symFunc
+	symVar
 	symType
 	symConst
 	symImport
