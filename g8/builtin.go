@@ -29,5 +29,6 @@ func declareBuiltin(b *builder, builtin *link8.Pkg) {
 	}
 
 	o("PrintUint32", "printUint", noRetFunc(typUint))
+	o("PrintInt32", "printInt", noRetFunc(typUint))
 	o("PrintChar", "printChar", noRetFunc(typUint8))
 }

@@ -6,10 +6,6 @@ import (
 	"fmt"
 	"os"
 
-	"lonnie.io/e8vm/arch8"
-	"lonnie.io/e8vm/dasm8"
-	"lonnie.io/e8vm/g8"
-	"lonnie.io/e8vm/g8/ir"
 	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/lex8"
 )
@@ -72,18 +68,7 @@ func main() {
 		stmts, es := parse.Stmts(fname, fin)
 		printErrs(es)
 		fmt.Print(parse.PrintStmts(stmts))
-	case "ir":
-		pkg, bs, es := g8.BuildBareFunc(fname, fin)
-		printErrs(es)
-
-		e = ir.PrintPkg(os.Stdout, pkg)
-		if e != nil {
-			exit(e)
-		}
-
-		lines := dasm8.Dasm(bs, arch8.InitPC)
-		for _, line := range lines {
-			fmt.Println(line)
-		}
+	default:
+		exit(fmt.Errorf("invalid task: %s", *task))
 	}
 }

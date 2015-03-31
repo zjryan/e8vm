@@ -25,6 +25,16 @@ func (lang) Prepare(
 	return nil
 }
 
+func initBuilder(b *builder, imp map[string]*build8.Import) {
+	builtin, ok := imp["$"]
+	if !ok {
+		b.Errorf(nil, "builtin import missing for %q", b.path)
+		return
+	}
+
+	declareBuiltin(b, builtin.Compiled.Lib())
+}
+
 func (lang) Compile(
 	path string, src map[string]*build8.File, imp map[string]*build8.Import,
 ) (
@@ -32,14 +42,7 @@ func (lang) Compile(
 ) {
 	// need to load these two builtin functions here
 	b := newBuilder(path)
-
-	builtin, ok := imp["$"]
-	if !ok {
-		e := fmt.Errorf("builtin import missing for %q", path)
-		return nil, lex8.SingleErr(e)
-	}
-
-	declareBuiltin(b, builtin.Compiled.Lib())
+	initBuilder(b, imp)
 
 	if es = b.Errs(); es != nil {
 		return nil, es

@@ -13,6 +13,7 @@ func main() {
 	b := build8.NewBuilder(".")
 	b.Verbose = true
 	b.AddLang("asm", asm8.Lang())
+	b.AddLang("bare", g8.BareFunc())
 	b.AddLang("", g8.Lang())
 
 	es := build8.BuildAll(b)
