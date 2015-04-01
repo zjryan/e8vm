@@ -130,7 +130,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		if !canAssign(expect, argType) {
 			pos := ast.ExprPos(expr.Args.Exprs[i])
 			b.Errorf(pos, "argument %d expects %s, got %s",
-				i, typStr(expect), typStr(argType),
+				i, expect, argType,
 			)
 		}
 	}
