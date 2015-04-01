@@ -10,7 +10,7 @@ func allocVars(b *builder, toks []*lex8.Token, ts []typ) *ref {
 	ret := new(ref)
 	ret.typ = ts
 	for i, t := range ts {
-		name := toks[i].Lit // just for debugging on IR
+		name := toks[i].Lit                 // just for debugging on IR
 		v := b.f.NewLocal(typSize(t), name) // not declared yet
 		ret.ir = append(ret.ir, v)
 	}
@@ -81,13 +81,13 @@ func buildDefineStmt(b *builder, stmt *ast.DefineStmt) {
 	nleft := len(idents)
 	nright := right.Len()
 	if nleft != nright {
-		b.Errorf(stmt.Define.Pos, 
+		b.Errorf(stmt.Define.Pos,
 			"defined %d identifers with %d expressions",
 			nleft, nright,
 		)
 		return
 	}
-	
+
 	left := allocVars(b, idents, right.typ)
 	if assign(b, left, right, stmt.Define) {
 		declareVars(b, idents, left)

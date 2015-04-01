@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"lonnie.io/e8vm/g8/ast"
-	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/g8/parse"
+	"lonnie.io/e8vm/lex8"
 )
 
 func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
@@ -25,7 +25,7 @@ func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 
 	atyp := A.Typ()
 	btyp := B.Typ()
-	
+
 	if bothBasic(atyp, btyp, typInt) {
 		size := typSize(typInt)
 		switch op {
@@ -111,7 +111,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	}
 
 	funcType, ok := f.Typ().(*typFunc) // the func signuature in the builder
-	if !ok {                         
+	if !ok {
 		// not a function
 		b.Errorf(pos, "function call on non-callable")
 		return nil
@@ -146,8 +146,8 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	// now the signature is generated everytime on-the-fly.
 	// should register and save this in the IR
 	// or at least save it inside the funcType
-	// 
-	sig := makeFuncSig(funcType) 
+	//
+	sig := makeFuncSig(funcType)
 	b.b.Call(ret.ir, f.ir, sig, args.ir...) // perform the func call in IR
 
 	return ret
@@ -164,7 +164,7 @@ func buildExprList(b *builder, list *ast.ExprList) *ref {
 			return buildExpr(b, expr)
 		}
 		panic("unreachable")
-	} 
+	}
 
 	for _, expr := range list.Exprs {
 		ref := buildExpr(b, expr)
@@ -175,7 +175,7 @@ func buildExprList(b *builder, list *ast.ExprList) *ref {
 			b.Errorf(ast.ExprPos(expr), "cannot composite list in a list")
 			return nil
 		}
-		
+
 		ret.typ = append(ret.typ, ref.Typ())
 		ret.ir = append(ret.ir, ref.IR())
 	}
