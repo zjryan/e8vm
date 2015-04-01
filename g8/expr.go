@@ -142,7 +142,12 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		ret.ir = append(ret.ir, temp)
 	}
 
-	sig := makeFuncSig(funcType)
+	// TODO: register this in the IR
+	// now the signature is generated everytime on-the-fly.
+	// should register and save this in the IR
+	// or at least save it inside the funcType
+	// 
+	sig := makeFuncSig(funcType) 
 	b.b.Call(ret.ir, f.ir, sig, args.ir...) // perform the func call in IR
 
 	return ret
