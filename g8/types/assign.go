@@ -63,6 +63,6 @@ func SameType(t1, t2 Type) bool {
 	case *Struct:
 		panic("todo") // not clear what to do here yet...
 	default:
-		panic(fmt.Errorf("invalid type: %t", t1))
+		panic(fmt.Errorf("invalid type: %T", t1))
 	}
 }
