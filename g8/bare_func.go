@@ -61,8 +61,8 @@ func (bareFunc) Compile(
 		return nil, lex8.SingleErr(e)
 	}
 
-	for f, r := range src {
-		stmts, es := parse.Stmts(f, r)
+	for _, r := range src {
+		stmts, es := parse.Stmts(r.Path, r)
 		if es != nil {
 			return nil, es
 		}

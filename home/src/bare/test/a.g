@@ -1,1 +1,1 @@
-printInt(3 + 4 + 3 + 5)
+printInt(3, 4)

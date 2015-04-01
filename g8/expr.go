@@ -7,6 +7,7 @@ import (
 	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/fmt8"
 )
 
 func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
@@ -117,14 +118,15 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		return nil
 	}
 
-	narg := expr.Args.Len()
-	if narg != len(funcType.Args) {
-		b.Errorf(ast.ExprPos(expr), "argument count mismatch")
+	args := buildExprList(b, expr.Args)
+	if args == nil {
 		return nil
 	}
 
-	args := buildExprList(b, expr.Args)
-	if args == nil {
+	if args.Len() != len(funcType.Args) {
+		b.Errorf(ast.ExprPos(expr), "argument expects (%s), got (%s)",
+			fmt8.Join(funcType.Args, ","), fmt8.Join(args.typ, ","),
+		)
 		return nil
 	}
 
