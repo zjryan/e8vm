@@ -21,13 +21,13 @@ func typSize(t typ) int32 {
 		default:
 			panic("unknown basic type")
 		}
-	case typPtr:
+	case *typPtr:
 		return 4
-	case typSlice:
+	case *typSlice:
 		panic("todo")
-	case typFunc:
+	case *typFunc:
 		return 4
 	default:
-		panic(fmt.Errorf("unknown type: %T", t))
+		panic(fmt.Errorf("invalid type: %T", t))
 	}
 }

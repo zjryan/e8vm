@@ -3,35 +3,19 @@ package g8
 import (
 	"fmt"
 
-	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/g8/ir"
 )
 
-func addressable(r *ref) bool {
+func addressable(r ir.Ref) bool {
 	// TODO:
 	return true
 }
 
-func canAssignType(left, right typ) bool {
+func canAssign(left, right typ) bool {
 	if isVoid(left) {
 		return false
 	}
 	return sameType(left, right)
-}
-
-func checkAssignable(b *builder, pos *lex8.Pos, left, right *ref) bool {
-	if !addressable(left) {
-		b.Errorf(pos, "assigning to non-addressable")
-		return false
-	}
-
-	if !canAssignType(left.typ, right.typ) {
-		b.Errorf(pos, "cannot assign %s to %s",
-			typStr(left.typ), typStr(right.typ),
-		)
-		return false
-	}
-
-	return true
 }
 
 func sameType(t1, t2 typ) bool {

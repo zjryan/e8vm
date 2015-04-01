@@ -57,6 +57,15 @@ func typStr(t typ) string {
 		}
 
 		return buf.String()
+	case []typ:
+		buf := new(bytes.Buffer)
+		for i, a := range t {
+			if i > 0 {
+				fmt.Fprintf(buf, ",")
+			}
+			fmt.Fprintf(buf, typStr(a))
+		}
+		return buf.String()
 	default:
 		panic(fmt.Errorf("invalid type: %T", t))
 	}

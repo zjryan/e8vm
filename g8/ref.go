@@ -4,24 +4,33 @@ import (
 	"lonnie.io/e8vm/g8/ir"
 )
 
+// ref is a struct that 
 type ref struct {
-	typ typ
-	ir  ir.Ref
+	typ []typ
+	ir  []ir.Ref // this is essentially anything
 }
 
-func newRef(t typ, r ir.Ref) *ref { return &ref{t, r} }
+// newRef creates a simple single ref
+func newRef(t typ, r ir.Ref) *ref { 
+	return &ref{[]typ{t}, []ir.Ref{r}} 
+}
 
 var voidRef = newRef(typVoid, nil)
 
-func irRefs(list []*ref) []ir.Ref {
-	n := len(list)
-	if n == 0 {
-		return nil
-	}
+func (r *ref) Len() int { return len(r.typ) }
+func (r *ref) IsSingle() bool { return len(r.typ) == 1 }
 
-	ret := make([]ir.Ref, 0, n)
-	for _, r := range list {
-		ret = append(ret, r.ir)
+func (r *ref) Typ() typ {
+	if !r.IsSingle() {
+		panic("not single")
 	}
-	return ret
+	return r.typ[0]
 }
+
+func (r *ref) IR() ir.Ref {
+	if !r.IsSingle() {
+		panic("not single")
+	}
+	return r.typ[0]
+}
+

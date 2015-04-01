@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"lonnie.io/e8vm/g8/ast"
+	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/g8/parse"
 )
 
 func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
@@ -15,17 +17,27 @@ func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	}
 
 	opPos := expr.Op.Pos
-	if bothBasic(A.typ, B.typ, typInt) {
+
+	if !A.IsSingle() || !B.IsSingle() {
+		b.Errorf(opPos, "%q on expression list", op)
+		return nil
+	}
+
+	atyp := A.Typ()
+	btyp := B.Typ()
+	
+	if bothBasic(atyp, btyp, typInt) {
+		size := typSize(typInt)
 		switch op {
 		case "+", "-", "*", "&", "|":
-			ret := newRef(A.typ, b.f.NewTemp(4))
-			b.b.Arith(ret.ir, A.ir, op, B.ir)
+			ret := newRef(atyp, b.f.NewTemp(size))
+			b.b.Arith(ret.IR(), A.IR(), op, B.IR())
 			return ret
 		case "%", "/":
 			// TODO: division requires panic for 0
 			// this would require support on if and panic
-			ret := newRef(A.typ, b.f.NewTemp(4))
-			b.b.Arith(ret.ir, A.ir, op, B.ir)
+			ret := newRef(atyp, b.f.NewTemp(size))
+			b.b.Arith(ret.IR(), A.IR(), op, B.IR())
 			return ret
 		default:
 			b.Errorf(opPos, "%q on ints", op)
@@ -45,20 +57,29 @@ func buildUnaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	}
 
 	opPos := expr.Op.Pos
-	if isBasic(B.typ, typInt) {
+
+	if !B.IsSingle() {
+		b.Errorf(opPos, "%q on expression list", op)
+		return nil
+	}
+
+	btyp := B.Typ()
+	if isBasic(btyp, typInt) {
 		switch op {
 		case "+", "-", "^":
-			ret := newRef(B.typ, b.f.NewTemp(4))
-			b.b.Arith(ret.ir, nil, op, B.ir)
+			ret := newRef(btyp, b.f.NewTemp(typSize(typInt)))
+			b.b.Arith(ret.IR(), nil, op, B.IR())
 			return ret
 		default:
 			b.Errorf(opPos, "%q on int", op)
 			return nil
 		}
-	} else if isBasic(B.typ, typBool) {
+	} else if isBasic(btyp, typBool) {
 		switch op {
 		case "!":
-			panic("todo")
+			ret := newRef(btyp, b.f.NewTemp(typSize(typBool)))
+			b.b.Arith(ret.IR(), nil, op, B.IR())
+			return ret
 		default:
 			b.Errorf(opPos, "%q on boolean", op)
 			return nil
@@ -82,9 +103,17 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		return nil
 	}
 
-	funcType, ok := f.typ.(*typFunc) // the function signuature in the builder
-	if !ok {                         // not a function
-		b.Errorf(ast.ExprPos(expr.Func), "function call on non-callable")
+	pos := ast.ExprPos(expr.Func)
+
+	if !f.IsSingle() {
+		b.Errorf(pos, "expression list is not callable")
+		return nil
+	}
+
+	funcType, ok := f.Typ().(*typFunc) // the func signuature in the builder
+	if !ok {                         
+		// not a function
+		b.Errorf(pos, "function call on non-callable")
 		return nil
 	}
 
@@ -94,49 +123,78 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		return nil
 	}
 
-	argRefs := make([]*ref, 0, narg)
-	for i, argExpr := range expr.Args.Exprs {
-		argRef := buildExpr(b, argExpr)
-		if argRef == nil {
-			return nil
-		}
-
-		// type checking
-		argType := funcType.argTypes[i]
-		if !canAssignType(argType, argRef.typ) {
-			pos := ast.ExprPos(argExpr)
-			b.Errorf(pos, "argument %d expects %s got %s",
-				i, typStr(argType), typStr(argRef.typ),
+	args := buildExprList(b, expr.Args)
+	// type check on parameters
+	for i, argType := range args.typ {
+		expect := funcType.argTypes[i]
+		if !canAssign(expect, argType) {
+			pos := ast.ExprPos(expr.Args.Exprs[i])
+			b.Errorf(pos, "argument %d expects %s, got %s",
+				i, typStr(expect), typStr(argType),
 			)
-			return nil
 		}
-
-		argRefs = append(argRefs, argRef)
 	}
 
-	nret := len(funcType.retTypes)
-	var ret []*ref
-	if nret > 0 {
-		ret = make([]*ref, 0, nret)
-		for _, retType := range funcType.retTypes {
-			r := b.f.NewTemp(typSize(retType))
-			ret = append(ret, newRef(retType, r))
-		}
+	ret := new(ref)
+	ret.typ = funcType.retTypes
+	for _, retType := range funcType.retTypes {
+		temp := b.f.NewTemp(typSize(retType))
+		ret.ir = append(ret.ir, temp)
 	}
 
 	sig := makeFuncSig(funcType)
-	args := irRefs(argRefs)
-	b.b.Call(irRefs(ret), f.ir, sig, args...) // perform the func call in IR
+	b.b.Call(ret.ir, f.ir, sig, args.ir...) // perform the func call in IR
 
-	if len(ret) > 1 {
-		// TODO: should expression list be a type or not?
-		panic("need more thinking on expression list")
+	return ret
+}
+
+func buildExprList(b *builder, list *ast.ExprList) *ref {
+	n := list.Len()
+
+	ret := new(ref)
+	if n == 0 {
+		return ret // empty ref
+	} else if n == 1 {
+		for _, expr := range list.Exprs {
+			return buildExpr(b, expr)
+		}
+		panic("unreachable")
+	} 
+
+	for _, expr := range list.Exprs {
+		ref := buildExpr(b, expr)
+		if ref == nil {
+			return nil
+		}
+		if !ref.IsSingle() {
+			b.Errorf(ast.ExprPos(expr), "cannot composite list in a list")
+			return nil
+		}
+		
+		ret.typ = append(ret.typ, ref.Typ())
+		ret.ir = append(ret.ir, ref.IR())
 	}
 
-	if len(ret) == 1 {
-		return ret[0]
+	return ret
+}
+
+func buildIdentList(b *builder, list *ast.ExprList) (
+	idents []*lex8.Token, firstError ast.Expr,
+) {
+	ret := make([]*lex8.Token, 0, list.Len())
+	for _, expr := range list.Exprs {
+		op, ok := expr.(*ast.Operand)
+		if !ok {
+			return nil, expr
+		}
+		if op.Token.Type != parse.Ident {
+			return nil, expr
+		}
+
+		ret = append(ret, op.Token)
 	}
-	return voidRef
+
+	return ret, nil
 }
 
 func buildExpr(b *builder, expr ast.Expr) *ref {
