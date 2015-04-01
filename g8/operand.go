@@ -7,6 +7,7 @@ import (
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/ir"
 	"lonnie.io/e8vm/g8/parse"
+	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -25,10 +26,10 @@ func buildInt(b *builder, op *lex8.Token) *ref {
 		return nil
 	} else if ret > math.MaxInt32 {
 		// must be unsigned integer
-		return newRef(typUint, ir.Num(uint32(ret)))
+		return newRef(types.Uint, ir.Num(uint32(ret)))
 	}
 
-	return newRef(typInt, ir.Snum(int32(ret)))
+	return newRef(types.Int, ir.Snum(int32(ret)))
 }
 
 func buildIdent(b *builder, op *lex8.Token) *ref {

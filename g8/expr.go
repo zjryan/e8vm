@@ -5,6 +5,7 @@ import (
 
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/parse"
+	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -26,16 +27,16 @@ func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	atyp := A.Typ()
 	btyp := B.Typ()
 
-	if bothBasic(atyp, btyp, typInt) {
+	if types.BothBasic(atyp, btyp, types.Int) {
 		switch op {
 		case "+", "-", "*", "&", "|":
-			ret := newRef(atyp, b.newTemp(typInt))
+			ret := newRef(atyp, b.newTemp(types.Int))
 			b.b.Arith(ret.IR(), A.IR(), op, B.IR())
 			return ret
 		case "%", "/":
 			// TODO: division requires panic for 0
 			// this would require support on if and panic
-			ret := newRef(atyp, b.newTemp(typInt))
+			ret := newRef(atyp, b.newTemp(types.Int))
 			b.b.Arith(ret.IR(), A.IR(), op, B.IR())
 			return ret
 		default:
@@ -63,20 +64,20 @@ func buildUnaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	}
 
 	btyp := B.Typ()
-	if isBasic(btyp, typInt) {
+	if types.IsBasic(btyp, types.Int) {
 		switch op {
 		case "+", "-", "^":
-			ret := newRef(btyp, b.newTemp(typInt))
+			ret := newRef(btyp, b.newTemp(types.Int))
 			b.b.Arith(ret.IR(), nil, op, B.IR())
 			return ret
 		default:
 			b.Errorf(opPos, "%q on int", op)
 			return nil
 		}
-	} else if isBasic(btyp, typBool) {
+	} else if types.IsBasic(btyp, types.Bool) {
 		switch op {
 		case "!":
-			ret := newRef(btyp, b.newTemp(typBool))
+			ret := newRef(btyp, b.newTemp(types.Bool))
 			b.b.Arith(ret.IR(), nil, op, B.IR())
 			return ret
 		default:
@@ -109,7 +110,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		return nil
 	}
 
-	funcType, ok := f.Typ().(*typFunc) // the func signuature in the builder
+	funcType, ok := f.Typ().(*types.Func) // the func sig in the builder
 	if !ok {
 		// not a function
 		b.Errorf(pos, "function call on non-callable")
@@ -117,7 +118,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	}
 
 	narg := expr.Args.Len()
-	if narg != len(funcType.argTypes) {
+	if narg != len(funcType.Args) {
 		b.Errorf(ast.ExprPos(expr), "argument count mismatch")
 		return nil
 	}
@@ -125,8 +126,8 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	args := buildExprList(b, expr.Args)
 	// type check on parameters
 	for i, argType := range args.typ {
-		expect := funcType.argTypes[i]
-		if !canAssign(expect, argType) {
+		expect := funcType.Args[i].Type
+		if !types.CanAssign(expect, argType) {
 			pos := ast.ExprPos(expr.Args.Exprs[i])
 			b.Errorf(pos, "argument %d expects %s, got %s",
 				i, expect, argType,
@@ -135,14 +136,13 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	}
 
 	ret := new(ref)
-	ret.typ = funcType.retTypes
-	for _, retType := range funcType.retTypes {
-		temp := b.newTemp(retType)
-		ret.ir = append(ret.ir, temp)
+	ret.typ = funcType.RetTypes
+	for _, t := range funcType.RetTypes {
+		ret.ir = append(ret.ir, b.newTemp(t))
 	}
 
-	sig := funcType.Sig()
-	b.b.Call(ret.ir, f.ir, sig, args.ir...) // perform the func call in IR
+	// call the func in IR
+	b.b.Call(ret.ir, f.ir, funcType.Sig, args.ir...)
 
 	return ret
 }

@@ -2,17 +2,15 @@ package g8
 
 import (
 	"lonnie.io/e8vm/g8/ir"
+	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/link8"
 	"lonnie.io/e8vm/sym8"
 )
 
-// makes a function type that returns nothing
-func noRetFunc(ts ...typ) *typFunc { return &typFunc{argTypes: ts} }
-
 func declareBuiltin(b *builder, builtin *link8.Pkg) {
 	pindex := b.p.Require(builtin)
 
-	o := func(name string, as string, t *typFunc) {
+	o := func(name string, as string, t *types.Func) {
 		sym, index := builtin.SymbolByName(name)
 		if sym == nil {
 			b.Errorf(nil, "builtin symbol %s missing", name)
@@ -28,7 +26,7 @@ func declareBuiltin(b *builder, builtin *link8.Pkg) {
 		}
 	}
 
-	o("PrintInt32", "printInt", noRetFunc(typInt))
-	o("PrintUint32", "printUint", noRetFunc(typUint))
-	o("PrintChar", "printChar", noRetFunc(typUint8))
+	o("PrintInt32", "printInt", types.NewVoidFunc(types.Int))
+	o("PrintUint32", "printUint", types.NewVoidFunc(types.Uint))
+	o("PrintChar", "printChar", types.NewVoidFunc(types.Uint8))
 }

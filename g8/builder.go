@@ -2,6 +2,7 @@ package g8
 
 import (
 	"lonnie.io/e8vm/g8/ir"
+	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/sym8"
 )
@@ -28,10 +29,10 @@ func newBuilder(path string) *builder {
 	return ret
 }
 
-func (b *builder) newTemp(t typ) ir.Ref {
+func (b *builder) newTemp(t types.Type) ir.Ref {
 	return b.f.NewTemp(t.Size())
 }
 
-func (b *builder) newLocal(t typ, name string) ir.Ref {
+func (b *builder) newLocal(t types.Type, name string) ir.Ref {
 	return b.f.NewLocal(t.Size(), name)
 }

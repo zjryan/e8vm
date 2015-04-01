@@ -2,11 +2,12 @@ package g8
 
 import (
 	"lonnie.io/e8vm/g8/ast"
+	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/sym8"
 )
 
-func allocVars(b *builder, toks []*lex8.Token, ts []typ) *ref {
+func allocVars(b *builder, toks []*lex8.Token, ts []types.Type) *ref {
 	ret := new(ref)
 	ret.typ = ts
 	for i, t := range ts {
@@ -34,7 +35,7 @@ func assign(b *builder, dest *ref, src *ref, op *lex8.Token) bool {
 		}
 
 		srcType := src.typ[i]
-		if !canAssign(destType, srcType) {
+		if !types.CanAssign(destType, srcType) {
 			b.Errorf(op.Pos, "cannot assign %s to %s", src, dest)
 			return false
 		}
