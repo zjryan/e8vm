@@ -22,11 +22,21 @@ func declareBuiltin(b *builder, builtin *link8.Pkg) {
 		pre := b.scope.Declare(sym8.Make(as, symFunc, obj, nil))
 		if pre != nil {
 			b.Errorf(nil, "builtin symbol %s declare failed", name)
-			return
 		}
 	}
 
 	o("PrintInt32", "printInt", types.NewVoidFunc(types.Int))
 	o("PrintUint32", "printUint", types.NewVoidFunc(types.Uint))
 	o("PrintChar", "printChar", types.NewVoidFunc(types.Uint8))
+
+	c := func(name string, t types.Type, r ir.Ref) {
+		obj := &objConst{name, newRef(t, r)}
+		pre := b.scope.Declare(sym8.Make(name, symConst, obj, nil))
+		if pre != nil {
+			b.Errorf(nil, "builtin symbol %s declare failed", name)
+		}
+	}
+
+	c("true", types.Bool, ir.Snum(1))
+	c("false", types.Bool, ir.Snum(0))
 }

@@ -107,6 +107,10 @@ func buildAssignStmt(b *builder, stmt *ast.AssignStmt) {
 	assign(b, left, right, stmt.Assign)
 }
 
+func buildIfStmt(b *builder, stmt *ast.IfStmt) {
+	b.Errorf(stmt.If.Pos, "todo")
+}
+
 func buildStmt(b *builder, stmt ast.Stmt) {
 	switch stmt := stmt.(type) {
 	case *ast.ExprStmt:
@@ -116,6 +120,8 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 		buildDefineStmt(b, stmt)
 	case *ast.AssignStmt:
 		buildAssignStmt(b, stmt)
+	case *ast.IfStmt:
+		buildIfStmt(b, stmt)
 	default:
 		panic(fmt.Errorf("invalid or not implemented: %T", stmt))
 	}
