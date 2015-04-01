@@ -40,3 +40,33 @@ func (t *typFunc) String() string {
 }
 
 func (t *typFunc) Size() int32 { return 4 }
+
+func (t *typFunc) Sig() *ir.FuncSig {
+	if t.sig == nil {
+		t.sig = makeFuncSig(t)
+	}
+	return t.sig
+}
+
+// converts a langauge function signature into a IR function signature
+func makeFuncSig(f *typFunc) *ir.FuncSig {
+	ret := new(ir.FuncSig)
+
+	for i, t := range f.argTypes {
+		name := ""
+		if f.argNames != nil {
+			name = f.argNames[i]
+		}
+		ret.AddArg(t.Size(), name)
+	}
+
+	for i, t := range f.retTypes {
+		name := ""
+		if f.retNames != nil {
+			name = f.retNames[i]
+		}
+		ret.AddRet(t.Size(), name)
+	}
+
+	return ret
+}

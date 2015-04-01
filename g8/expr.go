@@ -141,7 +141,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		ret.ir = append(ret.ir, temp)
 	}
 
-	sig := getFuncSig(funcType)
+	sig := funcType.Sig()
 	b.b.Call(ret.ir, f.ir, sig, args.ir...) // perform the func call in IR
 
 	return ret
