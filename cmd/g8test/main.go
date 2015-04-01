@@ -21,7 +21,6 @@ func printErrs(es []*lex8.Error) {
 	if len(es) == 0 {
 		return
 	}
-
 	for _, e := range es {
 		fmt.Println(e)
 	}

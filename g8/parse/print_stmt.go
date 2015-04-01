@@ -21,8 +21,25 @@ func printStmt(p *fmt8.Printer, stmt ast.Stmt) {
 	case []ast.Stmt:
 		for _, s := range stmt {
 			printStmt(p, s)
+			fmt.Fprintln(p)
 		}
-		return // skip the endl
+	case *ast.IfStmt:
+		printExprs(p, "if ", stmt.Expr, " ")
+		printStmt(p, stmt.Body)
+		if stmt.Else != nil {
+			printStmt(p, stmt.Else)
+		}
+	case *ast.ElseStmt:
+		if stmt.If == nil {
+			printExprs(p, " else ")
+			printStmt(p, stmt.Body)
+		} else {
+			printExprs(p, " else if ", stmt.Expr, " ")
+			printStmt(p, stmt.Body)
+			if stmt.Next != nil {
+				printStmt(p, stmt.Next)
+			}
+		}
 	case *ast.AssignStmt:
 		printExprs(p, stmt.Left, " = ", stmt.Right)
 	case *ast.DefineStmt:
@@ -46,9 +63,8 @@ func printStmt(p *fmt8.Printer, stmt ast.Stmt) {
 	case *ast.FallthroughStmt:
 		fmt.Fprint(p, "fallthrough")
 	default:
-		panic("unknown statement type")
+		fmt.Fprintf(p, "<!!%T>", stmt)
 	}
-	fmt.Fprintln(p)
 }
 
 // PrintStmts prints a list of statements

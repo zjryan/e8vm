@@ -104,6 +104,10 @@ func (p *parser) skipErrStmt() bool {
 	return true
 }
 
+func (p *parser) SeeKeyword(kw string) bool {
+	return p.SeeLit(Keyword, kw)
+}
+
 func (p *parser) ExpectOp(op string) *lex8.Token {
 	if p.InError() {
 		return nil

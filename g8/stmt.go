@@ -1,6 +1,8 @@
 package g8
 
 import (
+	"fmt"
+
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
@@ -115,6 +117,6 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 	case *ast.AssignStmt:
 		buildAssignStmt(b, stmt)
 	default:
-		panic("invalid or not implemented")
+		panic(fmt.Errorf("invalid or not implemented: %T", stmt))
 	}
 }

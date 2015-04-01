@@ -3,11 +3,11 @@ package g8
 import (
 	"fmt"
 
+	"lonnie.io/e8vm/fmt8"
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
-	"lonnie.io/e8vm/fmt8"
 )
 
 func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {

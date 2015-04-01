@@ -44,7 +44,7 @@ func printExpr(p *fmt8.Printer, expr ast.Expr) {
 			printExprs(p, expr.Func, "()")
 		}
 	default:
-		panic("unknown expression type")
+		fmt.Fprintf(p, "(!!%T)", expr)
 	}
 }
 
