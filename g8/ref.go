@@ -31,6 +31,6 @@ func (r *ref) IR() ir.Ref {
 	if !r.IsSingle() {
 		panic("not single")
 	}
-	return r.typ[0]
+	return r.ir[0]
 }
 
