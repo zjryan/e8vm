@@ -25,8 +25,8 @@ func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 		return nil
 	}
 
-	atyp := A.Typ()
-	btyp := B.Typ()
+	atyp := A.Type()
+	btyp := B.Type()
 
 	if types.BothBasic(atyp, btyp, types.Int) {
 		switch op {
@@ -64,7 +64,7 @@ func buildUnaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 		return nil
 	}
 
-	btyp := B.Typ()
+	btyp := B.Type()
 	if types.IsBasic(btyp, types.Int) {
 		switch op {
 		case "+", "-", "^":
@@ -111,7 +111,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 		return nil
 	}
 
-	funcType, ok := f.Typ().(*types.Func) // the func sig in the builder
+	funcType, ok := f.Type().(*types.Func) // the func sig in the builder
 	if !ok {
 		// not a function
 		b.Errorf(pos, "function call on non-callable")
@@ -176,7 +176,7 @@ func buildExprList(b *builder, list *ast.ExprList) *ref {
 			return nil
 		}
 
-		ret.typ = append(ret.typ, ref.Typ())
+		ret.typ = append(ret.typ, ref.Type())
 		ret.ir = append(ret.ir, ref.IR())
 	}
 

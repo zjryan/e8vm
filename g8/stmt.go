@@ -108,7 +108,16 @@ func buildAssignStmt(b *builder, stmt *ast.AssignStmt) {
 }
 
 func buildIfStmt(b *builder, stmt *ast.IfStmt) {
-	b.Errorf(stmt.If.Pos, "todo")
+	cond := buildExpr(b, stmt.Expr)
+	pos := ast.ExprPos(stmt.Expr)
+	if !cond.IsSingle() || types.IsBasic(cond.Type(), types.Bool) {
+		b.Errorf(pos, "expects boolean expresion, got %s", cond)
+		return
+	}
+
+	ir := cond.IR()
+	_ = ir
+	panic("build the conditional jumping ir here")
 }
 
 func buildStmt(b *builder, stmt ast.Stmt) {

@@ -20,7 +20,7 @@ func newRef(t types.Type, r ir.Ref) *ref {
 func (r *ref) Len() int       { return len(r.typ) }
 func (r *ref) IsSingle() bool { return len(r.typ) == 1 }
 
-func (r *ref) Typ() types.Type {
+func (r *ref) Type() types.Type {
 	if !r.IsSingle() {
 		panic("not single")
 	}

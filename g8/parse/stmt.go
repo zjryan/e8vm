@@ -59,10 +59,9 @@ func parseElse(p *parser) *ast.ElseStmt {
 	if !p.SeeOp("{") {
 		p.ErrorfHere("missing else body")
 		return ret
-	} else {
-		ret.Body = parseBlockClosed(p)
 	}
 
+	ret.Body = parseBlockClosed(p)
 	// might have another else
 	if ret.If != nil && p.SeeKeyword("else") {
 		ret.Next = parseElse(p)
@@ -74,9 +73,9 @@ func parseElse(p *parser) *ast.ElseStmt {
 func parseIfBody(p *parser) (ret ast.Stmt, isBlock bool) {
 	if p.SeeOp("{") {
 		return parseBlockClosed(p), true
-	} else {
-		// TODO: return, break and continue
-	}
+	} 
+	// TODO: return, break and continue
+
 	p.ErrorfHere("expect if body")
 	return nil, false
 }
