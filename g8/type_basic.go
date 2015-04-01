@@ -7,7 +7,7 @@ import (
 type typBasic int
 
 const (
-	typVoid typBasic = iota
+	typError typBasic = iota
 	typInt
 	typUint
 	typInt8
@@ -16,8 +16,6 @@ const (
 	typBool
 	typString
 )
-
-func isVoid(a typ) bool { return isBasic(a, typVoid) }
 
 func isBasic(a typ, t typBasic) bool {
 	code, ok := a.(typBasic)
@@ -33,7 +31,7 @@ func bothBasic(a, b typ, t typBasic) bool {
 
 func (t typBasic) Size() int32 {
 	switch t {
-	case typVoid:
+	case typError:
 		return 0
 	case typInt, typUint:
 		return 4
@@ -50,8 +48,8 @@ func (t typBasic) Size() int32 {
 
 func (t typBasic) String() string {
 	switch t {
-	case typVoid:
-		return "void"
+	case typError:
+		return "ERR"
 	case typInt:
 		return "int"
 	case typUint:

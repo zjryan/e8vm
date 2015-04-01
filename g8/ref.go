@@ -16,8 +16,6 @@ func newRef(t typ, r ir.Ref) *ref {
 	return &ref{[]typ{t}, []ir.Ref{r}}
 }
 
-var voidRef = newRef(typVoid, nil)
-
 func (r *ref) Len() int       { return len(r.typ) }
 func (r *ref) IsSingle() bool { return len(r.typ) == 1 }
 

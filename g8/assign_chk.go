@@ -12,9 +12,6 @@ func addressable(r ir.Ref) bool {
 }
 
 func canAssign(left, right typ) bool {
-	if isVoid(left) {
-		return false
-	}
 	return sameType(left, right)
 }
 
