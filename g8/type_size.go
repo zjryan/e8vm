@@ -27,6 +27,8 @@ func typSize(t typ) int32 {
 		panic("todo")
 	case *typFunc:
 		return 4
+	case *typStruct:
+		panic("todo")
 	default:
 		panic(fmt.Errorf("invalid type: %T", t))
 	}

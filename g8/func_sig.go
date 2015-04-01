@@ -4,6 +4,13 @@ import (
 	"lonnie.io/e8vm/g8/ir"
 )
 
+func getFuncSig(f *typFunc) *ir.FuncSig {
+	if f.sig == nil {
+		f.sig = makeFuncSig(f)
+	}
+	return f.sig
+}
+
 // converts a langauge function signature into a IR function signature
 func makeFuncSig(f *typFunc) *ir.FuncSig {
 	ret := new(ir.FuncSig)
