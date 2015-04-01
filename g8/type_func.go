@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
+	"lonnie.io/e8vm/fmt8"
 	"lonnie.io/e8vm/g8/ir"
 )
 
@@ -21,14 +22,7 @@ type typFunc struct {
 func (t *typFunc) String() string {
 	// TODO: this is kind of ugly, need some refactor
 	buf := new(bytes.Buffer)
-	fmt.Fprintf(buf, "func (")
-	for i, arg := range t.argTypes {
-		if i > 0 {
-			fmt.Fprint(buf, ",")
-		}
-		fmt.Fprint(buf, arg)
-	}
-	fmt.Fprintf(buf, ") ")
+	fmt.Fprintf(buf, "func (%s) ", fmt8.Join(t.argTypes, ","))
 	if len(t.retTypes) > 1 {
 		fmt.Fprintf(buf, "(")
 		for i, ret := range t.retTypes {

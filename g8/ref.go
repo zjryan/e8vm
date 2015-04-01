@@ -1,6 +1,7 @@
 package g8
 
 import (
+	"lonnie.io/e8vm/fmt8"
 	"lonnie.io/e8vm/g8/ir"
 )
 
@@ -32,4 +33,12 @@ func (r *ref) IR() ir.Ref {
 		panic("not single")
 	}
 	return r.ir[0]
+}
+
+func (r *ref) String() string {
+	if len(r.typ) == 0 {
+		return "<nil>"
+	}
+
+	return fmt8.Join(r.typ, ",")
 }

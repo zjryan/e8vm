@@ -35,9 +35,7 @@ func assign(b *builder, dest *ref, src *ref, op *lex8.Token) bool {
 
 		srcType := src.typ[i]
 		if !canAssign(destType, srcType) {
-			b.Errorf(op.Pos, "cannot assign %s to %s",
-				typStr(src.typ), typStr(dest.typ),
-			)
+			b.Errorf(op.Pos, "cannot assign %s to %s", src, dest)
 			return false
 		}
 	}

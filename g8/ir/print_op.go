@@ -25,14 +25,8 @@ func printOp(p *fmt8.Printer, op op) {
 			)
 		}
 	case *callOp:
-		fmt.Fprintf(p, "%s = %s(", op.dest, op.f)
-		for i, arg := range op.args {
-			if i > 0 {
-				fmt.Fprint(p, ",")
-			}
-			fmt.Fprint(p, arg)
-		}
-		fmt.Fprint(p, ")\n")
+		args := fmt8.Join(op.args, ",")
+		fmt.Fprintf(p, "%s = %s(%s)\n", op.dest, op.f, args)
 	default:
 		panic(fmt.Errorf("invalid or unknown IR op: %T", op))
 	}
