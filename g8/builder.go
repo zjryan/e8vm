@@ -27,3 +27,11 @@ func newBuilder(path string) *builder {
 
 	return ret
 }
+
+func (b *builder) newTemp(t typ) ir.Ref {
+	return b.f.NewTemp(t.Size())
+}
+
+func (b *builder) newLocal(t typ, name string) ir.Ref {
+	return b.f.NewLocal(t.Size(), name)
+}

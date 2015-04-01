@@ -20,7 +20,7 @@ func makeFuncSig(f *typFunc) *ir.FuncSig {
 		if f.argNames != nil {
 			name = f.argNames[i]
 		}
-		ret.AddArg(typSize(t), name)
+		ret.AddArg(t.Size(), name)
 	}
 
 	for i, t := range f.retTypes {
@@ -28,7 +28,7 @@ func makeFuncSig(f *typFunc) *ir.FuncSig {
 		if f.retNames != nil {
 			name = f.retNames[i]
 		}
-		ret.AddRet(typSize(t), name)
+		ret.AddRet(t.Size(), name)
 	}
 
 	return ret

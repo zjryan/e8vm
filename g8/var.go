@@ -24,7 +24,7 @@ func declareVar(b *builder, tok *lex8.Token, t typ) *ref {
 	}
 
 	// successfuly declared here
-	local := b.f.NewLocal(typSize(t), name)
+	local := b.newLocal(t, name)
 	v.ref = newRef(t, local)
 	return v.ref
 }

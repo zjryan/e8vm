@@ -27,16 +27,15 @@ func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	btyp := B.Typ()
 
 	if bothBasic(atyp, btyp, typInt) {
-		size := typSize(typInt)
 		switch op {
 		case "+", "-", "*", "&", "|":
-			ret := newRef(atyp, b.f.NewTemp(size))
+			ret := newRef(atyp, b.newTemp(typInt))
 			b.b.Arith(ret.IR(), A.IR(), op, B.IR())
 			return ret
 		case "%", "/":
 			// TODO: division requires panic for 0
 			// this would require support on if and panic
-			ret := newRef(atyp, b.f.NewTemp(size))
+			ret := newRef(atyp, b.newTemp(typInt))
 			b.b.Arith(ret.IR(), A.IR(), op, B.IR())
 			return ret
 		default:
@@ -67,7 +66,7 @@ func buildUnaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	if isBasic(btyp, typInt) {
 		switch op {
 		case "+", "-", "^":
-			ret := newRef(btyp, b.f.NewTemp(typSize(typInt)))
+			ret := newRef(btyp, b.newTemp(typInt))
 			b.b.Arith(ret.IR(), nil, op, B.IR())
 			return ret
 		default:
@@ -77,7 +76,7 @@ func buildUnaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	} else if isBasic(btyp, typBool) {
 		switch op {
 		case "!":
-			ret := newRef(btyp, b.f.NewTemp(typSize(typBool)))
+			ret := newRef(btyp, b.newTemp(typBool))
 			b.b.Arith(ret.IR(), nil, op, B.IR())
 			return ret
 		default:
@@ -138,7 +137,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	ret := new(ref)
 	ret.typ = funcType.retTypes
 	for _, retType := range funcType.retTypes {
-		temp := b.f.NewTemp(typSize(retType))
+		temp := b.newTemp(retType)
 		ret.ir = append(ret.ir, temp)
 	}
 

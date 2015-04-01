@@ -10,8 +10,8 @@ func allocVars(b *builder, toks []*lex8.Token, ts []typ) *ref {
 	ret := new(ref)
 	ret.typ = ts
 	for i, t := range ts {
-		name := toks[i].Lit                 // just for debugging on IR
-		v := b.f.NewLocal(typSize(t), name) // not declared yet
+		name := toks[i].Lit      // just for debugging on IR
+		v := b.newLocal(t, name) // not declared yet
 		ret.ir = append(ret.ir, v)
 	}
 	return ret
