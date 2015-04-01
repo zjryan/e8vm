@@ -29,3 +29,13 @@ func symStr(s int) string {
 		panic(fmt.Errorf("unknown symbol: %d", s))
 	}
 }
+
+type objVar struct {
+	name string
+	*ref // the reference of this variable
+}
+
+type objFunc struct {
+	name string
+	*ref
+}
