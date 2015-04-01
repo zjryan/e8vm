@@ -100,12 +100,15 @@ func (t *Func) Size() int32 { return 4 }
 
 // converts a langauge function signature into a IR function signature
 func makeFuncSig(f *Func) *ir.FuncSig {
-	ret := new(ir.FuncSig)
-	for _, t := range f.Args {
-		ret.AddArg(t.Size(), t.Name)
+	args := make([]*ir.FuncArg, len(f.Args))
+	for i, t := range f.Args {
+		args[i] = &ir.FuncArg{t.Name, t.Size()}
 	}
-	for _, t := range f.Rets {
-		ret.AddRet(t.Size(), t.Name)
+
+	rets := make([]*ir.FuncArg, len(f.Rets))
+	for i, t := range f.Rets {
+		rets[i] = &ir.FuncArg{t.Name, t.Size()}
 	}
-	return ret
+
+	return ir.NewFuncSig(args, rets)
 }

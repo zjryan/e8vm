@@ -124,6 +124,10 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	}
 
 	args := buildExprList(b, expr.Args)
+	if args == nil {
+		return nil
+	}
+
 	// type check on parameters
 	for i, argType := range args.typ {
 		expect := funcType.Args[i].Type
@@ -142,7 +146,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	}
 
 	// call the func in IR
-	b.b.Call(ret.ir, f.ir, funcType.Sig, args.ir...)
+	b.b.Call(ret.ir, f.IR(), funcType.Sig, args.ir...)
 
 	return ret
 }

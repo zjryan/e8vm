@@ -12,6 +12,8 @@ type Block struct {
 
 	insts   []*inst
 	spMoved bool
+
+	frameSize int32
 }
 
 func (b *Block) String() string { return fmt.Sprintf("B%d:", b.id) }

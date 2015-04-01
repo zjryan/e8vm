@@ -1,24 +1,46 @@
 package ir
 
-func loadRet(f *Func, b *Block, v *stackVar) {
+func loadRetAddr(b *Block, v *stackVar) {
 	if v.size != regSize {
 		panic("ret must be regsize")
 	}
-	b.inst(asm.lw(_pc, _sp, v.offset-f.frameSize))
+	// using offset method before SP shift
+
+	loadArg(b, _pc, v)
 }
 
-func saveRet(f *Func, b *Block, v *stackVar) {
+func saveRetAddr(b *Block, v *stackVar) {
 	if v.size != regSize {
 		panic("ret must be regsize")
 	}
-	b.inst(asm.sw(_ret, _sp, v.offset-f.frameSize))
+	saveArg(b, _ret, v)
+}
+
+func saveArg(b *Block, reg uint32, v *stackVar) {
+	if v.size == regSize {
+		b.inst(asm.sw(reg, _sp, -v.offset))
+	} else if v.size == 1 {
+		b.inst(asm.sb(reg, _sp, -v.offset))
+	} else {
+		panic("invalid size to save from a register")
+	}
+}
+
+func loadArg(b *Block, reg uint32, v *stackVar) {
+	if v.size == regSize {
+		b.inst(asm.lw(reg, _sp, -v.offset))
+	} else if v.size == 1 {
+		b.inst(asm.lb(reg, _sp, -v.offset))
+	} else {
+		panic("invalid size to save from a register")
+	}
 }
 
 func saveVar(b *Block, reg uint32, v *stackVar) {
 	if v.size == regSize {
-		b.inst(asm.sw(reg, _sp, v.offset))
+		b.inst(asm.sw(reg, _sp, b.frameSize-v.offset))
 	} else if v.size == 1 {
-		b.inst(asm.sb(reg, _sp, v.offset))
+		b.inst(asm.sb(reg, _sp, b.frameSize-v.offset))
 	} else {
 		panic("invalid size to save from a register")
 	}
@@ -26,9 +48,9 @@ func saveVar(b *Block, reg uint32, v *stackVar) {
 
 func loadVar(b *Block, reg uint32, v *stackVar) {
 	if v.size == regSize {
-		b.inst(asm.lw(reg, _sp, v.offset))
+		b.inst(asm.lw(reg, _sp, b.frameSize-v.offset))
 	} else if v.size == 1 {
-		b.inst(asm.lb(reg, _sp, v.offset))
+		b.inst(asm.lb(reg, _sp, b.frameSize-v.offset))
 	} else {
 		panic("invalid size to load to a register")
 	}

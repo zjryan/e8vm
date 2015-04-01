@@ -65,3 +65,7 @@ func (_s) xor(d, s1, s2 uint32) uint32  { return asm.reg(A.XOR, d, s1, s2) }
 func (_s) nor(d, s1, s2 uint32) uint32  { return asm.reg(A.NOR, d, s1, s2) }
 func (_s) sltu(d, s1, s2 uint32) uint32 { return asm.reg(A.SLTU, d, s1, s2) }
 func (_s) slt(d, s1, s2 uint32) uint32  { return asm.reg(A.SLT, d, s1, s2) }
+
+func (_s) jal(im uint32) uint32 { return S.InstJmp(A.JAL, im) }
+
+func (_s) halt() uint32 { return S.InstSys(A.HALT, 0) }

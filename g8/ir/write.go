@@ -8,7 +8,8 @@ func writeBlock(f *link8.Func, b *Block) {
 	for _, inst := range b.insts {
 		f.AddInst(inst.inst)
 		if inst.sym != nil {
-			panic("todo")
+			s := inst.sym
+			f.AddLink(s.fill, s.pkg, s.sym)
 		}
 	}
 }

@@ -1,5 +1,11 @@
 package ir
 
+import (
+	"fmt"
+
+	"lonnie.io/e8vm/link8"
+)
+
 var basicOpFuncs = map[string]func(
 	dest, r1, r2 uint32,
 ) uint32{
@@ -21,35 +27,73 @@ func genArithOp(b *Block, op *arithOp) {
 
 	if op.a != nil {
 		// binary arith op
-		loadRef(b, _1, op.a)
-		loadRef(b, _2, op.b)
+		loadRef(b, _4, op.a)
+		loadRef(b, _1, op.b)
 
 		fn := basicOpFuncs[op.op]
 		if fn != nil {
-			b.inst(fn(_1, _1, _2))
+			b.inst(fn(_4, _4, _1))
 		} else {
 			panic("unknown arith op: " + op.op)
 		}
 
-		saveRef(b, _1, op.dest)
+		saveRef(b, _4, op.dest)
 	} else {
 		// unary arith op
 		switch op.op {
 		case "":
-			loadRef(b, _1, op.b)
+			loadRef(b, _4, op.b)
 		case "-":
-			loadRef(b, _1, op.b)
-			b.inst(asm.sub(_1, _0, _1))
+			loadRef(b, _4, op.b)
+			b.inst(asm.sub(_4, _0, _4))
 		case "!":
-			b.inst(asm.sltu(_1, _0, _1)) // test non-zero first
-			b.inst(asm.xori(_1, _1, 1))
+			b.inst(asm.sltu(_4, _0, _4)) // test non-zero first
+			b.inst(asm.xori(_4, _4, 1))
 		case "?": // test if it is non-zero
-			b.inst(asm.sltu(_1, _0, _1))
+			b.inst(asm.sltu(_4, _0, _4))
 		default:
 			panic("unkown arith unary op: " + op.op)
 		}
 
-		saveRef(b, _1, op.dest)
+		saveRef(b, _4, op.dest)
+	}
+}
+
+func genCallOp(b *Block, op *callOp) {
+	sig := op.sig
+
+	// load the args
+	for i, arg := range sig.args {
+		if arg.viaReg == 0 {
+			loadRef(b, _4, op.args[i]) // load the arg to r1
+			saveArg(b, _4, arg)        // push it on the stack for calling
+		}
+	}
+	for i, arg := range sig.args {
+		if arg.viaReg > 0 {
+			loadRef(b, arg.viaReg, op.args[i])
+		}
+	}
+
+	// do the function call
+	if s, ok := op.f.(*funcSym); ok {
+		jal := b.inst(asm.jal(0))
+		jal.sym = &linkSym{link8.FillLink, s.pkg, s.sym}
+	} else {
+		panic(fmt.Errorf("todo: calling function pointer: %T", op.f))
+	}
+
+	// unload the returns
+	for i, ret := range sig.rets {
+		if ret.viaReg > 0 {
+			saveRef(b, ret.viaReg, op.dest[i])
+		}
+	}
+	for i, ret := range sig.rets {
+		if ret.viaReg == 0 {
+			loadArg(b, _4, ret)
+			saveRef(b, _4, op.dest[i])
+		}
 	}
 }
 
@@ -58,7 +102,7 @@ func genOp(b *Block, op op) {
 	case *arithOp:
 		genArithOp(b, op)
 	case *callOp:
-		panic("call op not implemented")
+		genCallOp(b, op)
 	default:
 		panic("unknown op type")
 	}

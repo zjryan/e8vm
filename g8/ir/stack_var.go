@@ -6,8 +6,12 @@ import (
 
 // stackVar is a variable on stack
 type stackVar struct {
-	name   string // not unique, just for debugging
-	id     int
+	name string // not unique, just for debugging
+	id   int
+
+	// the offset relative to SP
+	// before SP shift, the variable is saved at [SP-offset]
+	// after SP shift, the variable is saved at [SP+framesize-offset]
 	offset int32
 	size   int32
 

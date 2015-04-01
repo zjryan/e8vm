@@ -26,7 +26,8 @@ type Func struct {
 	callerFrameSize int32 // frame size where the caller pushed
 	frameSize       int32
 
-	index uint32 // the index in the lib
+	index  uint32 // the index in the lib
+	isMain bool
 }
 
 func newFunc(name string, id int, sig *FuncSig) *Func {
@@ -37,8 +38,6 @@ func newFunc(name string, id int, sig *FuncSig) *Func {
 
 	return ret
 }
-
-const regSize = 4
 
 // NewLocal creates a new named local variable of size n on stack.
 func (f *Func) NewLocal(n int32, name string) Ref {
@@ -67,3 +66,7 @@ func (f *Func) NewBlock() *Block {
 	f.body = append(f.body, ret)
 	return ret
 }
+
+// SetAsMain marks the function as main function
+// and this function will have a bare metal prologue and epilogue.
+func (f *Func) SetAsMain() { f.isMain = true }
