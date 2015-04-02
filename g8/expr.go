@@ -40,6 +40,10 @@ func buildBinaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 			ret := newRef(atyp, b.newTemp(types.Int))
 			b.b.Arith(ret.IR(), A.IR(), op, B.IR())
 			return ret
+		case "==", "!=", ">", "<", ">=", "<=":
+			ret := newRef(btyp, b.newTemp(types.Bool))
+			b.b.Arith(ret.IR(), A.IR(), op, B.IR())
+			return ret
 		default:
 			b.Errorf(opPos, "%q on ints", op)
 			return nil
