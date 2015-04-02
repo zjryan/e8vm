@@ -73,7 +73,7 @@ func parseElse(p *parser) *ast.ElseStmt {
 func parseIfBody(p *parser) (ret ast.Stmt, isBlock bool) {
 	if p.SeeOp("{") {
 		return parseBlockClosed(p), true
-	} 
+	}
 	// TODO: return, break and continue
 
 	p.ErrorfHere("expect if body")
