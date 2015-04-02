@@ -17,11 +17,9 @@ func writeBlock(f *link8.Func, b *Block) {
 func writeFunc(p *Pkg, f *Func) {
 	lfunc := link8.NewFunc()
 
-	writeBlock(lfunc, f.prologue)
-	for _, b := range f.body {
+	for b := f.prologue; b != nil; b = b.next {
 		writeBlock(lfunc, b)
 	}
-	writeBlock(lfunc, f.epilogue)
 
 	p.lib.DefineFunc(f.index, lfunc)
 }

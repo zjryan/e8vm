@@ -64,24 +64,21 @@ func layoutLocals(f *Func) {
 	pushVar(f, f.locals...)
 }
 
-func makeMainPrologue(f *Func) *Block {
-	b := f.newBlock()
+func makeMainPrologue(f *Func){
+	b := f.prologue
 	b.inst(asm.xor(_0, _0, _0))
 	b.inst(asm.lui(_sp, 0x1000))
 	b.inst(asm.addi(_sp, _sp, -f.frameSize))
-	return b
 }
 
-func makeMainEpilogue(f *Func) *Block {
-	b := f.newBlock()
+func makeMainEpilogue(f *Func) {
+	b := f.epilogue
 	b.inst(asm.addi(_sp, _sp, f.frameSize))
 	b.inst(asm.halt())
-	return b
 }
 
-func makePrologue(f *Func) *Block {
-	b := f.newBlock()
-	b.frameSize = f.frameSize
+func makePrologue(f *Func) {
+	b := f.prologue
 
 	saveRetAddr(b, f.retAddr)
 	// move the sp
@@ -98,13 +95,10 @@ func makePrologue(f *Func) *Block {
 	for _, v := range f.savedRegs {
 		saveVar(b, v.viaReg, v)
 	}
-
-	return b
 }
 
-func makeEpilogue(f *Func) *Block {
-	b := f.newBlock()
-	b.frameSize = f.frameSize
+func makeEpilogue(f *Func) {
+	b := f.epilogue
 
 	for _, v := range f.savedRegs {
 		loadVar(b, v.viaReg, v) // restoring the registers
@@ -120,22 +114,20 @@ func makeEpilogue(f *Func) *Block {
 	b.inst(asm.addi(_sp, _sp, f.frameSize))
 	// back to the caller
 	loadRetAddr(b, f.retAddr)
-	return b
 }
 
 func genFunc(p *Pkg, f *Func) {
 	layoutLocals(f)
 
 	if f.isMain {
-		f.prologue = makeMainPrologue(f)
-		f.epilogue = makeMainEpilogue(f)
+		makeMainPrologue(f)
+		makeMainEpilogue(f)
 	} else {
-		f.prologue = makePrologue(f)
-		f.epilogue = makeEpilogue(f)
+		makePrologue(f)
+		makeEpilogue(f)
 	}
 
-	for _, b := range f.body {
-		b.frameSize = f.frameSize
+	for b := f.prologue.next; b != f.epilogue; b = b.next {
 		genBlock(b)
 	}
 }

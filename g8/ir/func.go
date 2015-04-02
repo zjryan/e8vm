@@ -17,10 +17,9 @@ type Func struct {
 	locals    []*stackVar // local variables
 	retAddr   *stackVar   // saved return address register
 
-	blocks   []*Block
 	prologue *Block
 	epilogue *Block
-	body     []*Block
+	nblock   int
 
 	nvar            int
 	callerFrameSize int32 // frame size where the caller pushed
@@ -35,6 +34,9 @@ func newFunc(name string, id int, sig *FuncSig) *Func {
 	ret.id = id
 	ret.name = name
 	ret.sig = sig
+
+	ret.prologue = ret.newBlock(nil)
+	ret.epilogue = ret.newBlock(ret.prologue)
 
 	return ret
 }
@@ -53,17 +55,27 @@ func (f *Func) NewTemp(n int32) Ref {
 	return f.NewLocal(n, s)
 }
 
-func (f *Func) newBlock() *Block {
+func (f *Func) newBlock(after *Block) *Block {
 	ret := new(Block)
-	ret.id = len(f.blocks)
-	f.blocks = append(f.blocks, ret)
+	ret.id = f.nblock
+	ret.frameSize = &f.frameSize
+
+	f.nblock++
+
+	if after != nil {
+		ret.next = after.next
+		after.next = ret
+	}
+
 	return ret
 }
 
 // NewBlock creates a new basic block for the function
-func (f *Func) NewBlock() *Block {
-	ret := f.newBlock()
-	f.body = append(f.body, ret)
+func (f *Func) NewBlock(after *Block) *Block {
+	if after == nil {
+		after = f.prologue
+	}
+	ret := f.newBlock(after)
 	return ret
 }
 

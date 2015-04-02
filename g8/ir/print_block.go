@@ -20,7 +20,7 @@ func printFunc(p *fmt8.Printer, f *Func) {
 	fmt.Fprintf(p, "func %s {\n", f.name)
 	p.Tab()
 
-	for _, b := range f.body {
+	for b := f.prologue.next; b != f.epilogue; b = b.next {
 		printBlock(p, b)
 	}
 

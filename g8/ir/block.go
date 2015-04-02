@@ -13,10 +13,9 @@ type Block struct {
 	insts   []*inst
 	spMoved bool
 
-	frameSize int32
+	frameSize *int32
 
-	next  *Block // next to execute
-	after *Block // next to write
+	next *Block // next in the link
 }
 
 func (b *Block) String() string { return fmt.Sprintf("B%d:", b.id) }

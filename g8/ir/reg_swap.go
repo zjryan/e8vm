@@ -38,9 +38,9 @@ func loadArg(b *Block, reg uint32, v *stackVar) {
 
 func saveVar(b *Block, reg uint32, v *stackVar) {
 	if v.size == regSize {
-		b.inst(asm.sw(reg, _sp, b.frameSize-v.offset))
+		b.inst(asm.sw(reg, _sp, *b.frameSize-v.offset))
 	} else if v.size == 1 {
-		b.inst(asm.sb(reg, _sp, b.frameSize-v.offset))
+		b.inst(asm.sb(reg, _sp, *b.frameSize-v.offset))
 	} else {
 		panic("invalid size to save from a register")
 	}
@@ -48,9 +48,9 @@ func saveVar(b *Block, reg uint32, v *stackVar) {
 
 func loadVar(b *Block, reg uint32, v *stackVar) {
 	if v.size == regSize {
-		b.inst(asm.lw(reg, _sp, b.frameSize-v.offset))
+		b.inst(asm.lw(reg, _sp, *b.frameSize-v.offset))
 	} else if v.size == 1 {
-		b.inst(asm.lb(reg, _sp, b.frameSize-v.offset))
+		b.inst(asm.lb(reg, _sp, *b.frameSize-v.offset))
 	} else {
 		panic("invalid size to load to a register")
 	}
