@@ -14,11 +14,17 @@ type Block struct {
 	spMoved bool
 
 	frameSize int32
+
+	next  *Block // next to execute
+	after *Block // next to write
 }
 
 func (b *Block) String() string { return fmt.Sprintf("B%d:", b.id) }
 
 func (b *Block) addOp(op op) { b.ops = append(b.ops, op) }
+
+// SetNext sets the next block to run after this block
+func (b *Block) SetNext(next *Block) { b.next = next }
 
 // Arith append an arithmetic operation to the basic block
 func (b *Block) Arith(dest Ref, x Ref, op string, y Ref) {
