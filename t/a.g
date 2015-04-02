@@ -1,5 +1,1 @@
-if true {
-    printInt(a + 5)
-} else {
-    printInt(0)
-}
+a = 3 + (3 + 4) 
