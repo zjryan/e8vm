@@ -21,7 +21,7 @@ func parseIdentList(p *parser) *ast.IdentList {
 func parseBlockClosed(p *parser) *ast.Block {
 	ret := new(ast.Block)
 	ret.Lbrace = p.ExpectOp("{")
-	if p.InError() {
+	if ret.Lbrace == nil {
 		return ret
 	}
 
@@ -116,8 +116,26 @@ func parseIfStmt(p *parser) *ast.IfStmt {
 	return ret
 }
 
+// for <cond> { <stmts> }
 func parseForStmt(p *parser) *ast.ForStmt {
-	panic("todo")
+	if !p.SeeKeyword("for") {
+		panic("must start with keyword")
+	}
+
+	ret := new(ast.ForStmt)
+	ret.Kw = p.Shift()
+	ret.Cond = parseExpr(p)
+	if p.InError() {
+		return ret
+	}
+
+	ret.Body = parseBlockClosed(p)
+	if p.InError() {
+		return ret
+	}
+
+	ret.Semi = p.ExpectSemi()
+	return ret
 }
 
 func parseSwitchStmt(p *parser) *ast.SwitchStmt {

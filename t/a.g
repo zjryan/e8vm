@@ -1,1 +1,4 @@
-a = 3 + (3 + 4) 
+for a == 3 {
+    printInt(a)
+    a = a + 1
+}

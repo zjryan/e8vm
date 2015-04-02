@@ -1,25 +1,32 @@
-build in functions are assembly functions with a high-level language signature.
-0 is the package itself.
+for IR writing, we need to support several operations
 
-- we should a type of expression list. It is not a type of type that
-  you can declare, but it is a internal type for assignment and stuff
+- each basic block has exactly one block as its natural next.
+- all basic blocks in a function are saved in an order
+- if a basic block's natural next is the next in order, then no
+  instructions are required at the end
+- if a basic block's natural next is not the next in order, then
+  an unconditional jump instruction is required at the end
 
-here is the issue:
-- a list of expression is a type on assigning and as the return value
-- of a call expression.
+## a basic block split action
 
-for:
+- we are writing basic block A, A->B
+- we will now add a basic block C
+- A->C, C->B
+- then we can add conditional jumps at the end of A
+- this completes the basic block A
 
-func f(x, y int) (b, c int) 
-it is valid to do this:
 
-- x, y = f(a,b)
-- x, y := f(a,b)
-- f(f(a,b))
+for an if statement
+- we are writing basic block A, where A->B
+- we finialize A with as A->D, D->B, and if condition A=>C
+- then we switch to D to further write the condition expression
+- and if met D=>C, etc.
+- say the last splitted basic block is X
+- we create a basic block C, where C->X
+- then we switch to C to write the else body
+- and then we switch back the last splitted basic block, and keep
+  writing
 
-but it is invalid to do this:
-- f(f(a,b), c) // cannot recursively composite an expression list
-- f(a,b) + c // cannot perform arith ops on expression list
-
-as a result, even we add expression list as a type,
-we need to add checkings at many places.
+for while-like for statement
+- we are writing basic block A, where A->B
+- we create a basic block C, where C->B

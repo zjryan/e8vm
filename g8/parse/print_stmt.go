@@ -40,6 +40,9 @@ func printStmt(p *fmt8.Printer, stmt ast.Stmt) {
 				printStmt(p, stmt.Next)
 			}
 		}
+	case *ast.ForStmt:
+		printExprs(p, "for ", stmt.Cond, " ")
+		printStmt(p, stmt.Body)
 	case *ast.AssignStmt:
 		printExprs(p, stmt.Left, " = ", stmt.Right)
 	case *ast.DefineStmt:
