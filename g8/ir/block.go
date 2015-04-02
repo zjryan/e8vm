@@ -4,18 +4,31 @@ import (
 	"fmt"
 )
 
+const (
+	jmpAlways = iota
+	jmpIf
+	jmpIfNot
+)
+
+type blockJump struct {
+	typ  int
+	cond Ref
+	to   *Block
+}
+
 // Block is a basic block
 type Block struct {
-	id    int // basic block ida
-	ops   []op
-	jumps []*jump
+	id  int // basic block ida
+	ops []op
 
 	insts   []*inst
 	spMoved bool
 
 	frameSize *int32
 
-	next *Block // next in the link
+	jump *blockJump
+
+	next *Block // next in the linked list
 }
 
 func (b *Block) String() string { return fmt.Sprintf("B%d:", b.id) }
@@ -40,18 +53,25 @@ func (b *Block) Call(dests []Ref, f Ref, sig *FuncSig, args ...Ref) {
 	b.addOp(&callOp{dests, f, sig, args})
 }
 
-func (b *Block) addJump(j *jump) { b.jumps = append(b.jumps, j) }
-
-// Jump appends a redirection to the end of the basic block.
-// The redirection points to dest.
-func (b *Block) Jump(dest *Block, x Ref, op string, y Ref) {
-	b.addJump(&jump{x, op, y, dest.id})
+// Jump sets the block always jump to the dest block at its end
+func (b *Block) Jump(dest *Block) {
+	if dest == b.next {
+		b.jump = nil
+	} else {
+		b.jump = &blockJump{jmpAlways, nil, dest}
+	}
 }
 
-// JumpID appends a redirection to the end of the basic block.
-// The redirection points to the basic block of the particular id.
-func (b *Block) JumpID(id int, x Ref, op string, y Ref) {
-	b.addJump(&jump{x, op, y, id})
+// JumpNot sets the block to jump to its natural next when the
+// condition is met, and jump to dest when the condition is not met
+func (b *Block) JumpIfNot(cond Ref, dest *Block) {
+	b.jump = &blockJump{jmpIfNot, cond, dest}
+}
+
+// JumpIf sets the block to jump to its natural next when the
+// condition is not met, and jump to dest when the condition is met
+func (b *Block) JumpIf(cond Ref, dest *Block) {
+	b.jump = &blockJump{jmpIf, cond, dest}
 }
 
 func (b *Block) inst(i uint32) *inst {

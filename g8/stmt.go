@@ -107,17 +107,52 @@ func buildAssignStmt(b *builder, stmt *ast.AssignStmt) {
 	assign(b, left, right, stmt.Assign)
 }
 
-func buildIfStmt(b *builder, stmt *ast.IfStmt) {
-	cond := buildExpr(b, stmt.Expr)
-	pos := ast.ExprPos(stmt.Expr)
-	if !cond.IsSingle() || types.IsBasic(cond.Type(), types.Bool) {
-		b.Errorf(pos, "expects boolean expresion, got %s", cond)
+func buildIf(b *builder, cond ast.Expr, ifs ast.Stmt, elses *ast.ElseStmt) {
+	c := buildExpr(b, cond)
+	pos := ast.ExprPos(cond)
+	if !c.IsSingle() || types.IsBasic(c.Type(), types.Bool) {
+		b.Errorf(pos, "expect boolean expression, got %s", c)
 		return
 	}
 
-	ir := cond.IR()
-	_ = ir
-	panic("build the conditional jumping ir here")
+	if elses == nil {
+		body := b.f.NewBlock(b.b)
+		after := b.f.NewBlock(body)
+		b.b.JumpIfNot(c.IR(), after)
+		b.b = body
+		buildStmt(b, ifs)
+		b.b = after
+		return
+	}
+
+	ifBody := b.f.NewBlock(b.b)
+	elseBody := b.f.NewBlock(ifBody)
+	after := b.f.NewBlock(elseBody)
+	b.b.JumpIfNot(c.IR(), elseBody)
+	ifBody.Jump(after)
+
+	b.b = ifBody // switch to if body
+	buildStmt(b, ifs)
+
+	b.b = elseBody
+	buildElseStmt(b, elses)
+
+	b.b = after
+}
+
+func buildElseStmt(b *builder, stmt *ast.ElseStmt) {
+	if stmt.If == nil {
+		if stmt.Expr != nil {
+			panic("invalid expression in else")
+		}
+		buildStmt(b, stmt.Body)
+	} else {
+		buildIf(b, stmt.Expr, stmt.Body, stmt.Next)
+	}
+}
+
+func buildIfStmt(b *builder, stmt *ast.IfStmt) {
+	buildIf(b, stmt.Expr, stmt.Body, stmt.Else)
 }
 
 func buildExprStmt(b *builder, expr ast.Expr) {

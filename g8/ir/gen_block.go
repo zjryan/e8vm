@@ -138,16 +138,9 @@ func genOp(b *Block, op op) {
 	}
 }
 
-func genJump(b *Block, j *jump) {
-	panic("todo")
-}
-
 func genBlock(b *Block) {
 	for _, op := range b.ops {
 		genOp(b, op)
 	}
-
-	for _, jump := range b.jumps {
-		genJump(b, jump)
-	}
+	// TODO: generate tail jumps
 }

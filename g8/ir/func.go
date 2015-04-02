@@ -64,7 +64,10 @@ func (f *Func) newBlock(after *Block) *Block {
 
 	if after != nil {
 		ret.next = after.next
+		ret.jump = after.jump
+
 		after.next = ret
+		after.jump = nil // jump to natural next, which is ret
 	}
 
 	return ret

@@ -15,10 +15,3 @@ type callOp struct {
 	sig  *FuncSig
 	args []Ref
 }
-
-type jump struct {
-	a  Ref
-	op string
-	b  Ref
-	to int // block id
-}
