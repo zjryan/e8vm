@@ -21,8 +21,9 @@ type Block struct {
 	id  int // basic block ida
 	ops []op
 
-	insts   []*inst
-	spMoved bool
+	insts    []*inst
+	jumpInst *inst
+	spMoved  bool
 
 	frameSize *int32
 
