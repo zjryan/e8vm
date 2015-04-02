@@ -120,11 +120,18 @@ func buildIfStmt(b *builder, stmt *ast.IfStmt) {
 	panic("build the conditional jumping ir here")
 }
 
+func buildExprStmt(b *builder, expr ast.Expr) {
+	if e, ok := expr.(*ast.CallExpr); ok {
+		buildCallExpr(b, e)
+	} else {
+		b.Errorf(ast.ExprPos(expr), "invalid expression statement")
+	}
+}
+
 func buildStmt(b *builder, stmt ast.Stmt) {
 	switch stmt := stmt.(type) {
 	case *ast.ExprStmt:
-		buildExpr(b, stmt.Expr)
-		// TODO: check if expr is a function call
+		buildExprStmt(b, stmt.Expr)
 	case *ast.DefineStmt:
 		buildDefineStmt(b, stmt)
 	case *ast.AssignStmt:
