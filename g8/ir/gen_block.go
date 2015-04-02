@@ -34,7 +34,37 @@ func genArithOp(b *Block, op *arithOp) {
 		if fn != nil {
 			b.inst(fn(_4, _4, _1))
 		} else {
-			panic("unknown arith op: " + op.op)
+			switch op.op {
+			case "==":
+				b.inst(asm.xor(_4, _4, _1))  // the diff
+				b.inst(asm.sltu(_4, _0, _4)) // if _4 is 0, _4 <= 0
+				b.inst(asm.xori(_4, _4, 1))  // flip
+			case "!=":
+				b.inst(asm.xor(_4, _4, _1))  // the diff
+				b.inst(asm.sltu(_4, _0, _4)) // if _4 is 0, _4 <= 0
+			case ">":
+				b.inst(asm.slt(_4, _1, _4))
+			case "<":
+				b.inst(asm.slt(_4, _4, _1)) // delta = b - a
+			case ">=":
+				b.inst(asm.slt(_4, _4, _1))
+				b.inst(asm.xori(_4, _4, 1)) // flip
+			case "<=":
+				b.inst(asm.slt(_4, _1, _4))
+				b.inst(asm.xori(_4, _4, 1)) // flip
+			case "u>":
+				b.inst(asm.sltu(_4, _1, _4))
+			case "u<":
+				b.inst(asm.sltu(_4, _4, _1))
+			case "u>=":
+				b.inst(asm.sltu(_4, _4, _1))
+				b.inst(asm.xori(_4, _4, 1))
+			case "u<=":
+				b.inst(asm.sltu(_4, _1, _4))
+				b.inst(asm.xori(_4, _4, 1))
+			default:
+				panic("unknown arith op: " + op.op)
+			}
 		}
 
 		saveRef(b, _4, op.dest)
@@ -48,7 +78,7 @@ func genArithOp(b *Block, op *arithOp) {
 			b.inst(asm.sub(_4, _0, _4))
 		case "!":
 			b.inst(asm.sltu(_4, _0, _4)) // test non-zero first
-			b.inst(asm.xori(_4, _4, 1))
+			b.inst(asm.xori(_4, _4, 1))  // and flip
 		case "?": // test if it is non-zero
 			b.inst(asm.sltu(_4, _0, _4))
 		default:
