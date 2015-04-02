@@ -64,7 +64,7 @@ func layoutLocals(f *Func) {
 	pushVar(f, f.locals...)
 }
 
-func makeMainPrologue(f *Func){
+func makeMainPrologue(f *Func) {
 	b := f.prologue
 	b.inst(asm.xor(_0, _0, _0))
 	b.inst(asm.lui(_sp, 0x1000))
