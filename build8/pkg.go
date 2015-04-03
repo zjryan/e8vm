@@ -3,7 +3,7 @@ package build8
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
+	// "os"
 	"path/filepath"
 
 	"lonnie.io/e8vm/lex8"
@@ -99,6 +99,7 @@ func (p *pkg) Import(name, path string, pos *lex8.Pos) {
 
 var _ Importer = new(pkg)
 
+/*
 func (p *pkg) lastUpdate(suffix string) (*timeStamp, error) {
 	ts := new(timeStamp)
 
@@ -144,3 +145,4 @@ func (p *pkg) lastBuild() (*timeStamp, error) {
 
 	return ts, nil
 }
+*/
