@@ -164,7 +164,7 @@ func (h *DirHome) Src(p string) map[string]*File {
 		ret[name] = &File{
 			Path:       filePath,
 			Name:       name,
-			ReadCloser: newFile(filePath),
+			ReadCloser: newDirFile(filePath),
 		}
 	}
 
@@ -176,7 +176,7 @@ func (h *DirHome) CreateBin(p string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
-	return newFile(h.sub("bin", p+".e8"))
+	return newDirFile(h.sub("bin", p+".e8"))
 }
 
 // CreateLib returns the writer to write the linkable library
@@ -184,7 +184,7 @@ func (h *DirHome) CreateLib(p string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
-	return newFile(h.sub("pkg", p+".e8a"))
+	return newDirFile(h.sub("pkg", p+".e8a"))
 }
 
 // CreateLog returns the log writer for the particular name
@@ -192,7 +192,7 @@ func (h *DirHome) CreateLog(p, name string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
-	return newFile(h.subFile("src", p, name))
+	return newDirFile(h.subFile("src", p, name))
 }
 
 // Lang returns the language for the particular path.

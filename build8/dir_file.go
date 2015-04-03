@@ -5,20 +5,20 @@ import (
 	"path/filepath"
 )
 
-type file struct {
+type dirFile struct {
 	path string
 	f    *os.File
 }
 
-func newFile(p string) *file {
-	ret := new(file)
+func newDirFile(p string) *dirFile {
+	ret := new(dirFile)
 	ret.path = p
 	return ret
 }
 
 // Read will open the file for reading on
 // its first read
-func (f *file) Read(buf []byte) (int, error) {
+func (f *dirFile) Read(buf []byte) (int, error) {
 	if f.f == nil {
 		var e error
 		f.f, e = os.Open(f.path)
@@ -32,7 +32,7 @@ func (f *file) Read(buf []byte) (int, error) {
 
 // Write will open the file for writing on
 // its first write.
-func (f *file) Write(buf []byte) (int, error) {
+func (f *dirFile) Write(buf []byte) (int, error) {
 	if f.f == nil {
 		var e error
 		folder := filepath.Dir(f.path)
@@ -54,7 +54,7 @@ func (f *file) Write(buf []byte) (int, error) {
 
 // Close will close the file if the file
 // has already been opened.
-func (f *file) Close() error {
+func (f *dirFile) Close() error {
 	if f.f == nil {
 		return nil
 	}
