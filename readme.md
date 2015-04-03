@@ -20,7 +20,8 @@ Planned Features:
 
 ## TODOs
 
-- Testing framework         // 4.4
+- `g8` building file split  // 4.4
+- Symbol usage track
 - `FuncDecl` and `VarDecl`  // 4.5
 - Return, break, continue   // 4.6
 - Basic types, char         // 4.7
@@ -32,13 +33,13 @@ Planned Features:
 - Struct                    // 4.15
 - Fields and methods        // 4.17
 - Interface					
+- Big number constants
 
-And...
+And more...
 
 - Improve code reading website
 - Complete consts in asm8
 - Clean up the symbol linking in asm8 a little bit
 - Package building system that tracks timestamps
-- More tests; a lot more
 - Online filesystem and online editing
 - Code formatter
