@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	home := build8.NewFileHome(".", g8.Lang())
+	home := build8.NewDirHome(".", g8.Lang())
 	home.AddLang("asm", asm8.Lang())
 	home.AddLang("bare", g8.BareFunc())
 

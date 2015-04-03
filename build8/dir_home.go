@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"lonnie.io/e8vm/lex8"
 )
@@ -35,62 +34,52 @@ func listSrcFiles(dir string, lang Lang) ([]string, error) {
 }
 
 // FileHome is a file system basd building home.
-type FileHome struct {
-	path string
-
-	defaultLang Lang
-	langs       map[string]Lang
+type DirHome struct {
+	path  string
+	langs *langPicker
 
 	fileList map[string][]string
 
 	Quiet bool
 }
 
-var _ Home = new(FileHome)
+var _ Home = new(DirHome)
 
 // NewFileHome creates a file system home storage with
 // a particualr default language for compiling.
-func NewFileHome(path string, lang Lang) *FileHome {
+func NewDirHome(path string, lang Lang) *DirHome {
 	if lang == nil {
 		panic("must specify a default language")
 	}
 
-	ret := new(FileHome)
+	ret := new(DirHome)
 	ret.path = path
-	ret.defaultLang = lang
 	ret.fileList = make(map[string][]string)
-	ret.langs = make(map[string]Lang)
+	ret.langs = newLangPicker(lang)
 
 	return ret
 }
 
-func (h *FileHome) sub(pre, p string) string {
+func (h *DirHome) sub(pre, p string) string {
 	return filepath.Join(h.path, pre, p)
 }
 
-func (h *FileHome) subFile(pre, p, f string) string {
+func (h *DirHome) subFile(pre, p, f string) string {
 	return filepath.Join(h.path, pre, p, f)
 }
 
 // ClearCache clears the file list cache
-func (h *FileHome) ClearCache() {
+func (h *DirHome) ClearCache() {
 	h.fileList = make(map[string][]string)
 }
 
 // AddLang registers a language with a particular path prefix
-func (h *FileHome) AddLang(prefix string, lang Lang) {
-	if lang == nil {
-		panic("language must not be nil")
-	}
-
-	if prefix == "" {
-		h.defaultLang = lang
-	}
-	h.langs[prefix] = lang
+func (h *DirHome) AddLang(prefix string, lang Lang) {
+	h.langs.addLang(prefix, lang)
 }
 
 // Pkgs lists all the packages inside this home folder.
-func (h *FileHome) Pkgs(prefix string) []string {
+func (h *DirHome) Pkgs(prefix string) []string {
 	root := filepath.Join(h.path, "src")
 	start := filepath.Join(root, prefix)
 	var pkgs []string
@@ -100,10 +89,9 @@ func (h *FileHome) Pkgs(prefix string) []string {
 			return e
 		}
 
-		name := info.Name()
 		if !info.IsDir() {
 			return nil
-		} else if !lex8.IsPkgName(name) {
+		} else if !lex8.IsPkgName(info.Name()) {
 			return filepath.SkipDir
 		}
 
@@ -129,7 +117,7 @@ func (h *FileHome) Pkgs(prefix string) []string {
 		}
 
 		if len(files) > 0 {
-			h.fileList[path] = files
+			h.fileList[path] = files // caching
 			pkgs = append(pkgs, path)
 		}
 
@@ -138,7 +126,7 @@ func (h *FileHome) Pkgs(prefix string) []string {
 
 	e := filepath.Walk(start, walkFunc)
 	if e != nil && !h.Quiet {
-		log.Fatal(e)
+		log.Fatal("error", e)
 	}
 
 	sort.Strings(pkgs)
@@ -146,7 +134,7 @@ func (h *FileHome) Pkgs(prefix string) []string {
 }
 
 // Src lists all the source files inside this package.
-func (h *FileHome) Src(p string) map[string]*File {
+func (h *DirHome) Src(p string) map[string]*File {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
@@ -156,11 +144,11 @@ func (h *FileHome) Src(p string) map[string]*File {
 		return nil
 	}
 
-	files := h.fileList[p]
-	if files == nil {
+	files, found := h.fileList[p]
+	if !found {
 		files, e := listSrcFiles(p, lang)
 		if e != nil && !h.Quiet {
-			log.Fatal(e)
+			log.Fatal("error", e)
 		}
 
 		h.fileList[p] = files
@@ -184,7 +172,7 @@ func (h *FileHome) Src(p string) map[string]*File {
 }
 
 // Bin returns the writer to write the binary
-func (h *FileHome) Bin(p string) io.WriteCloser {
+func (h *DirHome) Bin(p string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
@@ -192,7 +180,7 @@ func (h *FileHome) Bin(p string) io.WriteCloser {
 }
 
 // Lib returns the writer to write the linkable library
-func (h *FileHome) Lib(p string) io.WriteCloser {
+func (h *DirHome) Lib(p string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
@@ -200,7 +188,7 @@ func (h *FileHome) Lib(p string) io.WriteCloser {
 }
 
 // Log returns the log writer for the particular name
-func (h *FileHome) Log(p, name string) io.WriteCloser {
+func (h *DirHome) Log(p, name string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
@@ -209,25 +197,4 @@ func (h *FileHome) Log(p, name string) io.WriteCloser {
 
 // Lang returns the language for the particular path.
 // It searches for the longest prefix match
-func (h *FileHome) Lang(p string) Lang {
-	if !isPkgPath(p) {
-		panic("not package path")
-	}
-
-	nmax := -1
-	var ret Lang
-	for prefix, lang := range h.langs {
-		n := len(prefix)
-		if n < nmax || !strings.HasPrefix(p, prefix) {
-			continue
-		}
-
-		nmax = n
-		ret = lang
-	}
-
-	if ret == nil {
-		ret = h.defaultLang
-	}
-	return ret
-}
+func (h *DirHome) Lang(p string) Lang { return h.langs.lang(p) }

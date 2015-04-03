@@ -17,8 +17,8 @@ type Builder struct {
 
 // NewDirBuilder creates a new builder based on a directory in
 // the file system
-func NewDirBuilder(homePath string, lang Lang) (*Builder, *FileHome) {
-	home := NewFileHome(homePath, lang)
+func NewDirBuilder(homePath string, lang Lang) (*Builder, *DirHome) {
+	home := NewDirHome(homePath, lang)
 	ret := NewBuilder(home)
 	return ret, home
 }
