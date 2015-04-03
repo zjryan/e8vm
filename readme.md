@@ -1,3 +1,5 @@
+[![BuildStatus](https://travis-ci.org/h8liu/e8vm.png?branch=master)](https://travis-ci.org/h8liu/e8vm)
+
 # E8VM
 
 Goal: A book written in working code and markdown document that
