@@ -48,7 +48,13 @@ type FileHome struct {
 
 var _ Home = new(FileHome)
 
+// NewFileHome creates a file system home storage with
+// a particualr default language for compiling.
 func NewFileHome(path string, lang Lang) *FileHome {
+	if lang == nil {
+		panic("must specify a default language")
+	}
+
 	ret := new(FileHome)
 	ret.path = path
 	ret.defaultLang = lang
@@ -73,6 +79,10 @@ func (h *FileHome) ClearCache() {
 
 // AddLang registers a language with a particular path prefix
 func (h *FileHome) AddLang(prefix string, lang Lang) {
+	if lang == nil {
+		panic("language must not be nil")
+	}
+
 	if prefix == "" {
 		h.defaultLang = lang
 	}
