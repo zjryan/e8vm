@@ -24,10 +24,11 @@ Planned Features:
 - Basic types, char         // 4.7
 - Type conversion           // 4.8
 - Basic built-in panic      // 4.10
-- Array and slice			// 4.13
-- String					// 4.14
-- Struct					// 4.15
-- Fields and methods		// 4.17
+- Pointer                   // 4.12
+- Array and slice           // 4.13
+- String                    // 4.14
+- Struct                    // 4.15
+- Fields and methods        // 4.17
 - Interface					
 
 And...
