@@ -18,7 +18,7 @@ type Home interface {
 	// CreateLog creates a logger, usually for debugging
 	CreateLog(path, name string) io.WriteCloser
 
-	// Bin creates the writer for generate the E8 binary
+	// CreateBin creates the writer for generate the E8 binary
 	CreateBin(path string) io.WriteCloser
 
 	// Lang returns the language of a path

@@ -17,7 +17,10 @@ func newMemPkg(path string) *MemPkg {
 	return ret
 }
 
+// Path returns the path of the package
 func (p *MemPkg) Path() string { return p.path }
+
+// AddFile adds (or replaces) a source file in the package
 func (p *MemPkg) AddFile(name, content string) {
 	f := newMemFile()
 	f.WriteString(content)

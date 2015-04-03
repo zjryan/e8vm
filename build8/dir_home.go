@@ -33,7 +33,7 @@ func listSrcFiles(dir string, lang Lang) ([]string, error) {
 	return ret, nil
 }
 
-// FileHome is a file system basd building home.
+// DirHome is a file system basd building home.
 type DirHome struct {
 	path  string
 	langs *langPicker
@@ -45,7 +45,7 @@ type DirHome struct {
 
 var _ Home = new(DirHome)
 
-// NewFileHome creates a file system home storage with
+// NewDirHome creates a file system home storage with
 // a particualr default language for compiling.
 func NewDirHome(path string, lang Lang) *DirHome {
 	if lang == nil {
