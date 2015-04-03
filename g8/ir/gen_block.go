@@ -81,6 +81,8 @@ func genArithOp(b *Block, op *arithOp) {
 			b.inst(asm.xori(_4, _4, 1))  // and flip
 		case "?": // test if it is non-zero
 			b.inst(asm.sltu(_4, _0, _4))
+		case "^":
+			b.inst(asm.nor(_4, _0, _4))
 		default:
 			panic("unkown arith unary op: " + op.op)
 		}

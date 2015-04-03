@@ -13,6 +13,9 @@ func TestStmts_good(t *testing.T) {
 	for _, s := range []string{
 		"_",
 		"3",
+		"-3",
+		"-a",
+		"!a",
 		"0",
 		"_a",
 		"a",

@@ -12,7 +12,10 @@ func ExprPos(e Expr) *lex8.Pos {
 	case *Operand:
 		return e.Token.Pos
 	case *OpExpr:
-		return ExprPos(e.A)
+		if e.A != nil {
+			return ExprPos(e.A)
+		}
+		return e.Op.Pos
 	case *ParenExpr:
 		return e.Lparen.Pos
 	case *ExprList:

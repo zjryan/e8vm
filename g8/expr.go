@@ -97,7 +97,7 @@ func buildUnaryOpExpr(b *builder, expr *ast.OpExpr) *ref {
 
 func buildOpExpr(b *builder, expr *ast.OpExpr) *ref {
 	if expr.A == nil {
-		buildUnaryOpExpr(b, expr)
+		return buildUnaryOpExpr(b, expr)
 	}
 	return buildBinaryOpExpr(b, expr)
 }
