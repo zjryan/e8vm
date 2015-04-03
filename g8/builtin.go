@@ -70,11 +70,10 @@ func PrintChar {
 func PrintUint32 {
 	// saving used registers
 	sw ret sp -4
-	addi sp sp -24
+	addi sp sp -28
 	sw r1 sp
 	sw r2 sp 4
 	sw r3 sp 8
-	sw r4 sp 12
 	
 	bne r1 r0 .nonzero
 .zero
@@ -83,85 +82,61 @@ func PrintUint32 {
 	j .end
 
 .nonzero
-	ori r2 r0 10 // r2 = 10
-	ori r3 r0 1 // r3 = 1, will be used as the divisor
-.find
-	mulu r3 r3 r2
-	slt r4 r1 r3
-	beq r4 r0 .find
+    addi r2 sp 12
+    ori r4 r0 10
 
-	divu r3 r3 r2
-.loop
-	sw r1 sp 16 // save r1
-	divu r1 r1 r3 // got the digit
-	addi r1 r1 0x30 // convert digit to char
+.divloop
+    modu r3 r1 r4
+    sb r3 r2 0
+    divu r1 r1 r4
+    beq r1 r0 .print
+    addi r2 r2 1
+    j .divloop
 
-	jal PrintChar
+.print
+    addi r3 sp 12 // base
 
-	lw r1 sp 16 // load back r1
-	modu r1 r1 r3
-	div r3 r3 r2 // next order of magnitude
-	bne r3 r0 .loop
+.printloop
+    lbu r1 r2 0 // load
+    addi r1 r1 0x30
+    jal PrintChar
+    beq r3 r2 .end
+    addi r2 r2 -1
+    j .printloop
 
 .end
 	addi r1 r0 0xa
-	jal PrintChar
+	jal PrintChar // print a end line
 
-	lw r1 sp 
 	lw r2 sp 4
 	lw r3 sp 8
-	lw r4 sp 12
-	addi sp sp 24
+	addi sp sp 28
 	lw pc sp -4
 }
 
-// TODO: print the sign number
 // Print a 32-bit signed integer
 func PrintInt32 {
 	// saving used registers
 	sw ret sp -4
-	addi sp sp -24
+	addi sp sp -16 
 	sw r1 sp
 	sw r2 sp 4
 	sw r3 sp 8
-	sw r4 sp 12
 	
-	bne r1 r0 .nonzero
-.zero
-	addi r1 r0 0x30 // '0'
-	jal PrintChar
-	j .end
+    slt r2 r1 r0 // r2 = r1 < 0
+    beq r2 r0 .skipsign
 
-.nonzero
-	ori r2 r0 10 // r2 = 10
-	ori r3 r0 1 // r3 = 1, will be used as the divisor
-.find
-	mulu r3 r3 r2
-	slt r4 r1 r3
-	beq r4 r0 .find
+    addi r1 r0 0x2d // '-'
+    jal PrintChar
 
-	divu r3 r3 r2
-.loop
-	sw r1 sp 16 // save r1
-	divu r1 r1 r3 // got the digit
-	addi r1 r1 0x30 // convert digit to char
+    lw r1 sp
+    sub r1 r0 r1 // revert
+.skipsign
+    jal PrintUint32
 
-	jal PrintChar
-
-	lw r1 sp 16 // load back r1
-	modu r1 r1 r3
-	div r3 r3 r2 // next order of magnitude
-	bne r3 r0 .loop
-
-.end
-	addi r1 r0 0xa
-	jal PrintChar
-
-	lw r1 sp 
 	lw r2 sp 4
 	lw r3 sp 8
-	lw r4 sp 12
-	addi sp sp 24
+	addi sp sp 16
 	lw pc sp -4
 }
 `
