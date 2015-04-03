@@ -30,7 +30,11 @@ other args are pushed on the stack
 // pushVar allocates a frame slot for the local var
 func pushVar(f *Func, vars ...*stackVar) {
 	for _, v := range vars {
-		size := alignUp(v.size, regSize)
+		size := v.size
+		if size > 1 {
+			f.frameSize = alignUp(f.frameSize, regSize)
+		}
+
 		v.offset = f.frameSize
 		f.frameSize += size
 	}
