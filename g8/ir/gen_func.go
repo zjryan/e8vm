@@ -66,6 +66,9 @@ func layoutLocals(f *Func) {
 	pushVar(f, f.sig.regRets...)
 	pushVar(f, f.savedRegs...)
 	pushVar(f, f.locals...)
+
+	// pad up
+	f.frameSize = alignUp(f.frameSize, regSize)
 }
 
 func makeMainPrologue(f *Func) {
