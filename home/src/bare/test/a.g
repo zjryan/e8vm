@@ -1,4 +1,5 @@
 a := 10
-for true {
+for a > 0 {
     printInt(a)
+    a = a - 1
 }

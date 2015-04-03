@@ -3,6 +3,7 @@ package g8
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/build8"
@@ -80,16 +81,17 @@ func (bareFunc) Compile(pinfo *build8.PkgInfo) (
 }
 
 // CompileBareFunc compiles a bare function into a bare-metal E8 image
-func CompileBareFunc(s string) ([]byte, []*lex8.Error) {
+func CompileBareFunc(fname, s string) ([]byte, []*lex8.Error) {
 	lang := BareFunc()
 	home := build8.NewMemHome(lang)
 	home.AddLang("asm", asm8.Lang())
 
 	pkg := home.NewPkg("main")
-	pkg.AddFile("main.g", s)
+	name := filepath.Base(fname)
+	pkg.AddFile(fname, name, s)
 
 	builtin := home.NewPkg("asm/builtin")
-	builtin.AddFile("builtin.s", builtInSrc)
+	builtin.AddFile("", "builtin.s", builtInSrc)
 
 	b := build8.NewBuilder(home)
 	es := b.BuildAll()

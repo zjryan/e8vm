@@ -52,8 +52,13 @@ func (h *MemHome) Src(p string) map[string]*File {
 
 	ret := make(map[string]*File)
 	for name, f := range pkg.files {
+		path := f.path
+		if path == "" {
+			path = "$" + p + "/" + name
+		}
+
 		ret[name] = &File{
-			Path:       "$" + p + "/" + name,
+			Path:       path,
 			Name:       name,
 			ReadCloser: f.Reader(),
 		}
