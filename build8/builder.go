@@ -135,7 +135,13 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	}
 
 	// compile now
-	compiled, es := lang.Compile(p, ret.srcMap(), ret.imports)
+	pinfo := &PkgInfo{
+		Path:   p,
+		Src:    ret.srcMap(),
+		Import: ret.imports,
+		Log:    nil,
+	}
+	compiled, es := lang.Compile(pinfo)
 	if es != nil {
 		return nil, es
 	}

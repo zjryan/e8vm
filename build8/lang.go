@@ -32,6 +32,14 @@ type Importer interface {
 	Import(name, path string, pos *lex8.Pos) // imports a package
 }
 
+// PkgInfo contains the information for compiling a package
+type PkgInfo struct {
+	Path   string
+	Src    map[string]*File
+	Import map[string]*Import
+	Log    io.Writer
+}
+
 // Lang is a language compiler interface
 type Lang interface {
 	// IsSrc filters source file filenames
@@ -41,9 +49,5 @@ type Lang interface {
 	Prepare(src map[string]*File, importer Importer) []*lex8.Error
 
 	// Compile compiles a list of source files into a compiled linkable
-	Compile(
-		path string, src map[string]*File, imports map[string]*Import,
-	) (
-		compiled Linkable, errors []*lex8.Error,
-	)
+	Compile(pinfo *PkgInfo) (Linkable, []*lex8.Error)
 }

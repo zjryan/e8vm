@@ -29,13 +29,11 @@ func (lang) Prepare(
 	return listImport(f.Path, f, imp)
 }
 
-func (lang) Compile(
-	path string, src map[string]*build8.File, imps map[string]*build8.Import,
-) (
+func (lang) Compile(pinfo *build8.PkgInfo) (
 	compiled build8.Linkable, es []*lex8.Error,
 ) {
 	// resolve pass, will also parse the files
-	pkg, es := resolvePkg(path, src)
+	pkg, es := resolvePkg(pinfo.Path, pinfo.Src)
 	if es != nil {
 		return nil, es
 	}
@@ -44,7 +42,7 @@ func (lang) Compile(
 	errs := lex8.NewErrorList()
 	if pkg.imports != nil {
 		for _, stmt := range pkg.imports.stmts {
-			imp := imps[stmt.as]
+			imp := pinfo.Import[stmt.as]
 			if imp == nil || imp.Compiled == nil {
 				errs.Errorf(stmt.Path.Pos, "import missing")
 				continue

@@ -35,14 +35,12 @@ func initBuilder(b *builder, imp map[string]*build8.Import) {
 	declareBuiltin(b, builtin.Compiled.Lib())
 }
 
-func (lang) Compile(
-	path string, src map[string]*build8.File, imp map[string]*build8.Import,
-) (
+func (lang) Compile(pinfo *build8.PkgInfo) (
 	compiled build8.Linkable, es []*lex8.Error,
 ) {
 	// need to load these two builtin functions here
-	b := newBuilder(path)
-	initBuilder(b, imp)
+	b := newBuilder(pinfo.Path)
+	initBuilder(b, pinfo.Import)
 
 	if es = b.Errs(); es != nil {
 		return nil, es

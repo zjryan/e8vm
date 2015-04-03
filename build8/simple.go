@@ -15,3 +15,13 @@ func SingleFile(path string, rc io.ReadCloser) map[string]*File {
 	}
 	return map[string]*File{name: file}
 }
+
+// SimplePkg creates a package that contains only one file
+// and has no imports
+func SimplePkg(p string, f string, rc io.ReadCloser) *PkgInfo {
+	single := SingleFile(f, rc)
+	return &PkgInfo{
+		Path: p,
+		Src:  single,
+	}
+}

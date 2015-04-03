@@ -44,26 +44,24 @@ func (bareFunc) Prepare(
 	return nil
 }
 
-func (bareFunc) Compile(
-	path string, src map[string]*build8.File, imp map[string]*build8.Import,
-) (
+func (bareFunc) Compile(pinfo *build8.PkgInfo) (
 	compiled build8.Linkable, es []*lex8.Error,
 ) {
-	b := newBuilder(path)
-	initBuilder(b, imp)
+	b := newBuilder(pinfo.Path)
+	initBuilder(b, pinfo.Import)
 	if es = b.Errs(); es != nil {
 		return nil, es
 	}
 
-	if len(src) == 0 {
+	if len(pinfo.Src) == 0 {
 		panic("no source file")
 	}
-	if len(src) > 1 {
-		e := fmt.Errorf("bare func %q has too many files", path)
+	if len(pinfo.Src) > 1 {
+		e := fmt.Errorf("bare func %q has too many files", pinfo.Path)
 		return nil, lex8.SingleErr(e)
 	}
 
-	for _, r := range src {
+	for _, r := range pinfo.Src {
 		stmts, es := parse.Stmts(r.Path, r)
 		if es != nil {
 			return nil, es
