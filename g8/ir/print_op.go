@@ -36,7 +36,7 @@ func printJump(p *fmt8.Printer, j *blockJump) {
 	if j == nil {
 		return
 	}
-	
+
 	switch j.typ {
 	case jmpAlways:
 		fmt.Fprintf(p, "goto %s\n", j.to)
@@ -48,4 +48,3 @@ func printJump(p *fmt8.Printer, j *blockJump) {
 		panic("invalid jump type")
 	}
 }
-

@@ -166,7 +166,7 @@ func buildExprStmt(b *builder, expr ast.Expr) {
 func buildBlock(b *builder, stmt *ast.Block) {
 	b.scope.Push()
 	defer b.scope.Pop()
-	
+
 	for _, s := range stmt.Stmts {
 		buildStmt(b, s)
 	}
