@@ -9,6 +9,7 @@ import (
 	"lonnie.io/e8vm/g8/ir"
 	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/lex8"
+	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/link8"
 )
 
@@ -76,4 +77,25 @@ func (bareFunc) Compile(pinfo *build8.PkgInfo) (
 	}
 
 	panic("unreachable")
+}
+
+// CompileBareFunc compiles a bare function into a bare-metal E8 image
+func CompileBareFunc(s string) ([]byte, []*lex8.Error) {
+	lang := BareFunc()
+	home := build8.NewMemHome(lang)
+	home.AddLang("asm", asm8.Lang())
+
+	pkg := home.NewPkg("main")
+	pkg.AddFile("main.g", s)
+
+	builtin := home.NewPkg("asm/builtin")
+	builtin.AddFile("builtin.s", builtInSrc)
+
+	b := build8.NewBuilder(home)
+	es := b.BuildAll()
+	if es != nil {
+		return nil, es
+	}
+
+	return home.Bin("main"), nil
 }

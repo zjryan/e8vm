@@ -90,6 +90,18 @@ func (h *MemHome) CreateBin(p string) io.WriteCloser {
 	return pkg.bin
 }
 
+// Bin returns the binary for math maitn
+func (h *MemHome) Bin(p string) []byte {
+	pkg := h.pkgs[p]
+	if pkg == nil {
+		panic("pkg not exists")
+	}
+	if pkg.bin == nil {
+		return nil
+	}
+	return pkg.bin.Bytes()
+}
+
 // CreateLog creates a log file for writing
 func (h *MemHome) CreateLog(p, name string) io.WriteCloser {
 	pkg := h.pkgs[p]
