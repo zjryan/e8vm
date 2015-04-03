@@ -4,13 +4,13 @@ import (
 	"bytes"
 )
 
-type memFile struct{ 
+type memFile struct {
 	path string
-	*bytes.Buffer 
+	*bytes.Buffer
 }
 
-func newMemFile() *memFile { 
-	return &memFile{Buffer: new(bytes.Buffer)} 
+func newMemFile() *memFile {
+	return &memFile{Buffer: new(bytes.Buffer)}
 }
 func (f *memFile) Reader() *memFileReader {
 	return &memFileReader{
@@ -19,9 +19,9 @@ func (f *memFile) Reader() *memFileReader {
 }
 func (f *memFile) Close() error { return nil }
 
-type memFileReader struct{ 
+type memFileReader struct {
 	path string
-	*bytes.Buffer 
+	*bytes.Buffer
 }
 
 func (f *memFileReader) Close() error { return nil }

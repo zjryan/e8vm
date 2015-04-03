@@ -4,8 +4,8 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"os"
 	"io/ioutil"
+	"os"
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/g8"
