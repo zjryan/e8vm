@@ -208,7 +208,3 @@ func (h *FileHome) Lang(p string) Lang {
 	}
 	return ret
 }
-
-// MemHome is a memory based building home.
-type MemHome struct {
-}
