@@ -10,13 +10,14 @@ import (
 )
 
 func main() {
-	b := build8.NewBuilder(".")
-	b.Verbose = true
-	b.AddLang("asm", asm8.Lang())
-	b.AddLang("bare", g8.BareFunc())
-	b.AddLang("", g8.Lang())
+	home := build8.NewFileHome(".", g8.Lang())
+	home.AddLang("asm", asm8.Lang())
+	home.AddLang("bare", g8.BareFunc())
 
-	es := build8.BuildAll(b)
+	b := build8.NewBuilder(home)
+	b.Verbose = true
+
+	es := b.BuildAll()
 	if es != nil {
 		for _, e := range es {
 			fmt.Println(e)
