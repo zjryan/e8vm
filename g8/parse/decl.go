@@ -5,9 +5,13 @@ import (
 )
 
 func parseConstDecls(p *parser) *ast.ConstDecls {
-	panic("todo")
+	p.ErrorfHere("const declare not implemented")
+	p.Next()
+	return nil
 }
 
 func parseVarDecls(p *parser) *ast.VarDecls {
-	panic("todo")
+	p.ErrorfHere("var declare not implemented")
+	p.Next()
+	return nil
 }

@@ -138,10 +138,6 @@ func parseForStmt(p *parser) *ast.ForStmt {
 	return ret
 }
 
-func parseSwitchStmt(p *parser) *ast.SwitchStmt {
-	panic("todo")
-}
-
 func parseReturnStmt(p *parser) *ast.ReturnStmt {
 	ret := new(ast.ReturnStmt)
 	ret.Kw = p.ExpectKeyword("return")
@@ -189,8 +185,8 @@ func parseStmt(p *parser) ast.Stmt {
 			return parseIfStmt(p)
 		case "for":
 			return parseForStmt(p)
-		case "switch":
-			return parseSwitchStmt(p)
+		//case "switch":
+		//	return parseSwitchStmt(p)
 		case "return":
 			return parseReturnStmt(p)
 		case "break":
@@ -243,7 +239,7 @@ func parseStmt(p *parser) ast.Stmt {
 	}
 
 	p.ErrorfHere("invalid statement")
-	p.Shift() // always make some progress
+	p.Next() // always make some progress
 	return nil
 }
 
