@@ -26,9 +26,11 @@ func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
 	b.f.SetAsMain()
 	b.b = b.f.NewBlock(nil)
 
+	b.scope.Push()
 	for _, stmt := range stmts {
 		buildStmt(b, stmt)
 	}
+	b.scope.Pop()
 
 	ir.PrintPkg(os.Stdout, b.p) // just for debugging...
 

@@ -43,6 +43,8 @@ func (t Basic) Size() int32 {
 		return 4
 	case String:
 		panic("todo")
+	case Bool:
+		return 1
 	default:
 		panic("unknown basic type")
 	}

@@ -8,11 +8,12 @@ import (
 )
 
 func printBlock(p *fmt8.Printer, b *Block) {
-	fmt.Fprintln(p, b)
+	fmt.Fprintf(p, "%s:\n", b)
 	p.Tab()
 	for _, op := range b.ops {
 		printOp(p, op)
 	}
+	printJump(p, b.jump)
 	p.ShiftTab()
 }
 

@@ -163,6 +163,15 @@ func buildExprStmt(b *builder, expr ast.Expr) {
 	}
 }
 
+func buildBlock(b *builder, stmt *ast.Block) {
+	b.scope.Push()
+	defer b.scope.Pop()
+	
+	for _, s := range stmt.Stmts {
+		buildStmt(b, s)
+	}
+}
+
 func buildStmt(b *builder, stmt ast.Stmt) {
 	switch stmt := stmt.(type) {
 	case *ast.ExprStmt:
@@ -173,6 +182,8 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 		buildAssignStmt(b, stmt)
 	case *ast.IfStmt:
 		buildIfStmt(b, stmt)
+	case *ast.Block:
+		buildBlock(b, stmt)
 	default:
 		panic(fmt.Errorf("invalid or not implemented: %T", stmt))
 	}

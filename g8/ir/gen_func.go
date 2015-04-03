@@ -130,4 +130,32 @@ func genFunc(p *Pkg, f *Func) {
 	for b := f.prologue.next; b != f.epilogue; b = b.next {
 		genBlock(b)
 	}
+
+	// TODO: check ranges
+	// now setup the jumps
+	ninst := int32(0)
+	for b := f.prologue; b != nil; b = b.next {
+		b.instStart = ninst
+		ninst += int32(len(b.insts))
+		b.instEnd = ninst
+	}
+
+	for b := f.prologue; b != nil; b = b.next {
+		if b.jumpInst == nil {
+			continue
+		}
+
+		delta := b.jump.to.instStart - b.instEnd
+		switch b.jump.typ {
+		case jmpAlways:
+			b.jumpInst.inst = asm.j(delta)
+		case jmpIfNot:
+			// TODO: check in jump range
+			b.jumpInst.inst = asm.beq(_0, _4, delta)
+		case jmpIf:
+			b.jumpInst.inst = asm.bne(_0, _4, delta)
+		default:
+			panic("bug")
+		}
+	}
 }

@@ -153,5 +153,7 @@ func genBlock(b *Block) {
 	} else if b.jump.typ == jmpIf {
 		loadRef(b, _4, b.jump.cond)
 		b.jumpInst = b.inst(asm.bne(_0, _4, 0))
+	} else {
+		panic("unknown jump")
 	}
 }

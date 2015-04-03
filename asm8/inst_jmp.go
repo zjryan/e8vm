@@ -15,9 +15,9 @@ func isValidSymbol(sym string) bool {
 }
 
 // InstJmp makes a jump instruction
-func InstJmp(op, im uint32) uint32 {
+func InstJmp(op uint32, im int32) uint32 {
 	ret := (op & 0x3) << 30
-	ret |= im & 0x3fffffff
+	ret |= uint32(im) & 0x3fffffff
 	return ret
 }
 

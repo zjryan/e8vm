@@ -1,1 +1,4 @@
-printInt(3+4*5)
+a := 3
+if a == 3 {
+    printInt(3)
+} 

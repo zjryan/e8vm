@@ -30,9 +30,12 @@ type Block struct {
 	jump *blockJump
 
 	next *Block // next in the linked list
+
+	instStart int32
+	instEnd int32
 }
 
-func (b *Block) String() string { return fmt.Sprintf("B%d:", b.id) }
+func (b *Block) String() string { return fmt.Sprintf("B%d", b.id) }
 
 func (b *Block) addOp(op op) { b.ops = append(b.ops, op) }
 

@@ -14,11 +14,11 @@ var (
 )
 
 // InstBr compose a branch instruction
-func InstBr(op, s1, s2, im uint32) uint32 {
+func InstBr(op, s1, s2 uint32, im int32) uint32 {
 	ret := (op & 0xff) << 24
 	ret |= (s1 & 0x7) << 21
 	ret |= (s2 & 0x7) << 18
-	ret |= im & 0x3ffff
+	ret |= uint32(im) & 0x3ffff
 	return ret
 }
 

@@ -31,3 +31,21 @@ func printOp(p *fmt8.Printer, op op) {
 		panic(fmt.Errorf("invalid or unknown IR op: %T", op))
 	}
 }
+
+func printJump(p *fmt8.Printer, j *blockJump) {
+	if j == nil {
+		return
+	}
+	
+	switch j.typ {
+	case jmpAlways:
+		fmt.Fprintf(p, "goto %s\n", j.to)
+	case jmpIf:
+		fmt.Fprintf(p, "if %s goto %s\n", j.cond, j.to)
+	case jmpIfNot:
+		fmt.Fprintf(p, "if !%s goto %s\n", j.cond, j.to)
+	default:
+		panic("invalid jump type")
+	}
+}
+
