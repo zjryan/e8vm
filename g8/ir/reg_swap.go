@@ -1,5 +1,9 @@
 package ir
 
+import (
+	"fmt"
+)
+
 func loadRetAddr(b *Block, v *stackVar) {
 	if v.size != regSize {
 		panic("ret must be regsize")
@@ -78,6 +82,6 @@ func loadRef(b *Block, reg uint32, r Ref) {
 		}
 		b.inst(asm.ori(reg, _0, r.v))
 	default:
-		panic("not implemented")
+		panic(fmt.Errorf("not implemented: %T", r))
 	}
 }

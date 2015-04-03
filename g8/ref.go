@@ -41,3 +41,10 @@ func (r *ref) String() string {
 
 	return fmt8.Join(r.typ, ",")
 }
+
+func (r *ref) IsBool() bool {
+	if !r.IsSingle() {
+		return false
+	}
+	return types.IsBasic(r.Type(), types.Bool)
+}

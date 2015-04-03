@@ -109,8 +109,8 @@ func buildAssignStmt(b *builder, stmt *ast.AssignStmt) {
 
 func buildIf(b *builder, cond ast.Expr, ifs ast.Stmt, elses *ast.ElseStmt) {
 	c := buildExpr(b, cond)
-	pos := ast.ExprPos(cond)
-	if !c.IsSingle() || types.IsBasic(c.Type(), types.Bool) {
+	if !c.IsBool() {
+		pos := ast.ExprPos(cond)
 		b.Errorf(pos, "expect boolean expression, got %s", c)
 		return
 	}
@@ -172,6 +172,32 @@ func buildBlock(b *builder, stmt *ast.Block) {
 	}
 }
 
+func buildForStmt(b *builder, stmt *ast.ForStmt) {
+	if stmt.Init == nil && stmt.Iter == nil {
+		condBlock := b.f.NewBlock(b.b)
+		body := b.f.NewBlock(condBlock)
+		after := b.f.NewBlock(body)
+		body.Jump(condBlock)
+
+		b.b = condBlock
+		c := buildExpr(b, stmt.Cond)
+		if !c.IsBool() {
+			pos := ast.ExprPos(stmt.Cond)
+			b.Errorf(pos, "expect boolean expression, got %s", c)
+			b.b = after
+			return
+		}
+		condBlock.JumpIfNot(c.IR(), after)
+
+		b.b = body
+		buildStmt(b, stmt.Body)
+
+		b.b = after
+	} else {
+		b.Errorf(stmt.Kw.Pos, "advanced for statement not implemented yet")
+	}
+}
+
 func buildStmt(b *builder, stmt ast.Stmt) {
 	switch stmt := stmt.(type) {
 	case *ast.ExprStmt:
@@ -182,6 +208,8 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 		buildAssignStmt(b, stmt)
 	case *ast.IfStmt:
 		buildIfStmt(b, stmt)
+	case *ast.ForStmt:
+		buildForStmt(b, stmt)
 	case *ast.Block:
 		buildBlock(b, stmt)
 	default:

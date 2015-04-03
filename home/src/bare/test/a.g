@@ -1,6 +1,5 @@
-a := 3
-if a == 3 {
-    printInt(4)
-} else {
+a := 10
+for a > 0 {
     printInt(a)
+    a = a - 1
 }
