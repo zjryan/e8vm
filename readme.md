@@ -18,6 +18,20 @@ Planned Features:
 
 ## TODOs
 
+- Testing framework         // 4.4
+- `FuncDecl` and `VarDecl`  // 4.5
+- Return, break, continue   // 4.6
+- Basic types, char         // 4.7
+- Type conversion           // 4.8
+- Basic built-in panic      
+- Array and slice
+- String
+- Struct
+- Fields and methods
+- Interface
+
+And...
+
 - Improve code reading website
 - Complete consts in asm8
 - Clean up the symbol linking in asm8 a little bit
