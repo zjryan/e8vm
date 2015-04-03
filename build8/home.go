@@ -2,31 +2,25 @@ package build8
 
 import (
 	"io"
-	"path/filepath"
 )
 
-type home struct {
-	path string
-}
+// Home is a storage place for storing building files
+type Home interface {
+	// Pkgs lists all the packages
+	Pkgs(prefix string) []string
 
-func (h *home) sub(pre, p string) string {
-	return filepath.Join(h.path, pre, p)
-}
+	// Src lists the source files in a package
+	Src(path string) map[string]*File
 
-func (h *home) srcRoot() string { return h.sub("src", "") }
+	// Lib creates the writer for writing the linkable package library
+	Lib(path string) io.WriteCloser
 
-func (h *home) src(p string) string { return h.sub("src", p) }
-func (h *home) bin(p string) string { return h.sub("bin", p+".e8") }
-func (h *home) pkg(p string) string { return h.sub("pkg", p+".e8a") }
+	// Log creates a logger, usually for debugging
+	Log(path, name string) io.WriteCloser
 
-func (h *home) makeBin(p string) io.WriteCloser {
-	return newFile(h.bin(p))
-}
+	// Bin creates the writer for generate the E8 binary
+	Bin(path string) io.WriteCloser
 
-func (h *home) makePkg(p string) io.WriteCloser {
-	return newFile(h.pkg(p))
-}
-
-func (h *home) loadPkg(p string) io.ReadCloser {
-	return newFile(h.pkg(p))
+	// Lang returns the language of a path
+	Lang(path string) Lang
 }
