@@ -66,7 +66,7 @@ func (b *Block) Jump(dest *Block) {
 	}
 }
 
-// JumpNot sets the block to jump to its natural next when the
+// JumpIfNot sets the block to jump to its natural next when the
 // condition is met, and jump to dest when the condition is not met
 func (b *Block) JumpIfNot(cond Ref, dest *Block) {
 	b.jump = &blockJump{jmpIfNot, cond, dest}
