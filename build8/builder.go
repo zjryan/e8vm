@@ -15,14 +15,6 @@ type Builder struct {
 	Verbose bool
 }
 
-// NewDirBuilder creates a new builder based on a directory in
-// the file system
-func NewDirBuilder(homePath string, lang Lang) (*Builder, *DirHome) {
-	home := NewDirHome(homePath, lang)
-	ret := NewBuilder(home)
-	return ret, home
-}
-
 // NewBuilder creates a new builder with a particular home directory
 func NewBuilder(home Home) *Builder {
 	ret := new(Builder)
