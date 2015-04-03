@@ -171,24 +171,24 @@ func (h *DirHome) Src(p string) map[string]*File {
 	return ret
 }
 
-// Bin returns the writer to write the binary
-func (h *DirHome) Bin(p string) io.WriteCloser {
+// CreateBin returns the writer to write the binary
+func (h *DirHome) CreateBin(p string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
 	return newFile(h.sub("bin", p+".e8"))
 }
 
-// Lib returns the writer to write the linkable library
-func (h *DirHome) Lib(p string) io.WriteCloser {
+// CreateLib returns the writer to write the linkable library
+func (h *DirHome) CreateLib(p string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
 	return newFile(h.sub("pkg", p+".e8a"))
 }
 
-// Log returns the log writer for the particular name
-func (h *DirHome) Log(p, name string) io.WriteCloser {
+// CreateLog returns the log writer for the particular name
+func (h *DirHome) CreateLog(p, name string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}

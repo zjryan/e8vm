@@ -12,14 +12,14 @@ type Home interface {
 	// Src lists the source files in a package
 	Src(path string) map[string]*File
 
-	// Lib creates the writer for writing the linkable package library
-	Lib(path string) io.WriteCloser
+	// CreateLib creates the writer for writing the linkable package library
+	CreateLib(path string) io.WriteCloser
 
-	// Log creates a logger, usually for debugging
-	Log(path, name string) io.WriteCloser
+	// CreateLog creates a logger, usually for debugging
+	CreateLog(path, name string) io.WriteCloser
 
 	// Bin creates the writer for generate the E8 binary
-	Bin(path string) io.WriteCloser
+	CreateBin(path string) io.WriteCloser
 
 	// Lang returns the language of a path
 	Lang(path string) Lang

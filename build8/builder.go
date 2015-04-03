@@ -117,7 +117,7 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	if main != "" && lib.HasFunc(main) {
 		log := lex8.NewErrorList()
 
-		fout := b.home.Bin(p)
+		fout := b.home.CreateBin(p)
 		lex8.LogError(log, link8.LinkMain(lib, fout, main))
 		lex8.LogError(log, fout.Close())
 
