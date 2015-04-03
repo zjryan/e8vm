@@ -57,8 +57,7 @@ func (bareFunc) Compile(pinfo *build8.PkgInfo) (
 
 	if len(pinfo.Src) == 0 {
 		panic("no source file")
-	}
-	if len(pinfo.Src) > 1 {
+	} else if len(pinfo.Src) > 1 {
 		e := fmt.Errorf("bare func %q has too many files", pinfo.Path)
 		return nil, lex8.SingleErr(e)
 	}

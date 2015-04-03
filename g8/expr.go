@@ -221,6 +221,9 @@ func buildExpr(b *builder, expr ast.Expr) *ref {
 	case *ast.CallExpr:
 		return buildCallExpr(b, expr)
 	default:
-		panic(fmt.Errorf("%T: invalid or not implemented", expr))
+		b.Errorf(ast.ExprPos(expr), "%s",
+			fmt.Errorf("%T: invalid or not implemented", expr),
+		)
+		return nil
 	}
 }

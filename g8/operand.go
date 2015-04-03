@@ -50,7 +50,8 @@ func buildIdent(b *builder, op *lex8.Token) *ref {
 		v := s.Item.(*objConst)
 		return v.ref
 	default:
-		panic("todo")
+		b.Errorf(op.Pos, "todo: token type: %d", s.Type)
+		return nil
 	}
 }
 
@@ -61,6 +62,9 @@ func buildOperand(b *builder, op *ast.Operand) *ref {
 	case parse.Ident:
 		return buildIdent(b, op.Token)
 	default:
-		panic("invalid or not implemented")
+		b.Errorf(op.Token.Pos, "invalid or not implemented: %d",
+			op.Token.Type,
+		)
+		return nil
 	}
 }

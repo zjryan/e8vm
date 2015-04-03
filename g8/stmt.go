@@ -1,8 +1,6 @@
 package g8
 
 import (
-	"fmt"
-
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
@@ -213,6 +211,6 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 	case *ast.Block:
 		buildBlock(b, stmt)
 	default:
-		panic(fmt.Errorf("invalid or not implemented: %T", stmt))
+		b.Errorf(nil, "invalid or not implemented: %T", stmt)
 	}
 }
