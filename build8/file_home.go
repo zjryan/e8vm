@@ -147,6 +147,10 @@ func (h *FileHome) Pkgs(prefix string) []string {
 
 // Src lists all the source files inside this package.
 func (h *FileHome) Src(p string) map[string]*File {
+	if !isPkgPath(p) {
+		panic("not package path")
+	}
+
 	lang := h.Lang(p)
 	if lang == nil {
 		return nil
@@ -181,16 +185,25 @@ func (h *FileHome) Src(p string) map[string]*File {
 
 // Bin returns the writer to write the binary
 func (h *FileHome) Bin(p string) io.WriteCloser {
+	if !isPkgPath(p) {
+		panic("not package path")
+	}
 	return newFile(h.sub("bin", p+".e8"))
 }
 
 // Lib returns the writer to write the linkable library
 func (h *FileHome) Lib(p string) io.WriteCloser {
+	if !isPkgPath(p) {
+		panic("not package path")
+	}
 	return newFile(h.sub("pkg", p+".e8a"))
 }
 
 // Log returns the log writer for the particular name
 func (h *FileHome) Log(p, name string) io.WriteCloser {
+	if !isPkgPath(p) {
+		panic("not package path")
+	}
 	return newFile(h.subFile("src", p, name))
 }
 
@@ -198,7 +211,7 @@ func (h *FileHome) Log(p, name string) io.WriteCloser {
 // It searches for the longest prefix match
 func (h *FileHome) Lang(p string) Lang {
 	if !isPkgPath(p) {
-		return nil
+		panic("not package path")
 	}
 
 	nmax := -1
