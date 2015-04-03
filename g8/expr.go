@@ -158,6 +158,10 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 }
 
 func buildExprList(b *builder, list *ast.ExprList) *ref {
+	if list == nil {
+		return new(ref) // empty ref, for void
+	}
+
 	n := list.Len()
 
 	ret := new(ref)
