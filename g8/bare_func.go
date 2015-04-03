@@ -22,7 +22,7 @@ type bareFunc struct{ lang }
 func BareFunc() build8.Lang { return bareFunc{lang{}} }
 
 func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
-	b.f = b.p.NewFunc("main", ir.VoidFuncSig)
+	b.f = b.p.NewFunc(":start", ir.VoidFuncSig)
 	b.f.SetAsMain()
 	b.b = b.f.NewBlock(nil)
 

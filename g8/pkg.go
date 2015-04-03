@@ -9,3 +9,4 @@ type pkg struct {
 }
 
 func (p *pkg) Lib() *link8.Pkg { return p.lib }
+func (p *pkg) Main() string { return ":start" }

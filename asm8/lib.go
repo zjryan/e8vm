@@ -16,6 +16,8 @@ type lib struct {
 	symbols map[string]*sym8.Symbol
 }
 
+func (p *lib) Main() string { return "main" }
+
 // NewPkgObj creates a new package compile object
 func newLib(p string) *lib {
 	ret := new(lib)

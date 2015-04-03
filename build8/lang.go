@@ -23,6 +23,7 @@ type Import struct {
 
 // Linkable is an interface for a linkable package
 type Linkable interface {
+	Main() string
 	Lib() *link8.Pkg
 }
 

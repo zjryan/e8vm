@@ -144,8 +144,8 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 	lib := ret.compiled.Lib() // the linkable lib
 	// a package with main entrance, build the bin
 
-	const main = "main"
-	if lib.HasFunc(main) {
+	main := ret.compiled.Main()
+	if main != "" && lib.HasFunc(main) {
 		log := lex8.NewErrorList()
 
 		fout := b.home.makeBin(p)
