@@ -46,6 +46,9 @@ func buildIdent(b *builder, op *lex8.Token) *ref {
 	case symFunc:
 		v := s.Item.(*objFunc)
 		return v.ref
+	case symConst:
+		v := s.Item.(*objConst)
+		return v.ref
 	default:
 		panic("todo")
 	}
