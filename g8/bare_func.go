@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/build8"
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/ir"
 	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/lex8"
-	"lonnie.io/e8vm/asm8"
 	"lonnie.io/e8vm/link8"
 )
 
