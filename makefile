@@ -2,7 +2,10 @@
 
 all:
 	go install -v ./...
+	gofmt -s -w -l .
+	go install -v ./...
 	e8chk -path="lonnie.io/e8vm"
+	golint ./...
 
 rall:
 	touch `find . -name "*.go"`
