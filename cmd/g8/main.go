@@ -30,26 +30,44 @@ func printErrs(es []*lex8.Error) {
 }
 
 func main() {
+	bare := flag.Bool("bare", false, "parse as bare function")
+	ast := flag.Bool("ast", false, "parse only and print out the ast")
+	ir := flag.Bool("ir", false, "prints out the IR")
+	dasm := flag.Bool("d", false, "deassemble the image")
+
+	_ = ast
+	_ = ir
+	_ = dasm
+
 	flag.Parse()
 
 	args := flag.Args()
 	if len(args) != 1 {
 		exit(errors.New("need exactly one input input file"))
 	}
-
 	fname := args[0]
 
-	input, e := ioutil.ReadFile(fname)
-	if e != nil {
-		exit(e)
-	}
+	if *bare {
+		if *ast {
 
-	bs, es := g8.CompileBareFunc(fname, string(input))
-	printErrs(es)
+		} else {
+			input, e := ioutil.ReadFile(fname)
+			if e != nil {
+				exit(e)
+			}
 
-	ncycle, e := arch8.RunImage(bs, 100000)
-	fmt.Printf("(%d cycles)\n", ncycle)
-	if e != nil {
-		fmt.Println(e)
+			bs, es := g8.CompileBareFunc(fname, string(input))
+			printErrs(es)
+
+			ncycle, e := arch8.RunImage(bs, 100000)
+			fmt.Printf("(%d cycles)\n", ncycle)
+			if e != nil {
+				fmt.Println(e)
+			}
+		}
+	} else {
+		if *ast {
+
+		}
 	}
 }
