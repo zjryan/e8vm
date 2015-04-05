@@ -8,19 +8,19 @@ import (
 
 // ref is a struct that
 type ref struct {
-	typ []types.Type
+	typ []types.T
 	ir  []ir.Ref // this is essentially anything
 }
 
 // newRef creates a simple single ref
-func newRef(t types.Type, r ir.Ref) *ref {
-	return &ref{[]types.Type{t}, []ir.Ref{r}}
+func newRef(t types.T, r ir.Ref) *ref {
+	return &ref{[]types.T{t}, []ir.Ref{r}}
 }
 
 func (r *ref) Len() int       { return len(r.typ) }
 func (r *ref) IsSingle() bool { return len(r.typ) == 1 }
 
-func (r *ref) Type() types.Type {
+func (r *ref) Type() types.T {
 	if !r.IsSingle() {
 		panic("not single")
 	}

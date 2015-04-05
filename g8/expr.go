@@ -136,7 +136,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 
 	// type check on parameters
 	for i, argType := range args.typ {
-		expect := funcType.Args[i].Type
+		expect := funcType.Args[i].T
 		if !types.CanAssign(expect, argType) {
 			pos := ast.ExprPos(expr.Args.Exprs[i])
 			b.Errorf(pos, "argument %d expects %s, got %s",

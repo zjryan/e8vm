@@ -3,7 +3,7 @@ package types
 // Field is a named field in a struct
 type Field struct {
 	Name string
-	Type
+	T
 }
 
 // Method is a method function in a struct

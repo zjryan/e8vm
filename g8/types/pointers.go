@@ -5,7 +5,7 @@ import (
 )
 
 // Pointer is a pointer type
-type Pointer struct{ T Type } // a pointer type
+type Pointer struct{ T T } // a pointer type
 
 // String returns "*T"
 func (t *Pointer) String() string { return "*" + t.T.String() }
@@ -14,7 +14,7 @@ func (t *Pointer) String() string { return "*" + t.T.String() }
 func (t *Pointer) Size() int32 { return 4 }
 
 // Slice is a slice type
-type Slice struct{ T Type }
+type Slice struct{ T T }
 
 // String returns "[]T"
 func (t *Slice) String() string { return "[]" + t.T.String() }
@@ -25,7 +25,7 @@ func (t *Slice) Size() int32 { return 4 }
 
 // Array is an array type of fixed size
 type Array struct {
-	T Type
+	T T
 	N int32
 }
 

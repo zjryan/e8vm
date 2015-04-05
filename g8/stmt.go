@@ -7,7 +7,7 @@ import (
 	"lonnie.io/e8vm/sym8"
 )
 
-func allocVars(b *builder, toks []*lex8.Token, ts []types.Type) *ref {
+func allocVars(b *builder, toks []*lex8.Token, ts []types.T) *ref {
 	ret := new(ref)
 	ret.typ = ts
 	for i, t := range ts {

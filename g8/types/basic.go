@@ -19,7 +19,7 @@ const (
 )
 
 // IsBasic checks if a type is a particular basic type
-func IsBasic(t Type, b Basic) bool {
+func IsBasic(t T, b Basic) bool {
 	code, ok := t.(Basic)
 	if !ok {
 		return false
@@ -28,7 +28,7 @@ func IsBasic(t Type, b Basic) bool {
 }
 
 // BothBasic checks if two types are both a particular basic type
-func BothBasic(a, b Type, t Basic) bool {
+func BothBasic(a, b T, t Basic) bool {
 	return IsBasic(a, t) && IsBasic(b, t)
 }
 

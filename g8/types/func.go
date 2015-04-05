@@ -11,16 +11,16 @@ import (
 // Arg is a function argument or return value
 type Arg struct {
 	Name string // optional
-	Type
+	T
 }
 
 // String returns "name T" for the named argument and "T" for an
 // anonymous argument
 func (a *Arg) String() string {
 	if a.Name == "" {
-		return a.Type.String()
+		return a.T.String()
 	}
-	return fmt.Sprintf("%s %s", a.Name, a.Type)
+	return fmt.Sprintf("%s %s", a.Name, a.T)
 }
 
 // Func is a function pointer type.
@@ -28,7 +28,7 @@ func (a *Arg) String() string {
 type Func struct {
 	Args     []*Arg
 	Rets     []*Arg
-	RetTypes []Type
+	RetTypes []T
 	Sig      *ir.FuncSig // the signature for IR
 }
 
@@ -43,26 +43,26 @@ func NewFuncNamed(args []*Arg, rets []*Arg) *Func {
 	return ret
 }
 
-func argTypes(args []*Arg) []Type {
+func argTypes(args []*Arg) []T {
 	if args == nil {
 		return nil
 	}
-	ret := make([]Type, 0, len(args))
+	ret := make([]T, 0, len(args))
 	for _, arg := range args {
-		ret = append(ret, arg.Type)
+		ret = append(ret, arg.T)
 	}
 	return ret
 }
 
 // NewFunc creates a new function type where all its arguments
 // and return values are anonymous.
-func NewFunc(args []Type, rets []Type) *Func {
+func NewFunc(args []T, rets []T) *Func {
 	f := new(Func)
 	for _, arg := range args {
-		f.Args = append(f.Args, &Arg{Type: arg})
+		f.Args = append(f.Args, &Arg{T: arg})
 	}
 	for _, ret := range rets {
-		f.Rets = append(f.Rets, &Arg{Type: ret})
+		f.Rets = append(f.Rets, &Arg{T: ret})
 	}
 
 	f.Sig = makeFuncSig(f)
@@ -71,7 +71,7 @@ func NewFunc(args []Type, rets []Type) *Func {
 }
 
 // NewVoidFunc creates a new function that does not return anything.
-func NewVoidFunc(args ...Type) *Func { return NewFunc(args, nil) }
+func NewVoidFunc(args ...T) *Func { return NewFunc(args, nil) }
 
 // String returns the function signature (without the argument names).
 func (t *Func) String() string {

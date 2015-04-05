@@ -5,12 +5,12 @@ import (
 )
 
 // CanAssign checks if right can be assigned to right
-func CanAssign(left, right Type) bool {
+func CanAssign(left, right T) bool {
 	return SameType(left, right)
 }
 
 // SameType checks if two types are of the same type
-func SameType(t1, t2 Type) bool {
+func SameType(t1, t2 T) bool {
 	if t1 == t2 {
 		return true
 	}
@@ -46,13 +46,13 @@ func SameType(t1, t2 Type) bool {
 			}
 
 			for i, t := range t1.Args {
-				if !SameType(t.Type, t2.Args[i].Type) {
+				if !SameType(t.T, t2.Args[i].T) {
 					return false
 				}
 			}
 
 			for i, t := range t2.Rets {
-				if !SameType(t.Type, t2.Rets[i].Type) {
+				if !SameType(t.T, t2.Rets[i].T) {
 					return false
 				}
 			}
