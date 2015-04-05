@@ -1,11 +1,19 @@
-## About a testing framework
+some expressions are also type
 
-the compiler now can compile, but it relies on an external file system
+- identifier: A, might be a type, might be an expression
+- star: *A, might be a pointer type, might be an expression
 
-- a building file system
-- a source folder, where source files are organized into packages, and
-  each file in the folder has the same suffix. this is useful for
-  searching files in a file system
-- a log folder, for writing log files. each log file has a name.
-- a lib folder, for writing lib. each lib is a single file.
-- a bin folder, for writing binaries
+also, some expressions starts with a type
+- []int is a type
+- []int { 3, 4, 5 } is an expression
+- A might be a type
+- A { 3, 5, 7 } is an expression, A must be a type
+- A(something) is an expression, this is conversion or 
+
+type is just a special kind of expression
+we can have a parse type function, that returns an expression, which
+only accepts type.
+but for the parse expression function, we have parse the types again
+
+
+
