@@ -6,18 +6,6 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseIdentList(p *parser) *ast.IdentList {
-	ret := new(ast.IdentList)
-	for p.See(Ident) {
-		ret.Idents = append(ret.Idents, p.Shift())
-		if !p.SeeOp(",") {
-			break
-		}
-		ret.Commas = append(ret.Commas, p.Shift())
-	}
-	return ret
-}
-
 func parseBlock(p *parser) *ast.Block {
 	ret := new(ast.Block)
 	ret.Lbrace = p.ExpectOp("{")
