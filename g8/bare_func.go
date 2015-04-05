@@ -34,7 +34,8 @@ func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
 	}
 	b.scope.Pop()
 
-	ir.PrintPkg(os.Stdout, b.p) // just for debugging...
+	// TODO: write this to log file
+	ir.PrintPkg(os.Stdout, b.p)
 
 	return ir.BuildPkg(b.p) // do the code gen
 }

@@ -27,16 +27,17 @@ func printParaList(p *fmt8.Printer, lst *ParaList) {
 }
 
 func printFunc(p *fmt8.Printer, f *Func) {
-	fmt.Fprintf(p, "func %s ")
+	fmt.Fprintf(p, "func %s", f.Name.Lit)
 	printParaList(p, f.Args)
 	if f.RetType != nil {
 		fmt.Fprint(p, " ")
 		printExpr(p, f.RetType)
 	} else if f.Rets != nil {
 		fmt.Fprint(p, " ")
-		printParaList(p, f.Args)
+		printParaList(p, f.Rets)
 	}
 
+	fmt.Fprint(p, " ")
 	printStmt(p, f.Body)
 	fmt.Fprintln(p)
 }

@@ -1,8 +1,8 @@
 package ast
 
 import (
-	"bytes"
 	"fmt"
+	"io"
 
 	"lonnie.io/e8vm/fmt8"
 )
@@ -19,7 +19,7 @@ func printStmt(p *fmt8.Printer, stmt Stmt) {
 			p.ShiftTab()
 			fmt.Fprint(p, "}")
 		} else {
-			fmt.Fprint(p, "{ }")
+			fmt.Fprint(p, "{}")
 		}
 	case *BlockStmt:
 		printStmt(p, stmt.Block)
@@ -79,10 +79,8 @@ func printStmt(p *fmt8.Printer, stmt Stmt) {
 	}
 }
 
-// PrintStmts prints a list of statements
-func PrintStmts(stmts []Stmt) string {
-	buf := new(bytes.Buffer)
-	p := fmt8.NewPrinter(buf)
+// FprintStmts prints the statements out to a writer
+func FprintStmts(out io.Writer, stmts []Stmt) {
+	p := fmt8.NewPrinter(out)
 	printStmt(p, stmts)
-	return buf.String()
 }

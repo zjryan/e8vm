@@ -1,6 +1,8 @@
 package parse
 
 import (
+	"io"
+
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/lex8"
 )
@@ -35,4 +37,14 @@ func parseFile(p *parser) *ast.File {
 	}
 
 	return &ast.File{ret}
+}
+
+// File parses a file.
+func File(f string, r io.Reader) (*ast.File, []*lex8.Error) {
+	p, _ := newParser(f, r)
+	ret := parseFile(p)
+	if es := p.Errs(); es != nil {
+		return nil, es
+	}
+	return ret, nil
 }

@@ -2,6 +2,7 @@ package ast
 
 import (
 	"fmt"
+	"io"
 
 	"lonnie.io/e8vm/fmt8"
 )
@@ -26,4 +27,10 @@ func printFile(p *fmt8.Printer, f *File) {
 		printTopDecl(p, decl)
 		fmt.Fprintln(p)
 	}
+}
+
+// FprintFile prints a list of file
+func FprintFile(out io.Writer, f *File) {
+	p := fmt8.NewPrinter(out)
+	printFile(p, f)
 }

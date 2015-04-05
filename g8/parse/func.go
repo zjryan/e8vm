@@ -19,12 +19,11 @@ func parsePara(p *parser) *ast.Para {
 }
 
 func parseParaList(p *parser) *ast.ParaList {
-	if !p.SeeOp("(") {
-		panic("expect left paren")
-	}
-
 	ret := new(ast.ParaList)
-	ret.Lparen = p.Shift()
+	ret.Lparen = p.ExpectOp("(")
+	if p.InError() {
+		return nil
+	}
 
 	if p.SeeOp(")") {
 		// empty parameter list
@@ -52,14 +51,8 @@ func parseParaList(p *parser) *ast.ParaList {
 	return ret
 }
 
-func parseFunc(p *parser) *ast.Func {
-	if !p.SeeKeyword("func") {
-		panic("expect keyword")
-	}
-
-	ret := new(ast.Func)
-	ret.Kw = p.Shift()
-	ret.Name = p.Expect(Ident)
+func parseFuncSig(p *parser) *ast.FuncSig {
+	ret := new(ast.FuncSig)
 	ret.Args = parseParaList(p)
 	if p.InError() {
 		return nil
@@ -71,13 +64,27 @@ func parseFunc(p *parser) *ast.Func {
 			return nil
 		}
 		if len(ret.Rets.Paras) == 0 {
-			p.Errorf(ret.Rets.Lparen.Pos, "return list cannot be empty")
-			return nil
+			p.Errorf(ret.Rets.Rparen.Pos, "expect return list")
 		}
-	} else if !p.SeeOp("{") {
+	} else if !p.SeeOp("{") && !p.SeeOp(";") && !p.SeeOp("}") {
 		ret.RetType = parseType(p)
 	}
+	return ret
+}
 
+func parseFunc(p *parser) *ast.Func {
+	if !p.SeeKeyword("func") {
+		panic("expect keyword")
+	}
+
+	ret := new(ast.Func)
+	ret.Kw = p.Shift()
+	ret.Name = p.Expect(Ident)
+	if p.InError() {
+		return nil
+	}
+
+	ret.FuncSig = parseFuncSig(p)
 	if p.InError() {
 		return nil
 	}

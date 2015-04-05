@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"flag"
 	"fmt"
@@ -9,6 +10,8 @@ import (
 
 	"lonnie.io/e8vm/arch8"
 	"lonnie.io/e8vm/g8"
+	"lonnie.io/e8vm/g8/ast"
+	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -31,11 +34,10 @@ func printErrs(es []*lex8.Error) {
 
 func main() {
 	bare := flag.Bool("bare", false, "parse as bare function")
-	ast := flag.Bool("ast", false, "parse only and print out the ast")
+	parseAST := flag.Bool("parse", false, "parse only and print out the ast")
 	ir := flag.Bool("ir", false, "prints out the IR")
 	dasm := flag.Bool("d", false, "deassemble the image")
 
-	_ = ast
 	_ = ir
 	_ = dasm
 
@@ -46,16 +48,17 @@ func main() {
 		exit(errors.New("need exactly one input input file"))
 	}
 	fname := args[0]
+	input, e := ioutil.ReadFile(fname)
+	if e != nil {
+		exit(e)
+	}
 
 	if *bare {
-		if *ast {
-
+		if *parseAST {
+			stmts, es := parse.Stmts(fname, bytes.NewBuffer(input))
+			printErrs(es)
+			ast.FprintStmts(os.Stdout, stmts)
 		} else {
-			input, e := ioutil.ReadFile(fname)
-			if e != nil {
-				exit(e)
-			}
-
 			bs, es := g8.CompileBareFunc(fname, string(input))
 			printErrs(es)
 
@@ -66,8 +69,12 @@ func main() {
 			}
 		}
 	} else {
-		if *ast {
-
+		if *parseAST {
+			f, es := parse.File(fname, bytes.NewBuffer(input))
+			printErrs(es)
+			ast.FprintFile(os.Stdout, f)
+		} else {
+			panic("todo")
 		}
 	}
 }

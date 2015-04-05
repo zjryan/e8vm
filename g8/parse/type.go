@@ -6,7 +6,7 @@ import (
 
 func parseType(p *parser) ast.Expr {
 	if p.See(Ident) {
-		return p.Shift()
+		return &ast.Operand{p.Shift()}
 	}
 
 	// TODO: pointer, slice, and array type support
