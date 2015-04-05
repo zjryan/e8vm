@@ -26,15 +26,6 @@ type ParaList struct {
 	Commas []*lex8.Token
 }
 
-// VarDecl declares a set of variable
-type VarDecl struct {
-	Idents *IdentList
-	Type   Expr
-	Eq     *lex8.Token
-	Exprs  *ExprList
-	Semi   *lex8.Token
-}
-
 // FuncDecl declares a function
 type FuncDecl struct {
 	Kw   *lex8.Token
@@ -44,11 +35,25 @@ type FuncDecl struct {
 	Args   *ParaList
 	Rparen *lex8.Token
 
+	// ret list
 	RetLparen *lex8.Token // optional
 	Rets      *ParaList
 	RetRparen *lex8.Token // optional
 
-	*Block
+	// single ret type
+	RetType Expr
+
+	Body *Block
+	Semi *lex8.Token
+}
+
+// VarDecl declares a set of variable
+type VarDecl struct {
+	Idents *IdentList
+	Type   Expr
+	Eq     *lex8.Token
+	Exprs  *ExprList
+	Semi   *lex8.Token
 }
 
 // Field is a member variable of a struct

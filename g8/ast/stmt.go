@@ -36,7 +36,12 @@ type Block struct {
 	Lbrace *lex8.Token
 	Stmts  []Stmt
 	Rbrace *lex8.Token
-	Semi   *lex8.Token
+}
+
+// BlockStmt is a block statement
+type BlockStmt struct {
+	*Block
+	Semi *lex8.Token
 }
 
 // IfStmt is an if statement, possibly with an else of else if

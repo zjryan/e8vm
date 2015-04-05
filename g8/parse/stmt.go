@@ -18,7 +18,7 @@ func parseIdentList(p *parser) *ast.IdentList {
 	return ret
 }
 
-func parseBlockClosed(p *parser) *ast.Block {
+func parseBlock(p *parser) *ast.Block {
 	ret := new(ast.Block)
 	ret.Lbrace = p.ExpectOp("{")
 	if ret.Lbrace == nil {
@@ -61,7 +61,7 @@ func parseElse(p *parser) *ast.ElseStmt {
 		return ret
 	}
 
-	ret.Body = parseBlockClosed(p)
+	ret.Body = parseBlock(p)
 	// might have another else
 	if ret.If != nil && p.SeeKeyword("else") {
 		ret.Next = parseElse(p)
@@ -72,7 +72,7 @@ func parseElse(p *parser) *ast.ElseStmt {
 
 func parseIfBody(p *parser) (ret ast.Stmt, isBlock bool) {
 	if p.SeeOp("{") {
-		return parseBlockClosed(p), true
+		return parseBlock(p), true
 	}
 	// TODO: return, break and continue
 
@@ -129,7 +129,7 @@ func parseForStmt(p *parser) *ast.ForStmt {
 		return ret
 	}
 
-	ret.Body = parseBlockClosed(p)
+	ret.Body = parseBlock(p)
 	if p.InError() {
 		return ret
 	}
@@ -199,7 +199,8 @@ func parseStmt(p *parser) ast.Stmt {
 	}
 
 	if p.SeeOp("{") {
-		ret := parseBlockClosed(p)
+		ret := new(ast.BlockStmt)
+		ret.Block = parseBlock(p)
 		ret.Semi = p.ExpectSemi()
 		return ret
 	} else if p.See(Semi) {
