@@ -39,6 +39,27 @@ func declareBuiltin(b *builder, builtin *link8.Pkg) {
 
 	c("true", types.Bool, ir.Snum(1))
 	c("false", types.Bool, ir.Snum(0))
+
+	t := func(name string, t types.T) {
+		obj := &objType{name, newRef(&types.Type{t}, t)}
+		pre := b.scope.Declare(sym8.Make(name, symType, obj, nil))
+		if pre != nil {
+			b.Errorf(nil, "builtin symbol %s declare failed", name)
+		}
+	}
+
+	t("int", types.Int)
+	t("uint", types.Uint)
+	t("int32", types.Int)
+	t("uint32", types.Uint)
+	t("int8", types.Int8)
+	t("uint8", types.Uint8)
+	t("char", types.Int8)
+	t("byte", types.Uint8)
+	t("bool", types.Bool)
+	t("float", types.Float32)
+	t("float32", types.Float32)
+	// t("string", types.String)
 }
 
 const builtInSrc = `

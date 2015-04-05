@@ -44,3 +44,8 @@ type objConst struct {
 	name string
 	*ref
 }
+
+type objType struct {
+	name string
+	*ref
+}
