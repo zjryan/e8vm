@@ -8,6 +8,8 @@ func parseType(p *parser) ast.Expr {
 	if p.See(Ident) {
 		return p.Shift()
 	}
+
+	// TODO: pointer, slice, and array type support
 	p.ErrorfHere("expect a type name")
 	return nil
 }

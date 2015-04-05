@@ -22,11 +22,11 @@ func resolveFile(log lex8.Logger, f *ast.File) *file {
 	}
 
 	for _, d := range f.Decls {
-		if d, ok := d.(*ast.FuncDecl); ok {
+		if d, ok := d.(*ast.Func); ok {
 			ret.funcs = append(ret.funcs, resolveFunc(log, d))
 		}
 
-		if d, ok := d.(*ast.VarDecl); ok {
+		if d, ok := d.(*ast.Var); ok {
 			ret.vars = append(ret.vars, resolveVar(log, d))
 		}
 	}

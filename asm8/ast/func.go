@@ -4,8 +4,8 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// FuncDecl is an assembly function.
-type FuncDecl struct {
+// Func is an assembly function.
+type Func struct {
 	Stmts []*FuncStmt
 
 	Kw, Name             *lex8.Token

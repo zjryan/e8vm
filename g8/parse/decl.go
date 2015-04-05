@@ -24,7 +24,7 @@ func parseVarDecls(p *parser) *ast.VarDecls {
 	return nil
 }
 
-func parseStructDecl(p *parser) *ast.StructDecl {
+func parseStruct(p *parser) *ast.Struct {
 	if !p.SeeKeyword("struct") {
 		panic("expect keyword")
 	}

@@ -5,7 +5,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseVarStmts(p *parser, v *ast.VarDecl) {
+func parseVarStmts(p *parser, v *ast.Var) {
 	for !(p.See(Rbrace) || p.See(lex8.EOF)) {
 		stmt := parseVarStmt(p)
 		if stmt != nil {
@@ -15,8 +15,8 @@ func parseVarStmts(p *parser, v *ast.VarDecl) {
 	}
 }
 
-func parseVar(p *parser) *ast.VarDecl {
-	ret := new(ast.VarDecl)
+func parseVar(p *parser) *ast.Var {
+	ret := new(ast.Var)
 
 	ret.Kw = p.ExpectKeyword("var")
 	ret.Name = p.Expect(Operand)

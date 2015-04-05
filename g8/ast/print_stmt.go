@@ -1,35 +1,36 @@
-package parse
+package ast
 
 import (
 	"bytes"
 	"fmt"
 
 	"lonnie.io/e8vm/fmt8"
-	"lonnie.io/e8vm/g8/ast"
 )
 
-func printStmt(p *fmt8.Printer, stmt ast.Stmt) {
+func printStmt(p *fmt8.Printer, stmt Stmt) {
 	switch stmt := stmt.(type) {
-	case *ast.EmptyStmt:
+	case *EmptyStmt:
 		fmt.Fprint(p, "; // emtpy")
-	case *ast.Block:
+	case *Block:
 		fmt.Fprintln(p, "{")
 		p.Tab()
 		printStmt(p, stmt.Stmts)
 		p.ShiftTab()
 		fmt.Fprint(p, "}")
-	case []ast.Stmt:
+	case *BlockStmt:
+		printStmt(p, stmt.Block)
+	case []Stmt:
 		for _, s := range stmt {
 			printStmt(p, s)
 			fmt.Fprintln(p)
 		}
-	case *ast.IfStmt:
+	case *IfStmt:
 		printExprs(p, "if ", stmt.Expr, " ")
 		printStmt(p, stmt.Body)
 		if stmt.Else != nil {
 			printStmt(p, stmt.Else)
 		}
-	case *ast.ElseStmt:
+	case *ElseStmt:
 		if stmt.If == nil {
 			printExprs(p, " else ")
 			printStmt(p, stmt.Body)
@@ -40,38 +41,42 @@ func printStmt(p *fmt8.Printer, stmt ast.Stmt) {
 				printStmt(p, stmt.Next)
 			}
 		}
-	case *ast.ForStmt:
+	case *ForStmt:
 		printExprs(p, "for ", stmt.Cond, " ")
 		printStmt(p, stmt.Body)
-	case *ast.AssignStmt:
+	case *AssignStmt:
 		printExprs(p, stmt.Left, " = ", stmt.Right)
-	case *ast.DefineStmt:
+	case *DefineStmt:
 		printExprs(p, stmt.Left, " := ", stmt.Right)
-	case *ast.ExprStmt:
+	case *ExprStmt:
 		printExprs(p, stmt.Expr)
-	case *ast.ReturnStmt:
+	case *ReturnStmt:
 		printExprs(p, "return ", stmt.Exprs)
-	case *ast.ContinueStmt:
+	case *ContinueStmt:
 		if stmt.Label == nil {
 			printExprs(p, "continue")
 		} else {
 			printExprs(p, "continue ", stmt.Label.Lit)
 		}
-	case *ast.BreakStmt:
+	case *BreakStmt:
 		if stmt.Label == nil {
 			printExprs(p, "break")
 		} else {
 			printExprs(p, "break ", stmt.Label.Lit)
 		}
-	case *ast.FallthroughStmt:
+	case *FallthroughStmt:
 		fmt.Fprint(p, "fallthrough")
+	case *VarDecls:
+		printVarDecls(p, stmt)
+	case *ConstDecls:
+		printConstDecls(p, stmt)
 	default:
 		fmt.Fprintf(p, "<!!%T>", stmt)
 	}
 }
 
 // PrintStmts prints a list of statements
-func PrintStmts(stmts []ast.Stmt) string {
+func PrintStmts(stmts []Stmt) string {
 	buf := new(bytes.Buffer)
 	p := fmt8.NewPrinter(buf)
 	printStmt(p, stmts)

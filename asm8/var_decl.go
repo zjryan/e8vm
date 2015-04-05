@@ -6,15 +6,15 @@ import (
 )
 
 type varDecl struct {
-	*ast.VarDecl
+	*ast.Var
 
 	stmts []*varStmt
 }
 
-func resolveVar(log lex8.Logger, v *ast.VarDecl) *varDecl {
+func resolveVar(log lex8.Logger, v *ast.Var) *varDecl {
 	ret := new(varDecl)
 
-	ret.VarDecl = v
+	ret.Var = v
 
 	for _, stmt := range v.Stmts {
 		r := resolveVarStmt(log, stmt)

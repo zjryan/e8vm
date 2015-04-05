@@ -4,8 +4,8 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// VarDecl is a variable declaration
-type VarDecl struct {
+// Var is a variable declaration
+type Var struct {
 	Stmts []*VarStmt
 
 	Kw, Name             *lex8.Token

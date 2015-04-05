@@ -22,23 +22,21 @@ type Para struct {
 
 // ParaList is a parameter list
 type ParaList struct {
+	Lparen *lex8.Token
 	Paras  []*Para
 	Commas []*lex8.Token
+	Rparen *lex8.Token
 }
 
-// FuncDecl declares a function
-type FuncDecl struct {
+// Func is a function
+type Func struct {
 	Kw   *lex8.Token
 	Name *lex8.Token
 
-	Lparen *lex8.Token
-	Args   *ParaList
-	Rparen *lex8.Token
+	Args *ParaList
 
 	// ret list
-	RetLparen *lex8.Token // optional
-	Rets      *ParaList
-	RetRparen *lex8.Token // optional
+	Rets *ParaList
 
 	// single ret type
 	RetType Expr
@@ -62,14 +60,14 @@ type Field struct {
 	Type   Expr
 }
 
-// StructDecl declarse a structure type
-type StructDecl struct {
+// Struct declarse a structure type
+type Struct struct {
 	Kw     *lex8.Token
 	Name   *lex8.Token
 	Lbrace *lex8.Token
 
 	Fields  []*Field
-	Methods []*FuncDecl
+	Methods []*Func
 
 	Rbrace *lex8.Token
 	Semi   *lex8.Token

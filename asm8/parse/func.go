@@ -7,7 +7,7 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-func parseFuncStmts(p *parser, f *ast.FuncDecl) {
+func parseFuncStmts(p *parser, f *ast.Func) {
 	for !(p.See(Rbrace) || p.See(lex8.EOF)) {
 		stmt := parseFuncStmt(p)
 		if stmt != nil {
@@ -16,8 +16,8 @@ func parseFuncStmts(p *parser, f *ast.FuncDecl) {
 	}
 }
 
-func parseBareFunc(p *parser) *ast.FuncDecl {
-	ret := new(ast.FuncDecl)
+func parseBareFunc(p *parser) *ast.Func {
+	ret := new(ast.Func)
 	ret.Name = &lex8.Token{
 		Type: Operand,
 		Lit:  "_",
@@ -28,7 +28,7 @@ func parseBareFunc(p *parser) *ast.FuncDecl {
 }
 
 // BareFunc parses a file as a bare function.
-func BareFunc(f string, rc io.ReadCloser) (*ast.FuncDecl, []*lex8.Error) {
+func BareFunc(f string, rc io.ReadCloser) (*ast.Func, []*lex8.Error) {
 	p, _ := newParser(f, rc)
 	fn := parseBareFunc(p)
 	if es := p.Errs(); es != nil {
@@ -38,8 +38,8 @@ func BareFunc(f string, rc io.ReadCloser) (*ast.FuncDecl, []*lex8.Error) {
 	return fn, nil
 }
 
-func parseFunc(p *parser) *ast.FuncDecl {
-	ret := new(ast.FuncDecl)
+func parseFunc(p *parser) *ast.Func {
+	ret := new(ast.Func)
 
 	ret.Kw = p.ExpectKeyword("func")
 	ret.Name = p.Expect(Operand)

@@ -6,14 +6,14 @@ import (
 )
 
 type funcDecl struct {
-	*ast.FuncDecl
+	*ast.Func
 
 	stmts []*funcStmt
 }
 
-func resolveFunc(log lex8.Logger, f *ast.FuncDecl) *funcDecl {
+func resolveFunc(log lex8.Logger, f *ast.Func) *funcDecl {
 	ret := new(funcDecl)
-	ret.FuncDecl = f
+	ret.Func = f
 
 	for _, stmt := range f.Stmts {
 		r := resolveFuncStmt(log, stmt)

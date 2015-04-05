@@ -11,9 +11,9 @@ func parseTopDecl(p *parser) ast.Decl {
 	} else if p.SeeKeyword("var") {
 		return parseVarDecls(p)
 	} else if p.SeeKeyword("func") {
-		return parseFuncDecl(p)
+		return parseFunc(p)
 	} else if p.SeeKeyword("struct") {
-		return parseStructDecl(p)
+		return parseStruct(p)
 	}
 
 	p.ErrorfHere("expect top level declaration")
