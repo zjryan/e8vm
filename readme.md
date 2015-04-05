@@ -20,8 +20,6 @@ Planned Features:
 
 ## TODOs
 
-- `g8` building file split  // 4.4
-- Symbol usage track
 - `FuncDecl` and `VarDecl`  // 4.5
 - Return, break, continue   // 4.6
 - Basic types, char         // 4.7
@@ -34,6 +32,13 @@ Planned Features:
 - Fields and methods        // 4.17
 - Interface					
 - Big number constants
+- Symbol usage track
+
+Some code debt:
+
+- `g8` building file split: the current build* functions all reside in
+  two files, `build_stmt.go` and `build_expr.go`. Need split them
+  into smaller files.
 
 And more...
 
