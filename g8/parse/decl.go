@@ -6,6 +6,11 @@ import (
 )
 
 func parseIdentList(p *parser) *ast.IdentList {
+	if !p.See(Ident) {
+		p.Expect(Ident)
+		return nil
+	}
+
 	ret := new(ast.IdentList)
 	for p.See(Ident) {
 		ret.Idents = append(ret.Idents, p.Shift())
@@ -30,6 +35,10 @@ func parseConstDecls(p *parser) *ast.ConstDecls {
 func parseVarDecl(p *parser) *ast.VarDecl {
 	ret := new(ast.VarDecl)
 	ret.Idents = parseIdentList(p)
+	if p.InError() {
+		return nil
+	}
+
 	if !p.See(Semi) && !p.SeeOp("=") && !p.SeeOp(")") {
 		ret.Type = parseType(p) // it has a type
 	}
@@ -59,19 +68,15 @@ func parseVarDecls(p *parser) *ast.VarDecls {
 
 	if p.SeeOp("(") {
 		ret.Lparen = p.Shift()
-		for !p.See(lex8.EOF) {
+		for !p.See(lex8.EOF) && !p.SeeOp(")") {
 			d := parseVarDecl(p)
 			if d != nil {
 				ret.Decls = append(ret.Decls, d)
 			} else {
 				p.skipErrStmt()
 			}
-
-			if p.SeeOp(")") {
-				break
-			}
 		}
-		ret.Rparen = p.ExpectOp("}")
+		ret.Rparen = p.ExpectOp(")")
 		ret.Semi = p.ExpectSemi()
 
 		return ret

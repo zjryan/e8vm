@@ -88,6 +88,19 @@ func TestStmts_good(t *testing.T) {
 			print(3)
 			read()
 		}`,
+		"var a int",
+		"var a int = 3",
+		"var a = 3",
+		"var a, b int = 3",
+		"var a, b int",
+		"var a, b int = 3, 4",
+		"var ()",
+		"var (a, b int)",
+		"var (a, b int = 3, 4)",
+		"var (a, b = 3, 4)",
+		"var (a int; b int)",
+		"var (a int\n b int)",
+		"var (\n a int \n);",
 	} {
 		buf := strings.NewReader(s)
 		stmts, es := Stmts("test.g", buf)
@@ -137,6 +150,14 @@ func TestStmts_bad(t *testing.T) {
 		"if true { x{ } else {}",
 		"if true { { } else {}",
 		"if true { x(;) } else {}",
+		"var a",
+		"var = 3",
+		"var a b c",
+		"var a b c = 3, 4",
+		"var a b = c d",
+		"var \n ()",
+		"var (a = 3, b = 4)",
+		"var (a)",
 	} {
 		buf := strings.NewReader(s)
 		stmts, es := Stmts("test.g", buf)
