@@ -158,6 +158,9 @@ func TestStmts_bad(t *testing.T) {
 		"var \n ()",
 		"var (a = 3, b = 4)",
 		"var (a)",
+		"var {}",
+		"var a)",
+		"var ( a int;",
 	} {
 		buf := strings.NewReader(s)
 		stmts, es := Stmts("test.g", buf)
