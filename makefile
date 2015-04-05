@@ -6,6 +6,7 @@ all:
 	go install -v ./...
 	e8chk -path="lonnie.io/e8vm"
 	golint ./...
+	gotags -R . > tags
 
 rall:
 	touch `find . -name "*.go"`
@@ -29,21 +30,5 @@ lc:
 doc:
 	godoc -http=:8000
 
-asmt:
-	make -C asm/tests --no-print-directory
-
-stayall:
-	STAYPATH=`pwd`/stay-tests stayall
-
 lint:
 	golint ./...
-
-symdep:
-	symdep lonnie.io/e8vm/arch8
-	symdep lonnie.io/e8vm/dasm8
-	symdep lonnie.io/e8vm/link8
-	symdep lonnie.io/e8vm/lex8
-	symdep lonnie.io/e8vm/asm8
-	symdep lonnie.io/e8vm/build8
-
-check: fmt all lint symdep

@@ -12,11 +12,15 @@ func printStmt(p *fmt8.Printer, stmt Stmt) {
 	case *EmptyStmt:
 		fmt.Fprint(p, "; // emtpy")
 	case *Block:
-		fmt.Fprintln(p, "{")
-		p.Tab()
-		printStmt(p, stmt.Stmts)
-		p.ShiftTab()
-		fmt.Fprint(p, "}")
+		if len(stmt.Stmts) > 0 {
+			fmt.Fprintln(p, "{")
+			p.Tab()
+			printStmt(p, stmt.Stmts)
+			p.ShiftTab()
+			fmt.Fprint(p, "}")
+		} else {
+			fmt.Fprint(p, "{ }")
+		}
 	case *BlockStmt:
 		printStmt(p, stmt.Block)
 	case []Stmt:

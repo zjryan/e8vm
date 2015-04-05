@@ -14,62 +14,12 @@ type IdentList struct {
 	Commas []*lex8.Token
 }
 
-// Para is a function parameter
-type Para struct {
-	Ident *lex8.Token
-	Type  Expr // when Type is missing, Ident also might be the type
-}
-
-// ParaList is a parameter list
-type ParaList struct {
-	Lparen *lex8.Token
-	Paras  []*Para
-	Commas []*lex8.Token
-	Rparen *lex8.Token
-}
-
-// Func is a function
-type Func struct {
-	Kw   *lex8.Token
-	Name *lex8.Token
-
-	Args *ParaList
-
-	// ret list
-	Rets *ParaList
-
-	// single ret type
-	RetType Expr
-
-	Body *Block
-	Semi *lex8.Token
-}
-
 // VarDecl declares a set of variable
 type VarDecl struct {
 	Idents *IdentList
 	Type   Expr
 	Eq     *lex8.Token
 	Exprs  *ExprList
-	Semi   *lex8.Token
-}
-
-// Field is a member variable of a struct
-type Field struct {
-	Idents *IdentList
-	Type   Expr
-}
-
-// Struct declarse a structure type
-type Struct struct {
-	Kw     *lex8.Token
-	Name   *lex8.Token
-	Lbrace *lex8.Token
-
-	Fields  []*Field
-	Methods []*Func
-
-	Rbrace *lex8.Token
 	Semi   *lex8.Token
 }
 

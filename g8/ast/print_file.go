@@ -24,6 +24,6 @@ func printTopDecl(p *fmt8.Printer, d Decl) {
 func printFile(p *fmt8.Printer, f *File) {
 	for _, decl := range f.Decls {
 		printTopDecl(p, decl)
-		fmt.Fprintf(p, "\n")
+		fmt.Fprintln(p)
 	}
 }

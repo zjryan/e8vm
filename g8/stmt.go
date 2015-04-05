@@ -118,7 +118,12 @@ func buildIf(b *builder, cond ast.Expr, ifs ast.Stmt, elses *ast.ElseStmt) {
 		after := b.f.NewBlock(body)
 		b.b.JumpIfNot(c.IR(), after)
 		b.b = body
-		buildStmt(b, ifs)
+		switch ifs := ifs.(type) {
+		case *ast.Block:
+			buildBlock(b, ifs)
+		default:
+			b.Errorf(ast.ExprPos(cond), "short if statement not implemented")
+		}
 		b.b = after
 		return
 	}
@@ -130,8 +135,7 @@ func buildIf(b *builder, cond ast.Expr, ifs ast.Stmt, elses *ast.ElseStmt) {
 	ifBody.Jump(after)
 
 	b.b = ifBody // switch to if body
-	buildStmt(b, ifs)
-
+	buildBlock(b, ifs.(*ast.Block))
 	b.b = elseBody
 	buildElseStmt(b, elses)
 
@@ -143,7 +147,7 @@ func buildElseStmt(b *builder, stmt *ast.ElseStmt) {
 		if stmt.Expr != nil {
 			panic("invalid expression in else")
 		}
-		buildStmt(b, stmt.Body)
+		buildBlock(b, stmt.Body)
 	} else {
 		buildIf(b, stmt.Expr, stmt.Body, stmt.Next)
 	}
@@ -188,7 +192,7 @@ func buildForStmt(b *builder, stmt *ast.ForStmt) {
 		condBlock.JumpIfNot(c.IR(), after)
 
 		b.b = body
-		buildStmt(b, stmt.Body)
+		buildBlock(b, stmt.Body)
 
 		b.b = after
 	} else {
@@ -208,8 +212,8 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 		buildIfStmt(b, stmt)
 	case *ast.ForStmt:
 		buildForStmt(b, stmt)
-	case *ast.Block:
-		buildBlock(b, stmt)
+	case *ast.BlockStmt:
+		buildBlock(b, stmt.Block)
 	default:
 		b.Errorf(nil, "invalid or not implemented: %T", stmt)
 	}
