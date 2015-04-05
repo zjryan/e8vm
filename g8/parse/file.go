@@ -18,7 +18,12 @@ func parseTopDecl(p *parser) ast.Decl {
 		return parseStruct(p)
 	}
 
-	p.ErrorfHere("expect top level declaration")
+	if len(p.Errs()) == 0 {
+		// we only complain about this when there is no other error
+		p.ErrorfHere("expect top level declaration")
+	} else {
+		p.Jail()
+	}
 	p.Next() // make some progress anyway
 	return nil
 }

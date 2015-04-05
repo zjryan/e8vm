@@ -29,9 +29,7 @@ func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
 	b.b = b.f.NewBlock(nil)
 
 	b.scope.Push()
-	for _, stmt := range stmts {
-		buildStmt(b, stmt)
-	}
+	buildStmts(b, stmts)
 	b.scope.Pop()
 
 	// TODO: write this to log file

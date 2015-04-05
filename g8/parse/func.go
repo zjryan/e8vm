@@ -40,6 +40,9 @@ func parseParaList(p *parser) *ast.ParaList {
 		ret.Paras = append(ret.Paras, para)
 		if p.SeeOp(",") {
 			ret.Commas = append(ret.Commas, p.Shift())
+		} else if !p.SeeOp(")") {
+			p.ExpectOp(",")
+			return nil
 		}
 
 		if p.SeeOp(")") {

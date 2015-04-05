@@ -169,9 +169,7 @@ func buildBlock(b *builder, stmt *ast.Block) {
 	b.scope.Push()
 	defer b.scope.Pop()
 
-	for _, s := range stmt.Stmts {
-		buildStmt(b, s)
-	}
+	buildStmts(b, stmt.Stmts)
 }
 
 func buildForStmt(b *builder, stmt *ast.ForStmt) {
@@ -216,5 +214,11 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 		buildBlock(b, stmt.Block)
 	default:
 		b.Errorf(nil, "invalid or not implemented: %T", stmt)
+	}
+}
+
+func buildStmts(b *builder, stmts []ast.Stmt) {
+	for _, stmt := range stmts {
+		buildStmt(b, stmt)
 	}
 }

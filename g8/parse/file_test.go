@@ -18,6 +18,7 @@ func TestFile_good(t *testing.T) {
 		"func f() (int) {}",
 		"func f() (a int) {}",
 		"func f() (a, b int) {}",
+		"func f() (a, b int,) {}",
 		"func f() (a int, b int) {}",
 		"func f(int) (a int, b int) {}",
 		"func f(int) (a int, b int,) {}",
@@ -54,6 +55,8 @@ func TestFile_bad(t *testing.T) {
 		"func f(,) {}",
 		"func f(,a) {}",
 		"func f(a int) (,a) {}",
+		"func f(a b int) (,a) {}",
+		"func f(a int,,) (,a) {}",
 		"func f(a int \n b int) {}",
 		"func f() \n {}",
 	} {

@@ -18,7 +18,7 @@ func TestBareFunc_good(t *testing.T) {
 			for _, e := range es {
 				t.Log(e)
 			}
-			t.Error("should not compile")
+			t.Error("compile failed")
 			return
 		}
 

@@ -76,6 +76,9 @@ func (p *Parser) InError() bool { return p.errs.InJail() }
 // BailOut bails out the parser from an error state.
 func (p *Parser) BailOut() { p.errs.BailOut() }
 
+// Jail puts the parser in error state without adding an error message.
+func (p *Parser) Jail() { p.errs.Jail() }
+
 // TypeStr returns the name of a type used by the type register of this
 // parser.
 func (p *Parser) TypeStr(t int) string {

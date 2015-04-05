@@ -39,6 +39,9 @@ func (lst *ErrorList) Add(e *Error) {
 	lst.errs = append(lst.errs, e)
 }
 
+// Jail puts it in jail without generating a new error message
+func (lst *ErrorList) Jail() { lst.inJail = true }
+
 // InJail checks if a new error has been added since created or last bail out
 func (lst *ErrorList) InJail() bool { return lst.inJail }
 
