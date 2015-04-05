@@ -6,15 +6,15 @@ import (
 )
 
 type importDecl struct {
-	*ast.ImportDecl
+	*ast.Import
 
 	stmts map[string]*importStmt
 	paths map[string]struct{}
 }
 
-func resolveImportDecl(log lex8.Logger, imp *ast.ImportDecl) *importDecl {
+func resolveImportDecl(log lex8.Logger, imp *ast.Import) *importDecl {
 	ret := new(importDecl)
-	ret.ImportDecl = imp
+	ret.Import = imp
 	ret.stmts = make(map[string]*importStmt)
 	ret.paths = make(map[string]struct{})
 

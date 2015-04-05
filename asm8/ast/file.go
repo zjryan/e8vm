@@ -6,7 +6,7 @@ import (
 
 // File represents a file.
 type File struct {
-	Imports *ImportDecl
+	Imports *Import
 
 	Decls    []interface{}
 	Comments []*lex8.Token

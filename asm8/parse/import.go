@@ -25,8 +25,8 @@ func parseImportStmt(p *parser) *ast.ImportStmt {
 	return ret
 }
 
-func parseImports(p *parser) *ast.ImportDecl {
-	ret := new(ast.ImportDecl)
+func parseImports(p *parser) *ast.Import {
+	ret := new(ast.Import)
 	ret.Kw = p.ExpectKeyword("import")
 	ret.Lbrace = p.Expect(Lbrace)
 	if p.skipErrStmt() { // header broken

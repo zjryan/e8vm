@@ -2,7 +2,7 @@ package ast
 
 import (
 	"fmt"
-	
+
 	"lonnie.io/e8vm/fmt8"
 )
 

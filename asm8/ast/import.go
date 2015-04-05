@@ -4,8 +4,8 @@ import (
 	"lonnie.io/e8vm/lex8"
 )
 
-// ImportDecl is an import declaration block
-type ImportDecl struct {
+// Import is an import declaration block
+type Import struct {
 	Stmts []*ImportStmt
 
 	Kw, Lbrace, Rbrace, Semi *lex8.Token

@@ -5,5 +5,5 @@ import (
 )
 
 func printFunc(p *fmt8.Printer, f *Func) {
-	
+
 }
