@@ -11,13 +11,11 @@ func printOp(p *fmt8.Printer, op op) {
 	case *arithOp:
 		if op.a == nil {
 			if op.op == "" {
-				fmt.Fprintf(p, "%s = %s\n",
-					op.dest, op.b,
-				)
+				fmt.Fprintf(p, "%s = %s\n", op.dest, op.b)
+			} else if op.op == "0" {
+				fmt.Fprintf(p, "%s = 0\n", op.dest)
 			} else {
-				fmt.Fprintf(p, "%s = %s %s\n",
-					op.dest, op.op, op.b,
-				)
+				fmt.Fprintf(p, "%s = %s %s\n", op.dest, op.op, op.b)
 			}
 		} else {
 			fmt.Fprintf(p, "%s = %s %s %s\n",

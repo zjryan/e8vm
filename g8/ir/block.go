@@ -52,6 +52,11 @@ func (b *Block) Assign(dest Ref, a Ref) {
 	b.Arith(dest, nil, "", a)
 }
 
+// Zero appends zeroing operation to the basic block
+func (b *Block) Zero(dest Ref) {
+	b.addOp(&arithOp{dest, nil, "0", nil})
+}
+
 // Call appends a function call operation to the basic block
 func (b *Block) Call(dests []Ref, f Ref, sig *FuncSig, args ...Ref) {
 	b.addOp(&callOp{dests, f, sig, args})

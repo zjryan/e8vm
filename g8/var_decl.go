@@ -15,9 +15,14 @@ func buildType(b *builder, expr ast.Expr) types.T {
 	switch expr := expr.(type) {
 	case *ast.Operand:
 		ret = buildOperand(b, expr)
+	default:
+		b.Errorf(ast.ExprPos(expr), "expect a type")
+		return nil
 	}
 
-	if !ret.IsType() {
+	if ret == nil {
+		return nil
+	} else if !ret.IsType() {
 		b.Errorf(ast.ExprPos(expr), "expect a type")
 		return nil
 	}
@@ -31,6 +36,12 @@ func allocTypedVars(b *builder, toks []*lex8.Token, t types.T) *ref {
 		ts[i] = t
 	}
 	return allocVars(b, toks, ts)
+}
+
+func zero(b *builder, ref *ref) {
+	for _, r := range ref.ir {
+		b.b.Zero(r)
+	}
 }
 
 func buildVarDecl(b *builder, d *ast.VarDecl) {
@@ -68,6 +79,7 @@ func buildVarDecl(b *builder, d *ast.VarDecl) {
 
 	for _, ident := range idents {
 		r := allocVar(b, ident, t)
+		zero(b, r)
 		declareVar(b, ident, r)
 	}
 }

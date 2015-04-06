@@ -25,6 +25,11 @@ func genArithOp(b *Block, op *arithOp) {
 		panic("arith with no destination")
 	}
 
+	if op.op == "0" {
+		zeroRef(b, op.dest)
+		return
+	}
+
 	if op.a != nil {
 		// binary arith op
 		loadRef(b, _4, op.a)
@@ -84,7 +89,7 @@ func genArithOp(b *Block, op *arithOp) {
 		case "^":
 			b.inst(asm.nor(_4, _0, _4))
 		default:
-			panic("unkown arith unary op: " + op.op)
+			panic("unknown arith unary op: " + op.op)
 		}
 
 		saveRef(b, _4, op.dest)

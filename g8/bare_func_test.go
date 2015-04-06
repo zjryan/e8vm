@@ -63,6 +63,13 @@ func TestBareFunc_good(t *testing.T) {
 	o("true:=3; printInt(true)", "3")
 	o("a,b:=3,4; printInt(a); printInt(b)", "3\n4")
 	o("a,b:=3,4; { a,b:=b,a; printInt(a); printInt(b) }", "4\n3")
+	o("var a int; printInt(a)", "0")
+	o("var a, b = 3, 4; printInt(a); printInt(b)", "3\n4")
+	o("var a, b = 3, 4; printInt(a); printInt(b)", "3\n4")
+	o("var a, b int = 3, 4; printInt(a); printInt(b)", "3\n4")
+	o(` a,b:=3,4; { var a,b=b,a; printInt(a); printInt(b) }
+	   	printInt(a); printInt(b)
+	`, "4\n3\n3\n4")
 }
 
 func TestBareFunc_bad(t *testing.T) {
@@ -89,4 +96,6 @@ func TestBareFunc_bad(t *testing.T) {
 	o("a, b := 3")           // count mismatch
 	o("a, b := ()")          // invalid
 	o("a()")                 // undefined function
+	o("var a, b c")          // undefined type
+	o("var a int; var b a")  // not a type
 }
