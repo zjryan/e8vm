@@ -34,12 +34,6 @@ Planned Features:
 - Big number constants
 - Symbol usage track
 
-Some code debt:
-
-- `g8` building file split: the current build* functions all reside in
-  two files, `build_stmt.go` and `build_expr.go`. Need split them
-  into smaller files.
-
 And more...
 
 - Improve code reading website
