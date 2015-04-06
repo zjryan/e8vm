@@ -25,11 +25,11 @@ type VarDecl struct {
 
 // ConstDecl declares a set of constants
 type ConstDecl struct {
-	Ident *IdentList
-	Type  Expr
-	Eq    *lex8.Token
-	Exprs *ExprList
-	Semi  *lex8.Token
+	Idents *IdentList
+	Type   Expr
+	Eq     *lex8.Token
+	Exprs  *ExprList
+	Semi   *lex8.Token
 }
 
 // ConstDecls is a const declaration with a leading keyword

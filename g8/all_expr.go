@@ -6,7 +6,7 @@ import (
 
 func buildExpr(b *builder, expr ast.Expr) *ref {
 	if expr == nil {
-		return nil
+		panic("bug")
 	}
 
 	switch expr := expr.(type) {

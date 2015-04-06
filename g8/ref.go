@@ -27,6 +27,18 @@ func (r *ref) Type() types.T {
 	return r.typ[0]
 }
 
+func (r *ref) IsType() bool {
+	if !r.IsSingle() {
+		return false
+	}
+	_, ok := r.Type().(*types.Type)
+	return ok
+}
+
+func (r *ref) TypeType() types.T {
+	return r.Type().(*types.Type).T
+}
+
 func (r *ref) IR() ir.Ref {
 	if !r.IsSingle() {
 		panic("not single")

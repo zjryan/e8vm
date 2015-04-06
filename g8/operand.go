@@ -49,6 +49,9 @@ func buildIdent(b *builder, op *lex8.Token) *ref {
 	case symConst:
 		v := s.Item.(*objConst)
 		return v.ref
+	case symType:
+		v := s.Item.(*objType)
+		return v.ref
 	default:
 		b.Errorf(op.Pos, "todo: token type: %d", s.Type)
 		return nil
