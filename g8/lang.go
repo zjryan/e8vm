@@ -26,6 +26,9 @@ func (lang) Prepare(
 }
 
 func initBuilder(b *builder, imp map[string]*build8.Import) {
+	b.exprFunc = buildExpr
+	b.stmtFunc = buildStmt
+
 	builtin, ok := imp["$"]
 	if !ok {
 		b.Errorf(nil, "builtin import missing for %q", b.path)
