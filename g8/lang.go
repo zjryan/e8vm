@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"lonnie.io/e8vm/build8"
+	"lonnie.io/e8vm/g8/ast"
+	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -41,6 +43,21 @@ func initBuilder(b *builder, imp map[string]*build8.Import) {
 func (lang) Compile(pinfo *build8.PkgInfo) (
 	compiled build8.Linkable, es []*lex8.Error,
 ) {
+	var parseErrs []*lex8.Error
+	asts := make(map[string]*ast.File)
+	for name, src := range pinfo.Src {
+		f, es := parse.File(src.Path, src)
+		if es != nil {
+			parseErrs = append(parseErrs, es...)
+		}
+		asts[name] = f
+	}
+	if len(parseErrs) > 0 {
+		return nil, parseErrs
+	}
+
+	// TODO: process the parsed files
+
 	// need to load these two builtin functions here
 	b := newBuilder(pinfo.Path)
 	initBuilder(b, pinfo.Import)
