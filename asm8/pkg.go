@@ -1,6 +1,7 @@
 package asm8
 
 import (
+	"lonnie.io/e8vm/asm8/ast"
 	"lonnie.io/e8vm/asm8/parse"
 	"lonnie.io/e8vm/build8"
 	"lonnie.io/e8vm/lex8"
@@ -18,13 +19,23 @@ func resolvePkg(p string, src map[string]*build8.File) (*pkg, []*lex8.Error) {
 	ret := new(pkg)
 	ret.path = p
 
+	asts := make(map[string]*ast.File)
+
+	// TODO: parse all the files first
+	var parseErrs []*lex8.Error
 	for name, f := range src {
 		// parse the file first
 		astFile, es := parse.File(f.Path, f)
 		if es != nil {
-			return nil, es
+			parseErrs = append(parseErrs, es...)
 		}
+		asts[name] = astFile
+	}
+	if len(parseErrs) > 0 {
+		return nil, parseErrs
+	}
 
+	for name, astFile := range asts {
 		// then resolve the file
 		file := resolveFile(log, astFile)
 		ret.files = append(ret.files, file)
