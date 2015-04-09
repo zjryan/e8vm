@@ -3,6 +3,7 @@ package g8
 import (
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/types"
+	"lonnie.io/e8vm/sym8"
 )
 
 func buildParaList(b *builder, lst *ast.ParaList) []*types.Arg {
@@ -68,45 +69,43 @@ func buildParaList(b *builder, lst *ast.ParaList) []*types.Arg {
 	return args
 }
 
-func buildFunc(b *builder, f *ast.Func) {
+func declareFunc(b *builder, f *ast.Func) *objFunc {
 	name := f.Name.Lit
 
-	b.scope.Push()
-	defer b.scope.Pop()
-
+	// the arguments
 	args := buildParaList(b, f.Args)
 	if args == nil {
-		return
+		return nil
 	}
 
-	// got the return values
+	// the return values
 	var rets []*types.Arg
 	if f.RetType == nil {
 		rets = buildParaList(b, f.Rets)
 	} else {
 		retType := buildType(b, f.RetType)
 		if retType == nil {
-			return
+			return nil
 		}
 		rets = []*types.Arg{{T: retType}}
 	}
 
+	// the function signature type
 	ftype := types.NewFuncNamed(args, rets)
 
 	// NewFunc() will create the variables required for the sigs
 	b.f = b.p.NewFunc(name, ftype.Sig) // also switch to the func
-
-	argRefs := b.f.ArgRefs() // we need these refs to declare
-	if len(argRefs) != len(args) {
-		panic("bug")
+	fref := newRef(ftype, b.f)         // the reference to the function
+	item := &objFunc{name, fref, f}
+	s := sym8.Make(name, symFunc, item, f.Name.Pos)
+	conflict := b.scope.Declare(s) // lets declare the function
+	if conflict != nil {
+		b.Errorf(f.Name.Pos, "%q already declared as a %s",
+			name, symStr(conflict.Type),
+		)
+		b.Errorf(conflict.Pos, "previously declared here")
+		return nil
 	}
 
-	_ = argRefs
-
-	retRefs := b.f.RetRefs() // we need these refs to declare
-	if len(retRefs) != len(rets) {
-		panic("bug")
-	}
-
-	_ = retRefs
+	return item
 }

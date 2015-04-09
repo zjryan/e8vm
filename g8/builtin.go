@@ -18,7 +18,7 @@ func declareBuiltin(b *builder, builtin *link8.Pkg) {
 		}
 
 		ref := ir.FuncSym(pindex, index, nil) // a reference to the function
-		obj := &objFunc{as, newRef(t, ref)}
+		obj := &objFunc{as, newRef(t, ref), nil}
 		pre := b.scope.Declare(sym8.Make(as, symFunc, obj, nil))
 		if pre != nil {
 			b.Errorf(nil, "builtin symbol %s declare failed", name)

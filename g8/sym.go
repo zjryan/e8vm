@@ -2,6 +2,8 @@ package g8
 
 import (
 	"fmt"
+
+	"lonnie.io/e8vm/g8/ast"
 )
 
 const (
@@ -32,12 +34,13 @@ func symStr(s int) string {
 
 type objVar struct {
 	name string
-	*ref // the reference of this variable
+	*ref
 }
 
 type objFunc struct {
 	name string
 	*ref
+	f *ast.Func
 }
 
 type objConst struct {
