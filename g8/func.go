@@ -5,21 +5,16 @@ import (
 	"lonnie.io/e8vm/g8/types"
 )
 
-func buildFunc(b *builder, f *ast.Func) {
-	name := f.Name.Lit
-
-	b.scope.Push()
-	defer b.scope.Pop()
-
-	args := make([]*types.Arg, f.Args.Len())
-	if f.Args.Named() {
+func buildParaList(b *builder, lst *ast.ParaList) []*types.Arg {
+	args := make([]*types.Arg, lst.Len())
+	if lst.Named() {
 		// named typeed list
-		for i, para := range f.Args.Paras {
+		for i, para := range lst.Paras {
 			if para.Ident == nil {
 				b.Errorf(ast.ExprPos(para.Type),
 					"expect identifer as argument name",
 				)
-				return
+				return nil
 			}
 
 			name := para.Ident.Lit
@@ -34,7 +29,7 @@ func buildFunc(b *builder, f *ast.Func) {
 
 			t := buildType(b, para.Type)
 			if t == nil {
-				return
+				return nil
 			}
 
 			// go back and assign types
@@ -45,11 +40,11 @@ func buildFunc(b *builder, f *ast.Func) {
 
 		// check that everything has a type
 		if len(args) > 0 && args[len(args)-1].T == nil {
-			b.Errorf(f.Args.Rparen.Pos, "missing type in argument list")
+			b.Errorf(lst.Rparen.Pos, "missing type in argument list")
 		}
 	} else {
 		// anonymous typed list
-		for i, para := range f.Args.Paras {
+		for i, para := range lst.Paras {
 			if para.Ident != nil && para.Type != nil {
 				// anonymous typed list must all be single
 				panic("bug")
@@ -63,30 +58,43 @@ func buildFunc(b *builder, f *ast.Func) {
 
 			t = buildType(b, expr)
 			if t == nil {
-				return
+				return nil
 			}
 
 			args[i] = &types.Arg{T: t}
 		}
 	}
 
+	return args
+}
+
+func buildFunc(b *builder, f *ast.Func) {
+	name := f.Name.Lit
+
+	b.scope.Push()
+	defer b.scope.Pop()
+
+	args := buildParaList(b, f.Args)
+	if args == nil {
+		return
+	}
+
 	// got the return values
 	var rets []*types.Arg
 	if f.RetType == nil {
-		rets = make([]*types.Arg, f.Rets.Len())
-
+		rets = buildParaList(b, f.Rets)
 	} else {
 		retType := buildType(b, f.RetType)
 		if retType == nil {
 			return
 		}
-
 		rets = []*types.Arg{{T: retType}}
 	}
 
 	ftype := types.NewFuncNamed(args, rets)
-	b.f = b.p.NewFunc(name, ftype.Sig) // switch to this function
+
 	// NewFunc() will create the variables required for the sigs
+	b.f = b.p.NewFunc(name, ftype.Sig) // also switch to the func
 
 	argRefs := b.f.ArgRefs() // we need these refs to declare
 	if len(argRefs) != len(args) {
