@@ -40,9 +40,7 @@ func initBuilder(b *builder, imp map[string]*build8.Import) {
 	declareBuiltin(b, builtin.Compiled.Lib())
 }
 
-func (lang) Compile(pinfo *build8.PkgInfo) (
-	compiled build8.Linkable, es []*lex8.Error,
-) {
+func parsePkg(pinfo *build8.PkgInfo) (map[string]*ast.File, []*lex8.Error) {
 	var parseErrs []*lex8.Error
 	asts := make(map[string]*ast.File)
 	for name, src := range pinfo.Src {
@@ -56,12 +54,27 @@ func (lang) Compile(pinfo *build8.PkgInfo) (
 		return nil, parseErrs
 	}
 
-	// TODO: process the parsed files
+	return asts, nil
+}
+
+func (lang) Compile(pinfo *build8.PkgInfo) (
+	compiled build8.Linkable, es []*lex8.Error,
+) {
+	asts, es := parsePkg(pinfo)
+	if es != nil {
+		return nil, es
+	}
 
 	// need to load these two builtin functions here
 	b := newBuilder(pinfo.Path)
 	initBuilder(b, pinfo.Import)
+	if es = b.Errs(); es != nil {
+		return nil, es
+	}
 
+	for _, fileAST := range asts {
+		buildFile(b, fileAST)
+	}
 	if es = b.Errs(); es != nil {
 		return nil, es
 	}
