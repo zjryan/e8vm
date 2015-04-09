@@ -41,6 +41,24 @@ func newFunc(name string, id int, sig *FuncSig) *Func {
 	return ret
 }
 
+// ArgRefs returns the refs to the arguments of the function
+func (f *Func) ArgRefs() []Ref {
+	var ret []Ref
+	for _, arg := range f.sig.args {
+		ret = append(ret, arg)
+	}
+	return ret
+}
+
+// RetRefs returns the refs to the return values of the function
+func (f *Func) RetRefs() []Ref {
+	var ret []Ref
+	for _, arg := range f.sig.rets {
+		ret = append(ret, arg)
+	}
+	return ret
+}
+
 // NewLocal creates a new named local variable of size n on stack.
 func (f *Func) NewLocal(n int32, name string) Ref {
 	ret := newVar(n, name)

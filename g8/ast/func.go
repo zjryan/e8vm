@@ -18,6 +18,21 @@ type ParaList struct {
 	Rparen *lex8.Token
 }
 
+// Named checks if the parameter list is a named list
+// or anonymous list.
+func (lst *ParaList) Named() bool {
+	for _, p := range lst.Paras {
+		if p.Ident == nil || p.Type == nil {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
+// Len returns the count of parameters
+func (lst *ParaList) Len() int { return len(lst.Paras) }
+
 // FuncSig is a function Signature
 type FuncSig struct {
 	Name    *lex8.Token
