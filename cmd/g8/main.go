@@ -78,11 +78,14 @@ func main() {
 
 func runImage(bs []byte, dasm bool) {
 	if dasm {
-		fmt.Printf("(image of %d bytes)\n", len(bs))
 		lines := dasm8.Dasm(bs, arch8.InitPC)
 		for _, line := range lines {
 			fmt.Println(line)
 		}
+	}
+	if len(bs) == 0 {
+		fmt.Println("(the image is empty)")
+		return
 	}
 
 	ncycle, e := arch8.RunImage(bs, 100000)

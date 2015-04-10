@@ -8,6 +8,7 @@ import (
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/ir"
 	"lonnie.io/e8vm/g8/parse"
+	"lonnie.io/e8vm/g8/types"
 	"lonnie.io/e8vm/lex8"
 )
 
@@ -58,6 +59,23 @@ func parsePkg(pinfo *build8.PkgInfo) (map[string]*ast.File, []*lex8.Error) {
 	return asts, nil
 }
 
+func addStart(b *builder) {
+	s := b.scope.Query("main")
+	f, isFunc := s.Item.(*objFunc)
+	if !isFunc { // main is not a function
+		return
+	}
+	if !types.SameType(f.ref.Type(), types.MainFuncSig) {
+		// main is not of "func main()"
+		return
+	}
+
+	b.f = b.p.NewFunc(":start", ir.VoidFuncSig)
+	b.f.SetAsMain()
+	b.b = b.f.NewBlock(nil)
+	b.b.Call(nil, f.IR(), ir.VoidFuncSig)
+}
+
 func (lang) Compile(pinfo *build8.PkgInfo) (
 	compiled build8.Linkable, es []*lex8.Error,
 ) {
@@ -73,12 +91,17 @@ func (lang) Compile(pinfo *build8.PkgInfo) (
 		return nil, es
 	}
 
+	b.scope.Push() // package scope
+	defer b.scope.Pop()
 	for _, fileAST := range asts {
 		buildFile(b, fileAST)
 	}
+
 	if es = b.Errs(); es != nil {
 		return nil, es
 	}
+
+	addStart(b)
 
 	ir.PrintPkg(os.Stdout, b.p)
 	lib := ir.BuildPkg(b.p)

@@ -1,8 +1,6 @@
 package ir
 
 import (
-	"fmt"
-
 	"lonnie.io/e8vm/link8"
 )
 
@@ -116,8 +114,9 @@ func genCallOp(b *Block, op *callOp) {
 	if s, ok := op.f.(*funcSym); ok {
 		jal := b.inst(asm.jal(0))
 		jal.sym = &linkSym{link8.FillLink, s.pkg, s.sym}
-	} else {
-		panic(fmt.Errorf("todo: calling function pointer: %T", op.f))
+	} else if f, ok := op.f.(*Func); ok {
+		jal := b.inst(asm.jal(0))
+		jal.sym = &linkSym{link8.FillLink, 0, f.index}
 	}
 
 	// unload the returns

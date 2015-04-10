@@ -73,6 +73,9 @@ func NewFunc(args []T, rets []T) *Func {
 // NewVoidFunc creates a new function that does not return anything.
 func NewVoidFunc(args ...T) *Func { return NewFunc(args, nil) }
 
+// MainFuncSig is the signature for "func main()"
+var MainFuncSig = NewFunc(nil, nil)
+
 // String returns the function signature (without the argument names).
 func (t *Func) String() string {
 	// TODO: this is kind of ugly, need some refactor
