@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"lonnie.io/e8vm/arch8"
+	"lonnie.io/e8vm/dasm8"
 	"lonnie.io/e8vm/g8"
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/parse"
@@ -39,7 +40,6 @@ func main() {
 	dasm := flag.Bool("d", false, "deassemble the image")
 
 	_ = ir
-	_ = dasm
 
 	flag.Parse()
 
@@ -61,12 +61,7 @@ func main() {
 		} else {
 			bs, es := g8.CompileBareFunc(fname, string(input))
 			printErrs(es)
-
-			ncycle, e := arch8.RunImage(bs, 100000)
-			fmt.Printf("(%d cycles)\n", ncycle)
-			if e != nil {
-				fmt.Println(e)
-			}
+			runImage(bs, *dasm)
 		}
 	} else {
 		if *parseAST {
@@ -74,7 +69,25 @@ func main() {
 			printErrs(es)
 			ast.FprintFile(os.Stdout, f)
 		} else {
-			panic("todo")
+			bs, es := g8.CompileSingleFile(fname, string(input))
+			printErrs(es)
+			runImage(bs, *dasm)
 		}
+	}
+}
+
+func runImage(bs []byte, dasm bool) {
+	if dasm {
+		fmt.Printf("(image of %d bytes)\n", len(bs))
+		lines := dasm8.Dasm(bs, arch8.InitPC)
+		for _, line := range lines {
+			fmt.Println(line)
+		}
+	}
+
+	ncycle, e := arch8.RunImage(bs, 100000)
+	fmt.Printf("(%d cycles)\n", ncycle)
+	if e != nil {
+		fmt.Println(e)
 	}
 }

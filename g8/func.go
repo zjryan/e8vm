@@ -85,5 +85,6 @@ func buildFunc(b *builder, f *objFunc) {
 	declareParas(b, f.f.Args, t.Args, irFunc.ArgRefs())
 	declareParas(b, f.f.Rets, t.Rets, irFunc.RetRefs())
 
+	b.b = b.f.NewBlock(nil)
 	b.buildStmts(f.f.Body.Stmts)
 }

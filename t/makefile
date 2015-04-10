@@ -1,2 +1,2 @@
 all:
-	g8test a.g
+	g8 a.g

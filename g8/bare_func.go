@@ -78,9 +78,7 @@ func (bareFunc) Compile(pinfo *build8.PkgInfo) (
 	panic("unreachable")
 }
 
-// CompileBareFunc compiles a bare function into a bare-metal E8 image
-func CompileBareFunc(fname, s string) ([]byte, []*lex8.Error) {
-	lang := BareFunc()
+func buildSingle(fname, s string, lang build8.Lang) ([]byte, []*lex8.Error) {
 	home := build8.NewMemHome(lang)
 	home.AddLang("asm", asm8.Lang())
 
@@ -98,4 +96,10 @@ func CompileBareFunc(fname, s string) ([]byte, []*lex8.Error) {
 	}
 
 	return home.Bin("main"), nil
+}
+
+// CompileBareFunc compiles a bare function into a bare-metal E8 image
+func CompileBareFunc(fname, s string) ([]byte, []*lex8.Error) {
+	lang := BareFunc()
+	return buildSingle(fname, s, lang)
 }

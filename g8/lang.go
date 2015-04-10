@@ -1,11 +1,12 @@
 package g8
 
 import (
-	"fmt"
+	"os"
 	"strings"
 
 	"lonnie.io/e8vm/build8"
 	"lonnie.io/e8vm/g8/ast"
+	"lonnie.io/e8vm/g8/ir"
 	"lonnie.io/e8vm/g8/parse"
 	"lonnie.io/e8vm/lex8"
 )
@@ -79,5 +80,7 @@ func (lang) Compile(pinfo *build8.PkgInfo) (
 		return nil, es
 	}
 
-	return nil, lex8.SingleErr(fmt.Errorf("g8 compiler not complete"))
+	ir.PrintPkg(os.Stdout, b.p)
+	lib := ir.BuildPkg(b.p)
+	return &pkg{lib}, nil
 }

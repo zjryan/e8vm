@@ -71,6 +71,9 @@ func buildAnonyParaList(b *builder, lst *ast.ParaList) []*types.Arg {
 }
 
 func buildParaList(b *builder, lst *ast.ParaList) []*types.Arg {
+	if lst == nil {
+		return make([]*types.Arg, 0)
+	}
 	if lst.Named() {
 		return buildNamedParaList(b, lst)
 	}
