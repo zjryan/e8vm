@@ -1,7 +1,6 @@
 package g8
 
 import (
-	"os"
 	"strings"
 
 	"lonnie.io/e8vm/build8"
@@ -103,7 +102,12 @@ func (lang) Compile(pinfo *build8.PkgInfo) (
 
 	addStart(b)
 
-	ir.PrintPkg(os.Stdout, b.p)
+	irLog := pinfo.CreateLog("ir")
+	ir.PrintPkg(irLog, b.p)
+	if e := irLog.Close(); e != nil {
+		return nil, lex8.SingleErr(e)
+	}
+
 	lib := ir.BuildPkg(b.p)
 	return &pkg{lib}, nil
 }

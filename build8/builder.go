@@ -2,6 +2,7 @@ package build8
 
 import (
 	"fmt"
+	"io"
 
 	"lonnie.io/e8vm/lex8"
 	"lonnie.io/e8vm/link8"
@@ -94,7 +95,9 @@ func (b *Builder) build(p string) (*pkg, []*lex8.Error) {
 		Path:   p,
 		Src:    ret.srcMap(),
 		Import: ret.imports,
-		Log:    nil,
+		CreateLog: func(name string) io.WriteCloser {
+			return b.home.CreateLog(p, name)
+		},
 	}
 	compiled, es := lang.Compile(pinfo)
 	if es != nil {

@@ -192,7 +192,7 @@ func (h *DirHome) CreateLog(p, name string) io.WriteCloser {
 	if !isPkgPath(p) {
 		panic("not package path")
 	}
-	return newDirFile(h.subFile("src", p, name))
+	return newDirFile(h.subFile("log", p, name))
 }
 
 // Lang returns the language for the particular path.

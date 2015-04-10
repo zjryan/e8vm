@@ -1,6 +1,8 @@
 package g8
 
 import (
+	"io"
+
 	"lonnie.io/e8vm/g8/ast"
 	"lonnie.io/e8vm/g8/ir"
 	"lonnie.io/e8vm/g8/types"
@@ -21,6 +23,7 @@ type builder struct {
 
 	exprFunc func(b *builder, expr ast.Expr) *ref
 	stmtFunc func(b *builder, stmt ast.Stmt)
+	irLog    io.WriteCloser
 }
 
 func newBuilder(path string) *builder {

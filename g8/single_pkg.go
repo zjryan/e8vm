@@ -5,6 +5,6 @@ import (
 )
 
 // CompileSingleFile compiles a file into a bare-metal E8 image
-func CompileSingleFile(fname, s string) ([]byte, []*lex8.Error) {
+func CompileSingleFile(fname, s string) ([]byte, []*lex8.Error, []byte) {
 	return buildSingle(fname, s, Lang())
 }

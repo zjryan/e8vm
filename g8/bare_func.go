@@ -2,7 +2,6 @@ package g8
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"lonnie.io/e8vm/asm8"
@@ -33,7 +32,9 @@ func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
 	b.scope.Pop()
 
 	// TODO: write this to log file
-	ir.PrintPkg(os.Stdout, b.p)
+	if b.irLog != nil {
+		ir.PrintPkg(b.irLog, b.p)
+	}
 
 	return ir.BuildPkg(b.p) // do the code gen
 }
@@ -49,6 +50,7 @@ func (bareFunc) Compile(pinfo *build8.PkgInfo) (
 	compiled build8.Linkable, es []*lex8.Error,
 ) {
 	b := newBuilder(pinfo.Path)
+
 	initBuilder(b, pinfo.Import)
 	if es = b.Errs(); es != nil {
 		return nil, es
@@ -60,6 +62,9 @@ func (bareFunc) Compile(pinfo *build8.PkgInfo) (
 		e := fmt.Errorf("bare func %q has too many files", pinfo.Path)
 		return nil, lex8.SingleErr(e)
 	}
+
+	b.irLog = pinfo.CreateLog("ir")
+	defer b.irLog.Close()
 
 	for _, r := range pinfo.Src {
 		stmts, es := parse.Stmts(r.Path, r)
@@ -78,7 +83,9 @@ func (bareFunc) Compile(pinfo *build8.PkgInfo) (
 	panic("unreachable")
 }
 
-func buildSingle(fname, s string, lang build8.Lang) ([]byte, []*lex8.Error) {
+func buildSingle(fname, s string, lang build8.Lang) (
+	image []byte, es []*lex8.Error, log []byte,
+) {
 	home := build8.NewMemHome(lang)
 	home.AddLang("asm", asm8.Lang())
 
@@ -90,16 +97,16 @@ func buildSingle(fname, s string, lang build8.Lang) ([]byte, []*lex8.Error) {
 	builtin.AddFile("", "builtin.s", builtInSrc)
 
 	b := build8.NewBuilder(home)
-	es := b.BuildAll()
+	es = b.BuildAll()
 	if es != nil {
-		return nil, es
+		return nil, es, nil
 	}
 
-	return home.Bin("main"), nil
+	return home.Bin("main"), nil, home.Log("main", "ir")
 }
 
 // CompileBareFunc compiles a bare function into a bare-metal E8 image
-func CompileBareFunc(fname, s string) ([]byte, []*lex8.Error) {
+func CompileBareFunc(fname, s string) ([]byte, []*lex8.Error, []byte) {
 	lang := BareFunc()
 	return buildSingle(fname, s, lang)
 }

@@ -12,7 +12,7 @@ func TestBareFunc_good(t *testing.T) {
 	const N = 100000
 
 	o := func(input, output string) {
-		bs, es := CompileBareFunc("main.g", input)
+		bs, es, _ := CompileBareFunc("main.g", input)
 		if es != nil {
 			t.Log(input)
 			for _, e := range es {
@@ -75,7 +75,7 @@ func TestBareFunc_good(t *testing.T) {
 func TestBareFunc_bad(t *testing.T) {
 	o := func(input string) {
 		t.Log(input)
-		_, es := CompileBareFunc("main.g", input)
+		_, es, _ := CompileBareFunc("main.g", input)
 		if es == nil {
 			t.Log(input)
 			t.Error("should error")

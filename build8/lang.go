@@ -37,7 +37,8 @@ type PkgInfo struct {
 	Path   string
 	Src    map[string]*File
 	Import map[string]*Import
-	Log    io.Writer
+
+	CreateLog func(name string) io.WriteCloser
 }
 
 // Lang is a language compiler interface

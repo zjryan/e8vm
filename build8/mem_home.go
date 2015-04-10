@@ -95,7 +95,9 @@ func (h *MemHome) CreateBin(p string) io.WriteCloser {
 	return pkg.bin
 }
 
-// Bin returns the binary for math maitn
+// Bin returns the binary for the package if it has a main.
+// It returns nil if the package does not.
+// It panics if the package does not exist.
 func (h *MemHome) Bin(p string) []byte {
 	pkg := h.pkgs[p]
 	if pkg == nil {
@@ -116,6 +118,19 @@ func (h *MemHome) CreateLog(p, name string) io.WriteCloser {
 	ret := newMemFile()
 	pkg.logs[name] = ret
 	return ret
+}
+
+// Log returns the log file in the file system.
+func (h *MemHome) Log(p, name string) []byte {
+	pkg := h.pkgs[p]
+	if pkg == nil {
+		panic("pkg not exists")
+	}
+	ret := pkg.logs[name]
+	if ret == nil {
+		return nil
+	}
+	return ret.Bytes()
 }
 
 // Lang returns the language for path

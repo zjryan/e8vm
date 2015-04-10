@@ -39,8 +39,6 @@ func main() {
 	ir := flag.Bool("ir", false, "prints out the IR")
 	dasm := flag.Bool("d", false, "deassemble the image")
 
-	_ = ir
-
 	flag.Parse()
 
 	args := flag.Args()
@@ -59,8 +57,9 @@ func main() {
 			printErrs(es)
 			ast.FprintStmts(os.Stdout, stmts)
 		} else {
-			bs, es := g8.CompileBareFunc(fname, string(input))
+			bs, es, irLog := g8.CompileBareFunc(fname, string(input))
 			printErrs(es)
+			printIRLog(irLog, *ir)
 			runImage(bs, *dasm)
 		}
 	} else {
@@ -69,8 +68,9 @@ func main() {
 			printErrs(es)
 			ast.FprintFile(os.Stdout, f)
 		} else {
-			bs, es := g8.CompileSingleFile(fname, string(input))
+			bs, es, irLog := g8.CompileSingleFile(fname, string(input))
 			printErrs(es)
+			printIRLog(irLog, *ir)
 			runImage(bs, *dasm)
 		}
 	}
@@ -93,4 +93,16 @@ func runImage(bs []byte, dasm bool) {
 	if e != nil {
 		fmt.Println(e)
 	}
+}
+
+func printIRLog(irLog []byte, ir bool) {
+	if !ir {
+		return
+	}
+	if irLog == nil {
+		fmt.Println("(no IR log produced)")
+	} else {
+		fmt.Println(string(irLog))
+	}
+
 }
