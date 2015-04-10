@@ -105,6 +105,9 @@ func (t *Func) Size() int32 { return 4 }
 func makeFuncSig(f *Func) *ir.FuncSig {
 	args := make([]*ir.FuncArg, len(f.Args))
 	for i, t := range f.Args {
+		if t.T == nil {
+			panic("type missing")
+		}
 		args[i] = &ir.FuncArg{t.Name, t.Size()}
 	}
 

@@ -32,7 +32,7 @@ func buildNamedParaList(b *builder, lst *ast.ParaList) []*types.Arg {
 		}
 
 		// go back and assign types
-		for j := i; j > 0 && ret[j].T == nil; j-- {
+		for j := i; j >= 0 && ret[j].T == nil; j-- {
 			ret[j].T = t
 		}
 	}
