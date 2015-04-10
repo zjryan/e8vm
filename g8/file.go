@@ -8,7 +8,6 @@ func buildFile(b *builder, f *ast.File) {
 	// TODO: build imports
 
 	var funcs []*objFunc
-
 	for _, d := range f.Decls {
 		switch d := d.(type) {
 		case *ast.Func:
@@ -23,5 +22,9 @@ func buildFile(b *builder, f *ast.File) {
 		default:
 			b.Errorf(nil, "invlaid top declare: %T", d)
 		}
+	}
+
+	for _, f := range funcs {
+		buildFunc(b, f)
 	}
 }
