@@ -103,3 +103,5 @@ func (f *Func) NewBlock(after *Block) *Block {
 // SetAsMain marks the function as main function
 // and this function will have a bare metal prologue and epilogue.
 func (f *Func) SetAsMain() { f.isMain = true }
+
+func (f *Func) String() string { return f.name }
