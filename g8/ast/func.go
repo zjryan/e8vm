@@ -41,6 +41,15 @@ type FuncSig struct {
 	RetType Expr      // single ret type
 }
 
+// NamedRet returns if the function has a named return
+// parameter list
+func (sig *FuncSig) NamedRet() bool {
+	if sig.Rets == nil {
+		return false
+	}
+	return sig.Rets.Named()
+}
+
 // Func is a function
 type Func struct {
 	Kw   *lex8.Token

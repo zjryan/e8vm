@@ -65,6 +65,17 @@ func (p *parser) AcceptSemi() *lex8.Token {
 	return p.Shift()
 }
 
+func (p *parser) SeeSemi() bool {
+	t := p.Token()
+	if t.Type == Semi {
+		return true
+	}
+	if t.Type == Operator && (t.Lit == "}" || t.Lit == ")") {
+		return true
+	}
+	return false
+}
+
 func (p *parser) ExpectSemi() *lex8.Token {
 	if p.InError() {
 		return nil

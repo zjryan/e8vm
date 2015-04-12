@@ -55,7 +55,11 @@ func printStmt(p *fmt8.Printer, stmt Stmt) {
 	case *ExprStmt:
 		printExprs(p, stmt.Expr)
 	case *ReturnStmt:
-		printExprs(p, "return ", stmt.Exprs)
+		if stmt.Exprs != nil {
+			printExprs(p, "return ", stmt.Exprs)
+		} else {
+			printExprs(p, "return")
+		}
 	case *ContinueStmt:
 		if stmt.Label == nil {
 			printExprs(p, "continue")

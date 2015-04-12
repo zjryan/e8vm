@@ -38,6 +38,7 @@ func main() {
 	parseAST := flag.Bool("parse", false, "parse only and print out the ast")
 	ir := flag.Bool("ir", false, "prints out the IR")
 	dasm := flag.Bool("d", false, "deassemble the image")
+	ncycle := flag.Int("n", 100000, "maximum number of cycles")
 
 	flag.Parse()
 
@@ -60,7 +61,7 @@ func main() {
 			bs, es, irLog := g8.CompileBareFunc(fname, string(input))
 			printErrs(es)
 			printIRLog(irLog, *ir)
-			runImage(bs, *dasm)
+			runImage(bs, *dasm, *ncycle)
 		}
 	} else {
 		if *parseAST {
@@ -71,12 +72,12 @@ func main() {
 			bs, es, irLog := g8.CompileSingleFile(fname, string(input))
 			printErrs(es)
 			printIRLog(irLog, *ir)
-			runImage(bs, *dasm)
+			runImage(bs, *dasm, *ncycle)
 		}
 	}
 }
 
-func runImage(bs []byte, dasm bool) {
+func runImage(bs []byte, dasm bool, n int) {
 	if dasm {
 		lines := dasm8.Dasm(bs, arch8.InitPC)
 		for _, line := range lines {
@@ -88,7 +89,7 @@ func runImage(bs []byte, dasm bool) {
 		return
 	}
 
-	ncycle, e := arch8.RunImage(bs, 100000)
+	ncycle, e := arch8.RunImage(bs, n)
 	fmt.Printf("(%d cycles)\n", ncycle)
 	if e != nil {
 		fmt.Println(e)

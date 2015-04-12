@@ -20,6 +20,8 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 		buildBlock(b, stmt.Block)
 	case *ast.VarDecls:
 		buildVarDecls(b, stmt)
+	case *ast.ReturnStmt:
+		buildReturnStmt(b, stmt)
 	default:
 		b.Errorf(nil, "invalid or not implemented: %T", stmt)
 	}

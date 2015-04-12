@@ -14,8 +14,11 @@ type builder struct {
 	*lex8.ErrorList
 	path string
 
-	p     *ir.Pkg
-	f     *ir.Func
+	p         *ir.Pkg
+	f         *ir.Func
+	fretNamed bool
+	fretRef   *ref
+
 	b     *ir.Block
 	scope *sym8.Scope
 

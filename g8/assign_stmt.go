@@ -10,7 +10,7 @@ func assign(b *builder, dest *ref, src *ref, op *lex8.Token) bool {
 	ndest := dest.Len()
 	nsrc := src.Len()
 	if ndest != nsrc {
-		b.Errorf(op.Pos, "cannot assign %d to %d expresssions",
+		b.Errorf(op.Pos, "cannot assign %s to %s",
 			nsrc, ndest,
 		)
 		return false

@@ -91,6 +91,9 @@ func (f *Func) newBlock(after *Block) *Block {
 	return ret
 }
 
+// End returns the ending block of the function (the epilogue).
+func (f *Func) End() *Block { return f.epilogue }
+
 // NewBlock creates a new basic block for the function
 func (f *Func) NewBlock(after *Block) *Block {
 	if after == nil {

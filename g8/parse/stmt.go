@@ -129,7 +129,9 @@ func parseForStmt(p *parser) *ast.ForStmt {
 func parseReturnStmt(p *parser) *ast.ReturnStmt {
 	ret := new(ast.ReturnStmt)
 	ret.Kw = p.ExpectKeyword("return")
-	ret.Exprs = parseExprList(p)
+	if !p.SeeSemi() {
+		ret.Exprs = parseExprList(p)
+	}
 	ret.Semi = p.ExpectSemi()
 	return ret
 }

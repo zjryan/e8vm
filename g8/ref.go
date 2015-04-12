@@ -47,6 +47,10 @@ func (r *ref) IR() ir.Ref {
 }
 
 func (r *ref) String() string {
+	if r == nil {
+		return "void"
+	}
+
 	if len(r.typ) == 0 {
 		return "<nil>"
 	}

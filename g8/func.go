@@ -74,6 +74,24 @@ func declareParas(b *builder,
 	}
 }
 
+func makeRetRef(ts []*types.Arg, irs []ir.Ref) *ref {
+	if len(ts) != len(irs) {
+		panic("bug")
+	}
+	if len(ts) == 0 {
+		return nil
+	}
+
+	ret := new(ref)
+	ret.typ = make([]types.T, len(ts))
+	ret.ir = irs
+	for i, t := range ts {
+		ret.typ[i] = t.T
+	}
+
+	return ret
+}
+
 func buildFunc(b *builder, f *objFunc) {
 	b.scope.Push() // func body scope
 	defer b.scope.Pop()
@@ -81,9 +99,12 @@ func buildFunc(b *builder, f *objFunc) {
 	t := f.ref.Type().(*types.Func) // the signature of the function
 	irFunc := f.ref.IR().(*ir.Func)
 	b.f = irFunc
+	b.fretNamed = f.f.NamedRet()
 
+	retIRRefs := irFunc.RetRefs()
 	declareParas(b, f.f.Args, t.Args, irFunc.ArgRefs())
-	declareParas(b, f.f.Rets, t.Rets, irFunc.RetRefs())
+	declareParas(b, f.f.Rets, t.Rets, retIRRefs)
+	b.fretRef = makeRetRef(t.Rets, retIRRefs)
 
 	b.b = b.f.NewBlock(nil)
 	b.buildStmts(f.f.Body.Stmts)
