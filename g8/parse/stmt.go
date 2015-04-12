@@ -62,6 +62,9 @@ func parseIfBody(p *parser) (ret ast.Stmt, isBlock bool) {
 	if p.SeeOp("{") {
 		return parseBlock(p), true
 	}
+	if p.SeeKeyword("return") {
+		return parseReturnStmt(p, false), false
+	}
 	// TODO: return, break and continue
 
 	p.ErrorfHere("expect if body")
@@ -126,13 +129,15 @@ func parseForStmt(p *parser) *ast.ForStmt {
 	return ret
 }
 
-func parseReturnStmt(p *parser) *ast.ReturnStmt {
+func parseReturnStmt(p *parser, withSemi bool) *ast.ReturnStmt {
 	ret := new(ast.ReturnStmt)
 	ret.Kw = p.ExpectKeyword("return")
 	if !p.SeeSemi() {
 		ret.Exprs = parseExprList(p)
 	}
-	ret.Semi = p.ExpectSemi()
+	if withSemi {
+		ret.Semi = p.ExpectSemi()
+	}
 	return ret
 }
 
@@ -178,7 +183,7 @@ func parseStmt(p *parser) ast.Stmt {
 		//case "switch":
 		//	return parseSwitchStmt(p)
 		case "return":
-			return parseReturnStmt(p)
+			return parseReturnStmt(p, true)
 		case "break":
 			return parseBreakStmt(p)
 		case "continue":

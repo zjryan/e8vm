@@ -20,6 +20,8 @@ func buildIf(b *builder, cond ast.Expr, ifs ast.Stmt, elses *ast.ElseStmt) {
 		switch ifs := ifs.(type) {
 		case *ast.Block:
 			buildBlock(b, ifs)
+		case *ast.ReturnStmt:
+			buildReturnStmt(b, ifs)
 		default:
 			b.Errorf(ast.ExprPos(cond), "short if statement not implemented")
 		}
