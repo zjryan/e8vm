@@ -20,8 +20,7 @@ Planned Features:
 
 ## TODOs
 
-- `VarDecl`
-- Break, continue
+- Global `VarDecl`
 - Basic types, char
 - Type conversion for integers
 - Basic built-in panic
@@ -35,6 +34,7 @@ Planned Features:
 - Unused variable check
 - Unreachable code check
 - Missing return check
+- Break, continue with labels
 
 Small things:
 
