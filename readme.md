@@ -32,8 +32,9 @@ Planned Features:
 - Fields and methods
 - Interface					
 - Big number constants
-- Symbol usage track
-- Reachability track
+- Unused variable check
+- Unreachable code check
+- Missing return check
 
 Small things:
 
