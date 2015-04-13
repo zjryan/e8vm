@@ -22,6 +22,10 @@ func buildIf(b *builder, cond ast.Expr, ifs ast.Stmt, elses *ast.ElseStmt) {
 			buildBlock(b, ifs)
 		case *ast.ReturnStmt:
 			buildReturnStmt(b, ifs)
+		case *ast.BreakStmt:
+			buildBreakStmt(b, ifs)
+		case *ast.ContinueStmt:
+			buildContinueStmt(b, ifs)
 		default:
 			b.Errorf(ast.ExprPos(cond), "short if statement not implemented")
 		}

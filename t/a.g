@@ -11,8 +11,7 @@ func main() {
         for a != 20 {
             printInt(fabo(a))
             a = a + 1
-            if a <= 5 { continue }
-            break
+            if a > 5 break
         }
         printInt(1000)
         i = i + 1

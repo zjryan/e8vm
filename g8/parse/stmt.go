@@ -64,8 +64,11 @@ func parseIfBody(p *parser) (ret ast.Stmt, isBlock bool) {
 	}
 	if p.SeeKeyword("return") {
 		return parseReturnStmt(p, false), false
+	} else if p.SeeKeyword("break") {
+		return parseBreakStmt(p, false), false
+	} else if p.SeeKeyword("continue") {
+		return parseContinueStmt(p, false), false
 	}
-	// TODO: return, break and continue
 
 	p.ErrorfHere("expect if body")
 	return nil, false
@@ -141,23 +144,27 @@ func parseReturnStmt(p *parser, withSemi bool) *ast.ReturnStmt {
 	return ret
 }
 
-func parseBreakStmt(p *parser) *ast.BreakStmt {
+func parseBreakStmt(p *parser, withSemi bool) *ast.BreakStmt {
 	ret := new(ast.BreakStmt)
 	ret.Kw = p.ExpectKeyword("break")
 	if p.See(Ident) {
 		ret.Label = p.Expect(Ident)
 	}
-	ret.Semi = p.ExpectSemi()
+	if withSemi {
+		ret.Semi = p.ExpectSemi()
+	}
 	return ret
 }
 
-func parseContinueStmt(p *parser) *ast.ContinueStmt {
+func parseContinueStmt(p *parser, withSemi bool) *ast.ContinueStmt {
 	ret := new(ast.ContinueStmt)
 	ret.Kw = p.ExpectKeyword("continue")
 	if p.See(Ident) {
 		ret.Label = p.Expect(Ident)
 	}
-	ret.Semi = p.ExpectSemi()
+	if withSemi {
+		ret.Semi = p.ExpectSemi()
+	}
 	return ret
 }
 
@@ -185,9 +192,9 @@ func parseStmt(p *parser) ast.Stmt {
 		case "return":
 			return parseReturnStmt(p, true)
 		case "break":
-			return parseBreakStmt(p)
+			return parseBreakStmt(p, true)
 		case "continue":
-			return parseContinueStmt(p)
+			return parseContinueStmt(p, true)
 		case "fallthrough":
 			return parseFallthroughStmt(p)
 		}
