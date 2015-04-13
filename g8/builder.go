@@ -22,6 +22,9 @@ type builder struct {
 	b     *ir.Block
 	scope *sym8.Scope
 
+	continues *blockStack
+	breaks    *blockStack
+
 	builtin uint32 // the index of the builtin package
 
 	exprFunc func(b *builder, expr ast.Expr) *ref
@@ -35,6 +38,9 @@ func newBuilder(path string) *builder {
 	ret.path = path
 	ret.p = ir.NewPkg(path)
 	ret.scope = sym8.NewScope() // package scope
+
+	ret.continues = newBlockStack()
+	ret.breaks = newBlockStack()
 
 	return ret
 }
