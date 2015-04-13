@@ -22,7 +22,15 @@ func buildForStmt(b *builder, stmt *ast.ForStmt) {
 		condBlock.JumpIfNot(c.IR(), after)
 
 		b.b = body
+
+		// set up breaks and continues
+		b.breaks.push(after, "")
+		b.continues.push(condBlock, "")
+
 		buildBlock(b, stmt.Body)
+
+		b.breaks.pop()
+		b.continues.pop()
 
 		b.b = after
 	} else {

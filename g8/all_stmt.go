@@ -22,6 +22,10 @@ func buildStmt(b *builder, stmt ast.Stmt) {
 		buildVarDecls(b, stmt)
 	case *ast.ReturnStmt:
 		buildReturnStmt(b, stmt)
+	case *ast.ContinueStmt:
+		buildContinueStmt(b, stmt)
+	case *ast.BreakStmt:
+		buildBreakStmt(b, stmt)
 	default:
 		b.Errorf(nil, "invalid or not implemented: %T", stmt)
 	}
