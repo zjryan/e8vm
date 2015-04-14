@@ -44,14 +44,24 @@ func TestSingleFile_good(t *testing.T) {
 		}
 	}
 
-	o(`
-		func fabo(n int) int {
+	o("func main() { }", "")
+	o("func main() { return }", "")
+	o("func main() { printInt(3) }", "3")
+
+	o(` func r() int { return 7 }
+		func main() { printInt(r()) }`,
+		"7",
+	)
+	o(`	func p(i int) { printInt(i) }
+		func main() { p(33); p(44) }`,
+		"33\n44",
+	)
+	o(`	func fabo(n int) int {
 			if n == 0 return 0
 			if n == 1 return 1
 			return fabo(n-1) + fabo(n-2)
 		}
-		func main() { printInt(fabo(10)) }
-	`, "55")
-
-	o("func main() { printInt(3) }", "3")
+		func main() { printInt(fabo(10)) }`,
+		"55",
+	)
 }
