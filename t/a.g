@@ -5,16 +5,5 @@ func fabo(n int) int {
 }
 
 func main() {
-    var i int
-    for i < 3 {
-        var a int
-        for a != 20 {
-            printInt(fabo(a))
-            a = a + 1
-            if a <= 5 continue
-            break
-        }
-        printInt(1000)
-        i = i + 1
-    }
+    printInt(fabo(15))
 }
