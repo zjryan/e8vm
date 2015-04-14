@@ -58,7 +58,7 @@ func declareBuiltin(b *builder, builtin *link8.Pkg) {
 	t("byte", types.Uint8)
 	t("bool", types.Bool)
 	t("float", types.Float32)
-	t("float32", types.Float32)
+	// t("float32", types.Float32)
 	// t("string", types.String)
 }
 
