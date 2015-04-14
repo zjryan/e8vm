@@ -4,6 +4,7 @@ package ir
 type FuncArg struct {
 	Name string
 	Size int32
+	U8   bool
 }
 
 // FuncSig describes the function signature of a callable
@@ -24,10 +25,12 @@ func NewFuncSig(args, rets []*FuncArg) *FuncSig {
 	ret := new(FuncSig)
 	for _, arg := range args {
 		v := newVar(arg.Size, arg.Name)
+		v.u8 = arg.U8
 		ret.args = append(ret.args, v)
 	}
 	for _, arg := range rets {
 		v := newVar(arg.Size, arg.Name)
+		v.u8 = arg.U8
 		ret.rets = append(ret.rets, v)
 	}
 

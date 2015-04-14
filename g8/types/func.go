@@ -101,6 +101,10 @@ func (t *Func) String() string {
 // as the size of a PC register.
 func (t *Func) Size() int32 { return 4 }
 
+func makeArg(t *Arg) *ir.FuncArg {
+	return &ir.FuncArg{t.Name, t.Size(), IsBasic(t.T, Uint8)}
+}
+
 // converts a langauge function signature into a IR function signature
 func makeFuncSig(f *Func) *ir.FuncSig {
 	args := make([]*ir.FuncArg, len(f.Args))
@@ -108,12 +112,12 @@ func makeFuncSig(f *Func) *ir.FuncSig {
 		if t.T == nil {
 			panic("type missing")
 		}
-		args[i] = &ir.FuncArg{t.Name, t.Size()}
+		args[i] = makeArg(t)
 	}
 
 	rets := make([]*ir.FuncArg, len(f.Rets))
 	for i, t := range f.Rets {
-		rets[i] = &ir.FuncArg{t.Name, t.Size()}
+		rets[i] = makeArg(t)
 	}
 
 	return ir.NewFuncSig(args, rets)

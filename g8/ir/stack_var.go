@@ -14,6 +14,7 @@ type stackVar struct {
 	// after SP shift, the variable is saved at [SP+framesize-offset]
 	offset int32
 	size   int32
+	u8     bool
 
 	// reg is the register allocated
 	// valid values are in range [1, 4] for normal values
@@ -29,6 +30,12 @@ func newVar(n int32, name string) *stackVar {
 	ret.name = name
 	ret.size = n
 
+	return ret
+}
+
+func newByte(name string) *stackVar {
+	ret := newVar(1, name)
+	ret.u8 = true
 	return ret
 }
 
