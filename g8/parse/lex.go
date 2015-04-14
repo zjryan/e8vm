@@ -17,9 +17,9 @@ func lexC8(x *lex8.Lexer) *lex8.Token {
 		x.Next()
 		return x.MakeToken(Endl)
 	case '"':
-		return lex8.LexString(x, String)
-		//case '\'':
-		//	panic("char is on todo")
+		return lex8.LexString(x, String, '"')
+	case '\'':
+		return lex8.LexString(x, Char, '\'')
 	}
 
 	if isDigit(r) {

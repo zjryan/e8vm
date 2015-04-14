@@ -73,11 +73,14 @@ func lexEscape(x *Lexer, quote rune) bool {
 }
 
 // LexString parses a string token with type t.
-func LexString(x *Lexer, t int) *Token {
-	if !x.See('"') {
+func LexString(x *Lexer, t int, q rune) *Token {
+	if !(q == '\'' || q == '"') {
+		panic("only support `'` or `\"`")
+	} else if !x.See(q) {
 		panic("incorrect string start")
 	}
 
+	n := 0
 	x.Next()
 	for {
 		if x.Ended() {
@@ -86,9 +89,7 @@ func LexString(x *Lexer, t int) *Token {
 		} else if x.See('\n') {
 			x.Errorf("unexpected endl in string")
 			break
-		}
-
-		if x.See('"') {
+		} else if x.See('"') {
 			x.Next()
 			break
 		} else if x.See('\\') {
@@ -97,7 +98,11 @@ func LexString(x *Lexer, t int) *Token {
 		} else {
 			x.Next()
 		}
+		n++
 	}
 
+	if q == '\'' && n != 1 {
+		x.Errorf("illegal char literal")
+	}
 	return x.MakeToken(t)
 }
