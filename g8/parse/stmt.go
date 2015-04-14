@@ -118,9 +118,11 @@ func parseForStmt(p *parser) *ast.ForStmt {
 
 	ret := new(ast.ForStmt)
 	ret.Kw = p.Shift()
-	ret.Cond = parseExpr(p)
-	if p.InError() {
-		return ret
+	if !p.SeeOp("{") {
+		ret.Cond = parseExpr(p)
+		if p.InError() {
+			return ret
+		}
 	}
 
 	ret.Body = parseBlock(p)

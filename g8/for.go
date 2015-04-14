@@ -6,33 +6,50 @@ import (
 
 func buildForStmt(b *builder, stmt *ast.ForStmt) {
 	if stmt.Init == nil && stmt.Iter == nil {
-		condBlock := b.f.NewBlock(b.b)
-		body := b.f.NewBlock(condBlock)
-		after := b.f.NewBlock(body)
-		body.Jump(condBlock)
+		if stmt.Cond == nil {
+			body := b.f.NewBlock(b.b)
+			after := b.f.NewBlock(body)
+			body.Jump(body)
 
-		b.b = condBlock
-		c := buildExpr(b, stmt.Cond)
-		if !c.IsBool() {
-			pos := ast.ExprPos(stmt.Cond)
-			b.Errorf(pos, "expect boolean expression, got %s", c)
+			b.b = body
+
+			b.breaks.push(after, "")
+			b.continues.push(body, "")
+
+			buildBlock(b, stmt.Body)
+
+			b.breaks.pop()
+			b.continues.pop()
+
 			b.b = after
-			return
+		} else {
+			condBlock := b.f.NewBlock(b.b)
+			body := b.f.NewBlock(condBlock)
+			after := b.f.NewBlock(body)
+			body.Jump(condBlock)
+
+			b.b = condBlock
+			c := buildExpr(b, stmt.Cond)
+			if !c.IsBool() {
+				pos := ast.ExprPos(stmt.Cond)
+				b.Errorf(pos, "expect boolean expression, got %s", c)
+				b.b = after
+				return
+			}
+			condBlock.JumpIfNot(c.IR(), after)
+
+			b.b = body
+
+			b.breaks.push(after, "")
+			b.continues.push(condBlock, "")
+
+			buildBlock(b, stmt.Body)
+
+			b.breaks.pop()
+			b.continues.pop()
+
+			b.b = after
 		}
-		condBlock.JumpIfNot(c.IR(), after)
-
-		b.b = body
-
-		// set up breaks and continues
-		b.breaks.push(after, "")
-		b.continues.push(condBlock, "")
-
-		buildBlock(b, stmt.Body)
-
-		b.breaks.pop()
-		b.continues.pop()
-
-		b.b = after
 	} else {
 		b.Errorf(stmt.Kw.Pos, "advanced for statement not implemented yet")
 	}

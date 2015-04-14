@@ -73,6 +73,7 @@ func TestBareFunc_good(t *testing.T) {
 	o("var i int; for i < 3 { printInt(i); i=i+1 }", "0\n1\n2")
 	o("for true { break }; printInt(3)", "3")
 	o("for true { if true break }; printInt(3)", "3")
+	o("for { break }; printInt(33)", "33")
 	o("i:=0; for i<3 { printInt(i); i=i+1; continue; break }", "0\n1\n2")
 }
 

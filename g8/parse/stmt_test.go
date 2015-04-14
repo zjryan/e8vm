@@ -72,6 +72,7 @@ func TestStmts_good(t *testing.T) {
 		"a := 3",
 		"a := 3+4",
 		"a, b := 4, x",
+		"for {}",
 		"for true { }",
 		"for (true) { }",
 		"for a == 3 { }",
