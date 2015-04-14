@@ -1,3 +1,4 @@
 func main() {
-    printUint(3)
+    var a uint = uint(3)
+    printUint(a)
 }
