@@ -23,3 +23,11 @@ func buildExpr(b *builder, expr ast.Expr) *ref {
 		return nil
 	}
 }
+
+func buildExprStmt(b *builder, expr ast.Expr) {
+	if e, ok := expr.(*ast.CallExpr); ok {
+		buildCallExpr(b, e)
+	} else {
+		b.Errorf(ast.ExprPos(expr), "invalid expression statement")
+	}
+}
