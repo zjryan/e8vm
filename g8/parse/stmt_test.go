@@ -84,6 +84,14 @@ func TestStmts_good(t *testing.T) {
 		} else {
 			print(4)
 		}`,
+		"break",
+		"continue",
+		"if true return",
+		"if true break",
+		"if true continue",
+		"if true return 3",
+		"if true { return }",
+		"if true { return; break }",
 		`for true {
 			print(3)
 			read()
@@ -143,6 +151,10 @@ func TestStmts_bad(t *testing.T) {
 		"if true { }; else {}",
 		"if true else {}",
 		"if true {} else; { }",
+		"if true break else continue",
+		"if true break else {}",
+		"if true break; else {}",
+		"if true break return",
 		"for ; {}",
 		"for ; ",
 		"for true ;",

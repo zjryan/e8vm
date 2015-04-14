@@ -64,12 +64,16 @@ func TestBareFunc_good(t *testing.T) {
 	o("a,b:=3,4; printInt(a); printInt(b)", "3\n4")
 	o("a,b:=3,4; { a,b:=b,a; printInt(a); printInt(b) }", "4\n3")
 	o("var a int; printInt(a)", "0")
-	o("var a, b = 3, 4; printInt(a); printInt(b)", "3\n4")
-	o("var a, b = 3, 4; printInt(a); printInt(b)", "3\n4")
-	o("var a, b int = 3, 4; printInt(a); printInt(b)", "3\n4")
+	o("var a,b = 3,4; printInt(a); printInt(b)", "3\n4")
+	o("var a,b = 3,4; printInt(a); printInt(b)", "3\n4")
+	o("var a,b int = 3,4; printInt(a); printInt(b)", "3\n4")
 	o(` a,b:=3,4; { var a,b=b,a; printInt(a); printInt(b) }
 	   	printInt(a); printInt(b)
 	`, "4\n3\n3\n4")
+	o("var i int; for i < 3 { printInt(i); i=i+1 }", "0\n1\n2")
+	o("for true { break }; printInt(3)", "3")
+	o("for true { if true break }; printInt(3)", "3")
+	o("i:=0; for i<3 { printInt(i); i=i+1; continue; break }", "0\n1\n2")
 }
 
 func TestBareFunc_bad(t *testing.T) {
@@ -98,4 +102,8 @@ func TestBareFunc_bad(t *testing.T) {
 	o("a()")                 // undefined function
 	o("var a, b c")          // undefined type
 	o("var a int; var b a")  // not a type
+	o("break")               // not in for loop
+	o("continue")            // not in for loop
+	o("if true { break }")
+	o("if true break")
 }
