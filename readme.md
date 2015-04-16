@@ -21,9 +21,7 @@ Planned Features:
 ## TODOs
 
 - Global `VarDecl`
-- Char parsing
-- Basic types
-- Type conversion for integers
+- Type conversion
 - Basic built-in panic
 - Pointer
 - Array and slice
