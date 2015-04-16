@@ -21,10 +21,9 @@ func resolvePkg(p string, src map[string]*build8.File) (*pkg, []*lex8.Error) {
 
 	asts := make(map[string]*ast.File)
 
-	// TODO: parse all the files first
+	// parse all the files first
 	var parseErrs []*lex8.Error
 	for name, f := range src {
-		// parse the file first
 		astFile, es := parse.File(f.Path, f)
 		if es != nil {
 			parseErrs = append(parseErrs, es...)

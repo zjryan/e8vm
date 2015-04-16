@@ -168,12 +168,13 @@ func resolveSymbol(b *builder, s *funcStmt) (typ int, pkg, index uint32) {
 		}
 	}
 
-	if typ == SymNone {
+	switch typ {
+	case SymNone:
 		b.Errorf(t.Pos, "%q not found", t.Lit)
-	} else if typ == SymConst {
+	case SymConst:
 		b.Errorf(t.Pos, "const symbol filling not implemented yet")
 		typ = SymNone // report as error
-	} else if typ == SymImport || typ == SymLabel {
+	case SymImport, SymLabel:
 		b.Errorf(t.Pos, "cannot link %s %q", symStr(typ), t.Lit)
 		typ = SymNone // report as error
 	}

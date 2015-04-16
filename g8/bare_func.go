@@ -33,7 +33,7 @@ func buildBareFunc(b *builder, stmts []ast.Stmt) *link8.Pkg {
 	b.buildStmts(stmts)
 	b.scope.Pop()
 
-	// TODO: write this to log file
+	// write this to log file
 	if b.irLog != nil {
 		ir.PrintPkg(b.irLog, b.p)
 	}
