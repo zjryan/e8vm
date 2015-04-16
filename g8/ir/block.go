@@ -48,8 +48,8 @@ func (b *Block) Arith(dest Ref, x Ref, op string, y Ref) {
 }
 
 // Assign appends an assignment operation to the basic block
-func (b *Block) Assign(dest Ref, a Ref) {
-	b.Arith(dest, nil, "", a)
+func (b *Block) Assign(dest Ref, src Ref) {
+	b.Arith(dest, nil, "", src)
 }
 
 // Zero appends zeroing operation to the basic block
