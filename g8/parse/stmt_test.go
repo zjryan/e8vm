@@ -37,6 +37,10 @@ func TestStmts_good(t *testing.T) {
 		"a <= 6",
 		"a != 7",
 		"(void)()",
+		"'x'",
+		"'\\n'",
+		"'\\''",
+		`"hello"`,
 	} {
 		buf := strings.NewReader(s)
 		stmts, es := Stmts("test.g", buf)
@@ -138,6 +142,7 @@ func TestStmts_bad(t *testing.T) {
 		"3 3",
 		"3a",
 		"3x3",
+		"'\\\"'",
 		"p(",
 		"p(;)",
 		"p())",

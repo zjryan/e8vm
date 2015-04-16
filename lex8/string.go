@@ -89,12 +89,12 @@ func LexString(x *Lexer, t int, q rune) *Token {
 		} else if x.See('\n') {
 			x.Errorf("unexpected endl in string")
 			break
-		} else if x.See('"') {
+		} else if x.See(q) {
 			x.Next()
 			break
 		} else if x.See('\\') {
 			x.Next()
-			lexEscape(x, '"')
+			lexEscape(x, q)
 		} else {
 			x.Next()
 		}

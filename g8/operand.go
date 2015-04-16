@@ -32,6 +32,18 @@ func buildInt(b *builder, op *lex8.Token) *ref {
 	return newRef(types.Int, ir.Snum(int32(ret)))
 }
 
+func buildChar(b *builder, op *lex8.Token) *ref {
+	v, e := strconv.Unquote(op.Lit)
+	if e != nil {
+		b.Errorf(op.Pos, "invalid char: %s", e)
+		return nil
+	} else if len(v) != 1 {
+		b.Errorf(op.Pos, "invalid char in quote: %q", v)
+		return nil
+	}
+	return newRef(types.Uint8, ir.Num(uint32(v[0])))
+}
+
 func buildIdent(b *builder, op *lex8.Token) *ref {
 	s := b.scope.Query(op.Lit)
 	if s == nil {
@@ -62,6 +74,8 @@ func buildOperand(b *builder, op *ast.Operand) *ref {
 	switch op.Token.Type {
 	case parse.Int:
 		return buildInt(b, op.Token)
+	case parse.Char:
+		return buildChar(b, op.Token)
 	case parse.Ident:
 		return buildIdent(b, op.Token)
 	default:

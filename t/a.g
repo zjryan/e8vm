@@ -1,6 +1,8 @@
 func main() {
-    for {
-        break
-    }
-    printInt(33)
+    printChar('h')
+    printChar('e')
+    printChar('l')
+    printChar('l')
+    printChar('o')
+    printChar('\n')
 }
