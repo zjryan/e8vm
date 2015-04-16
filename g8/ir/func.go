@@ -21,9 +21,8 @@ type Func struct {
 	epilogue *Block
 	nblock   int
 
-	nvar            int
-	callerFrameSize int32 // frame size where the caller pushed
-	frameSize       int32
+	nvar      int
+	frameSize int32
 
 	index  uint32 // the index in the lib
 	isMain bool
