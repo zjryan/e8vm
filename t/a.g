@@ -1,3 +1,6 @@
+func v(int) {
+}
+
 func main() {
-    3 = 3
+    var m = v
 }

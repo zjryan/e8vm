@@ -2,6 +2,8 @@ package ir
 
 import (
 	"fmt"
+
+	"lonnie.io/e8vm/link8"
 )
 
 func loadRetAddr(b *Block, v *stackVar) {
@@ -79,6 +81,13 @@ func saveRef(b *Block, reg uint32, r Ref) {
 	}
 }
 
+func loadSym(b *Block, reg uint32, pkg, sym uint32) {
+	high := b.inst(asm.lui(reg, 0))
+	high.sym = &linkSym{link8.FillHigh, pkg, sym}
+	low := b.inst(asm.ori(reg, reg, 0))
+	low.sym = &linkSym{link8.FillLow, pkg, sym}
+}
+
 func loadRef(b *Block, reg uint32, r Ref) {
 	switch r := r.(type) {
 	case *stackVar:
@@ -91,6 +100,10 @@ func loadRef(b *Block, reg uint32, r Ref) {
 		} else {
 			b.inst(asm.ori(reg, _0, r.v))
 		}
+	case *Func:
+		loadSym(b, reg, 0, r.index)
+	case *funcSym:
+		loadSym(b, reg, r.pkg, r.sym)
 	default:
 		panic(fmt.Errorf("not implemented: %T", r))
 	}
