@@ -8,6 +8,8 @@ type number struct{ v uint32 } // a constant number
 
 func (n *number) String() string { return fmt.Sprintf("%d", n.v) }
 
+func (n *number) Addressable() bool { return false }
+
 // Num creates a constant reference to a int32 number
 func Num(v uint32) Ref { return &number{v} }
 

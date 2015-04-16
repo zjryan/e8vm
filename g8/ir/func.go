@@ -121,3 +121,7 @@ func (f *Func) NewBlock(after *Block) *Block {
 func (f *Func) SetAsMain() { f.isMain = true }
 
 func (f *Func) String() string { return f.name }
+
+// Addressable always returns false, because a
+// function is a symbol and its content cannot be modified.
+func (f *Func) Addressable() bool { return false }

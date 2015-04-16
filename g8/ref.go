@@ -6,7 +6,7 @@ import (
 	"lonnie.io/e8vm/g8/types"
 )
 
-// ref is a struct that
+// ref is a reference to one or a list of typed objects.
 type ref struct {
 	typ []types.T
 	ir  []ir.Ref // this is essentially anything

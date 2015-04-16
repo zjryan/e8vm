@@ -93,6 +93,8 @@ func TestBareFunc_bad(t *testing.T) {
 	o("printInt")            // expression statement
 	o("3+4")                 // expression statement
 	o("a=3")                 // a not defined
+	o("3=4")                 // non-addressable
+	o("3=a")                 // non-addressable
 	o("a:=3;a:=4")           // redefine
 	o("printInt(true)")      // type mismatch
 	o("printInt(3, 4)")      // arg count mismatch
@@ -106,6 +108,6 @@ func TestBareFunc_bad(t *testing.T) {
 	o("var a int; var b a")  // not a type
 	o("break")               // not in for loop
 	o("continue")            // not in for loop
-	o("if true { break }")
-	o("if true break")
+	o("if true { break }")   // nothing to break
+	o("if true break")       // nothing to break
 }

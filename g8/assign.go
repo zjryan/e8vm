@@ -17,7 +17,7 @@ func assign(b *builder, dest *ref, src *ref, op *lex8.Token) bool {
 	}
 
 	for i, destType := range dest.typ {
-		if !addressable(dest.ir[i]) {
+		if !dest.ir[i].Addressable() {
 			b.Errorf(op.Pos, "assigning to non-addressable")
 			return false
 		}

@@ -45,3 +45,5 @@ func (v *stackVar) String() string {
 	}
 	return fmt.Sprintf("<%d>", v.id)
 }
+
+func (v *stackVar) Addressable() bool { return true }

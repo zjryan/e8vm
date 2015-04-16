@@ -39,7 +39,7 @@ func buildReturnStmt(b *builder, stmt *ast.ReturnStmt) {
 		}
 
 		for i, t := range b.fretRef.typ {
-			if !addressable(b.fretRef.ir[i]) {
+			if !b.fretRef.ir[i].Addressable() {
 				panic("bug")
 			}
 
