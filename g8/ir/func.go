@@ -59,16 +59,8 @@ func (f *Func) RetRefs() []Ref {
 }
 
 // NewLocal creates a new named local variable of size n on the stack.
-func (f *Func) NewLocal(n int32, name string) Ref {
-	ret := newVar(n, name)
-	f.locals = append(f.locals, ret)
-	return ret
-}
-
-// NewLocalByte creates a new named local unsigned variable of only one byte
-// on the stack.
-func (f *Func) NewLocalByte(name string) Ref {
-	ret := newByte(name)
+func (f *Func) NewLocal(n int32, name string, isByte bool) Ref {
+	ret := newVar(n, name, isByte)
 	f.locals = append(f.locals, ret)
 	return ret
 }
@@ -80,10 +72,9 @@ func (f *Func) newTempName() string {
 }
 
 // NewTemp creates a new temp variable of size n on the stack.
-func (f *Func) NewTemp(n int32) Ref { return f.NewLocal(n, f.newTempName()) }
-
-// NewTempByte creates a new unsigned temp 1-byte variable on the stack.
-func (f *Func) NewTempByte() Ref { return f.NewLocalByte(f.newTempName()) }
+func (f *Func) NewTemp(n int32, isByte bool) Ref {
+	return f.NewLocal(n, f.newTempName(), isByte)
+}
 
 func (f *Func) newBlock(after *Block) *Block {
 	ret := new(Block)

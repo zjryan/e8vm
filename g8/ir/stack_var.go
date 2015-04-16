@@ -25,17 +25,12 @@ type stackVar struct {
 	regOnly bool
 }
 
-func newVar(n int32, name string) *stackVar {
+func newVar(n int32, name string, isByte bool) *stackVar {
 	ret := new(stackVar)
 	ret.name = name
 	ret.size = n
+	ret.u8 = isByte
 
-	return ret
-}
-
-func newByte(name string) *stackVar {
-	ret := newVar(1, name)
-	ret.u8 = true
 	return ret
 }
 

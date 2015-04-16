@@ -46,11 +46,11 @@ func newBuilder(path string) *builder {
 }
 
 func (b *builder) newTemp(t types.T) *ref {
-	return newRef(t, b.f.NewTemp(t.Size()))
+	return newRef(t, b.f.NewTemp(t.Size(), types.IsByte(t)))
 }
 
 func (b *builder) newLocal(t types.T, name string) ir.Ref {
-	return b.f.NewLocal(t.Size(), name)
+	return b.f.NewLocal(t.Size(), name, types.IsByte(t))
 }
 
 func (b *builder) buildExpr(expr ast.Expr) *ref {

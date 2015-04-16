@@ -2,5 +2,5 @@ func v(int) {
 }
 
 func main() {
-    var m = v
+    var a = 'a'
 }

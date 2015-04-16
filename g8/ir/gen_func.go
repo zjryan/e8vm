@@ -49,14 +49,14 @@ func layoutLocals(f *Func) {
 		// the caller is not using this reg for sending
 		// the argument, the callee hence needs to
 		// save this register
-		v := newVar(regSize, "")
+		v := newVar(regSize, "", false)
 		v.viaReg = uint32(i)
 		f.savedRegs = append(f.savedRegs, v)
 	}
 
 	// layout the variables in the function
 	f.frameSize = f.sig.frameSize
-	f.retAddr = newVar(regSize, "")
+	f.retAddr = newVar(regSize, "", false)
 	f.retAddr.viaReg = arch8.RET // the return address
 
 	// if all args and rets are via register

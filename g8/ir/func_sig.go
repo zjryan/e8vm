@@ -24,13 +24,11 @@ type FuncSig struct {
 func NewFuncSig(args, rets []*FuncArg) *FuncSig {
 	ret := new(FuncSig)
 	for _, arg := range args {
-		v := newVar(arg.Size, arg.Name)
-		v.u8 = arg.U8
+		v := newVar(arg.Size, arg.Name, arg.U8)
 		ret.args = append(ret.args, v)
 	}
 	for _, arg := range rets {
-		v := newVar(arg.Size, arg.Name)
-		v.u8 = arg.U8
+		v := newVar(arg.Size, arg.Name, arg.U8)
 		ret.rets = append(ret.rets, v)
 	}
 

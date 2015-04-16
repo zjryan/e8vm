@@ -52,7 +52,7 @@ func buildCallExpr(b *builder, expr *ast.CallExpr) *ref {
 	ret := new(ref)
 	ret.typ = funcType.RetTypes
 	for _, t := range funcType.RetTypes {
-		ret.ir = append(ret.ir, b.f.NewTemp(t.Size()))
+		ret.ir = append(ret.ir, b.f.NewTemp(t.Size(), types.IsByte(t)))
 	}
 
 	// call the func in IR

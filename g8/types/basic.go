@@ -27,6 +27,15 @@ func IsBasic(t T, b Basic) bool {
 	return code == b
 }
 
+// IsByte checks if a type is Uint8
+func IsByte(t T) bool {
+	code, ok := t.(Basic)
+	if !ok {
+		return false
+	}
+	return code == Uint8
+}
+
 // BothBasic checks if two types are both a particular basic type
 func BothBasic(a, b T, t Basic) bool {
 	return IsBasic(a, t) && IsBasic(b, t)
